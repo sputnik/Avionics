@@ -9,11 +9,11 @@
 #define AREA_ROCKET .0248286665 //meters squared
 #define AREA_BRAKE .01032256 //meters squared
 #define START_ALT 1219.2 //meters
-#define GOAL_HEIGHT 8955 //meters
-#define WEIGHT_I 177.93 //newtons
-#define WEIGHT_F 111.2 //newtons
-#define START_THRUST 2600 //newtons
-#define FUEL_BURN_RATE 1.330185185 //newtons per second
+#define GOAL_HEIGHT 10000 //meters
+#define WEIGHT_I 380.75175 //newtons
+#define WEIGHT_F 198.18765 //newtons
+#define START_THRUST 8500 //newtons
+#define FUEL_BURN_RATE 34.446 //newtons per second
 
 
 double density_from_altitude(double altitude) //density equation
@@ -47,16 +47,16 @@ int main(void)
 
 	thrust = START_THRUST; //newtons
 	weight = WEIGHT_I; //newtons
-	for (time = 0; time < 5.4; time += TIME_DELTA) {
-		if (time >= 3) {
-			thrust -= (time < 4 ? 850 : 1250) * TIME_DELTA;
+	for (time = 0; time < 5.3; time += TIME_DELTA) {
+		if (time >= 2.5) {
+			thrust -= (time < 4.9 ? 400 : 18750) * TIME_DELTA;
 		} //thrust equation
 
 		alt += velocity * TIME_DELTA; //meters
 		height = alt - START_ALT; //meters
 		density = density_from_altitude(alt); //kg per cubic meter
 		drag = drag_from_density_and_velocity(density, velocity); //newtons
-		weight -= 1.330185185 * TIME_DELTA; //newtons
+		weight -= FUEL_BURN_RATE * TIME_DELTA; //newtons
 		force = thrust - drag - weight; //newtons
 		mass = weight / G; //kg
 		velocity += force / mass * TIME_DELTA; //meters per second
