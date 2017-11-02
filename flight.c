@@ -9,7 +9,7 @@
 #define AREA_ROCKET .0248286665 //meters squared
 #define AREA_BRAKE .01032256 //meters squared
 #define START_ALT 1219.2 //meters
-#define GOAL_HEIGHT 10000 //meters
+#define GOAL_HEIGHT 7000 //meters
 #define WEIGHT_I 380.75175 //newtons
 #define WEIGHT_F 198.18765 //newtons
 #define START_THRUST 8500 //newtons
@@ -80,8 +80,14 @@ int main(void)
 			printf("airbrakes on\n");
 		}
 		else {
-			force = -drag - weight; //newtons
-			printf("airbrakes off\n");
+			if (height >= GOAL_HEIGHT) {
+				force = -drag - brake - weight; //newtons
+				printf("airbrakes on\n");
+			}
+			else if (height < GOAL_HEIGHT) {
+				force = -drag - weight; //newtons
+				printf("airbrakes off\n");
+			}
 		}
 
 		velocity += force / mass * TIME_DELTA; //meters per second
