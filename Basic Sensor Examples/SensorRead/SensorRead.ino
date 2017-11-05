@@ -1,34 +1,40 @@
 
-<<<<<<< HEAD
-void setup() {
-  
-
-=======
 #include "Adafruit_MCP9808.h"
 #include <Adafruit_MPL115A2.h>
+#include "RTClib.h"
 
 Adafruit_MCP9808 tempsensor = Adafruit_MCP9808();
 Adafruit_MPL115A2 mpl115a2;
+RTC_DS3231 rtc;
+
+char daysOfTheWeek[7][12] = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
 
 void setup() {
   Serial.begin(9600);
-  Serial.println("MCP9808 demo");
->>>>>>> ec1bfdf0f9c1c1d1a89ed126c4b4a5cb512ef4d9
 
   if (!tempsensor.begin()) {
     Serial.println("Couldn't find MCP9808!");
   }
-  Serial.println("Getting barometric pressure ...");
   mpl115a2.begin();
+
+  if (! rtc.begin()) {
+    Serial.println("Couldn't find RTC");
+    while (1);
+  }
+  if (rtc.lostPower()) {
+    Serial.println("RTC lost power, lets set the time!");
+    // following line sets the RTC to the date & time this sketch was compiled
+    rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
+    // This line sets the RTC with an explicit date & time, for example to set
+    // January 21, 2014 at 3am you would call:
+    // rtc.adjust(DateTime(2014, 1, 21, 3, 0, 0));
+  }
 }
 
 void loop() {
-<<<<<<< HEAD
     int ADXL377_X_axis = analogRead(A0);
     int ADXL377_Y_axis = analogRead(A1);
     int ADXL377_Z_axis = analogRead(A3);
-=======
-  // put your main code here, to run repeatedly:
 
   float c = tempsensor.readTempC();
   float f = c * 9.0 / 5.0 + 32;
@@ -40,10 +46,22 @@ void loop() {
   Serial.print("Pressure (kPa): "); Serial.print(pressureKPA, 4); Serial.print(" kPa  ");
   Serial.print("Temp (*C): "); Serial.print(temperatureC, 1); Serial.println(" *C both measured together");
 
-
+  DateTime now = rtc.now();
+   Serial.print(now.year(), DEC);
+    Serial.print('/');
+    Serial.print(now.month(), DEC);
+    Serial.print('/');
+    Serial.print(now.day(), DEC);
+    Serial.print(" (");
+    Serial.print(daysOfTheWeek[now.dayOfTheWeek()]);
+    Serial.print(") ");
+    Serial.print(now.hour(), DEC);
+    Serial.print(':');
+    Serial.print(now.minute(), DEC);
+    Serial.print(':');
+    Serial.print(now.second(), DEC);
+    Serial.println();
 
 
   delay(1000);
-
->>>>>>> ec1bfdf0f9c1c1d1a89ed126c4b4a5cb512ef4d9
 }
