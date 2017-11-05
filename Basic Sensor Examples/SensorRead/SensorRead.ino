@@ -1,4 +1,7 @@
-
+#include <Wire.h>
+#include <Adafruit_Sensor.h>
+#include <Adafruit_BNO055.h>
+#include <utility/imumaths.h>
 #include "Adafruit_MCP9808.h"
 #include <Adafruit_MPL115A2.h>
 #include "RTClib.h"
@@ -9,12 +12,13 @@ RTC_DS3231 rtc;
 
 char daysOfTheWeek[7][12] = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
 
+#define BNO055_SAMPLERATE_DELAY_MS (100)
+
+Adafruit_BNO055 bno = Adafruit_BNO055();
+
 void setup() {
   Serial.begin(9600);
-<<<<<<< HEAD
   Serial.println("MCP9808 demo");
-=======
->>>>>>> 83bcfad38eed920c3afacc34da7e02a49880ad3c
 
   if (!tempsensor.begin()) {
     Serial.println("Couldn't find MCP9808!");
@@ -33,10 +37,18 @@ void setup() {
     // January 21, 2014 at 3am you would call:
     // rtc.adjust(DateTime(2014, 1, 21, 3, 0, 0));
   }
+
+   if(!bno.begin())
+  {
+    /* There was a problem detecting the BNO055 ... check your connections */
+    Serial.print("Ooops, no BNO055 detected ... Check your wiring or I2C ADDR!");
+  }
+  bno.setExtCrystalUse(true);
+  Serial.println("Calibration status values: 0=uncalibrated, 3=fully calibrated");
+  
 }
 
 void loop() {
-<<<<<<< HEAD
    //ADXL377
    int ADXL377_X_axis = analogRead(A0);
    int ADXL377_Y_axis = analogRead(A1);
@@ -47,12 +59,7 @@ void loop() {
    Serial.print("\t Z Axis: "); Serial.println(ADXL377_Z_axis);
 
   //MCP9808
-=======
-    int ADXL377_X_axis = analogRead(A0);
-    int ADXL377_Y_axis = analogRead(A1);
-    int ADXL377_Z_axis = analogRead(A3);
 
->>>>>>> 83bcfad38eed920c3afacc34da7e02a49880ad3c
   float c = tempsensor.readTempC();
   float f = c * 9.0 / 5.0 + 32;
   Serial.print("MCP9808 \t");
@@ -81,6 +88,27 @@ void loop() {
     Serial.print(':');
     Serial.print(now.second(), DEC);
     Serial.println();
+
+    /* Display the floating point data */
+    imu::Vector<3> euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
+  Serial.print("X: ");
+  Serial.print(euler.x());
+  Serial.print(" Y: ");
+  Serial.print(euler.y());
+  Serial.print(" Z: ");
+  Serial.print(euler.z());
+  Serial.print("\t\t");
+  /* Display calibration status for each sensor. */
+  uint8_t system, gyro, accel, mag = 0;
+  bno.getCalibration(&system, &gyro, &accel, &mag);
+  Serial.print("CALIBRATION: Sys=");
+  Serial.print(system, DEC);
+  Serial.print(" Gyro=");
+  Serial.print(gyro, DEC);
+  Serial.print(" Accel=");
+  Serial.print(accel, DEC);
+  Serial.print(" Mag=");
+  Serial.println(mag, DEC);
 
 
   delay(1000);
