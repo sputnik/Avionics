@@ -5,7 +5,10 @@ void setup() {
 
 =======
 #include "Adafruit_MCP9808.h"
+#include <Adafruit_MPL115A2.h>
+
 Adafruit_MCP9808 tempsensor = Adafruit_MCP9808();
+Adafruit_MPL115A2 mpl115a2;
 
 void setup() {
   Serial.begin(9600);
@@ -15,6 +18,8 @@ void setup() {
   if (!tempsensor.begin()) {
     Serial.println("Couldn't find MCP9808!");
   }
+  Serial.println("Getting barometric pressure ...");
+  mpl115a2.begin();
 }
 
 void loop() {
@@ -29,6 +34,14 @@ void loop() {
   float f = c * 9.0 / 5.0 + 32;
   Serial.print("Temp: "); Serial.print(c); Serial.print("*C\t"); 
   Serial.print(f); Serial.println("*F");
+
+  float pressureKPA = 0, temperatureC = 0;  
+  mpl115a2.getPT(&pressureKPA,&temperatureC);
+  Serial.print("Pressure (kPa): "); Serial.print(pressureKPA, 4); Serial.print(" kPa  ");
+  Serial.print("Temp (*C): "); Serial.print(temperatureC, 1); Serial.println(" *C both measured together");
+
+
+
 
   delay(1000);
 
