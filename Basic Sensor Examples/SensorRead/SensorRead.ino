@@ -1,9 +1,12 @@
+
 void setup() {
-  // put your setup code here, to run once:
+  
+
 
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
-
+    int ADXL377_X_axis = analogRead(A0);
+    int ADXL377_Y_axis = analogRead(A1);
+    int ADXL377_Z_axis = analogRead(A3);
 }
