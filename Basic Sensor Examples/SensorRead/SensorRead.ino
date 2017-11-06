@@ -62,7 +62,7 @@ void loop() {
 
   float c = tempsensor.readTempC();
   float f = c * 9.0 / 5.0 + 32;
-  Serial.print("MCP9808 \t");
+  Serial.print("MCP9808: \t");
   Serial.print("Temp: "); Serial.print(c); Serial.print("*C\t"); 
   Serial.print(f); Serial.println("*F");
 
@@ -74,6 +74,7 @@ void loop() {
   Serial.print("Temp (*C): "); Serial.print(temperatureC, 1); Serial.println(" *C");
 
   DateTime now = rtc.now();
+   Serial.print("DS3231: \t");
    Serial.print(now.year(), DEC);
     Serial.print('/');
     Serial.print(now.month(), DEC);
@@ -90,7 +91,8 @@ void loop() {
     Serial.println();
 
     /* Display the floating point data */
-    imu::Vector<3> euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
+    imu::Vector<3> euler = bno.getVector(Adafruit_BNO055::VECTOR_ACCELEROMETER);
+  Serial.print("BNO055: \t");
   Serial.print("X: ");
   Serial.print(euler.x());
   Serial.print(" Y: ");
@@ -110,6 +112,7 @@ void loop() {
   Serial.print(" Mag=");
   Serial.println(mag, DEC);
 
+  Serial.println("====================");
 
   delay(1000);
 }
