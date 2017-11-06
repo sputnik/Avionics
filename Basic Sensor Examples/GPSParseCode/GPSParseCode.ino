@@ -12,6 +12,6 @@ void loop() {
 // function that executes whenever data is requested by master
 // this function is registered as an event, see setup()
 void requestEvent() {
-  Wire.write("hello "); // respond with message of 6 bytes
+  Wire.write("123,456,789"); // respond with message of 6 bytes
   // as expected by master
 }

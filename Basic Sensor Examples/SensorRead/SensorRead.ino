@@ -4,6 +4,7 @@
 #include <utility/imumaths.h>
 #include "Adafruit_MCP9808.h"
 #include <Adafruit_MPL115A2.h>
+#include <Adafruit_GPS.h>
 #include "RTClib.h"
 
 Adafruit_MCP9808 tempsensor = Adafruit_MCP9808();
@@ -15,10 +16,19 @@ char daysOfTheWeek[7][12] = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursd
 #define BNO055_SAMPLERATE_DELAY_MS (100)
 
 Adafruit_BNO055 bno = Adafruit_BNO055();
+Adafruit_GPS GPS(&Serial1);
 
 void setup() {
   Serial.begin(9600);
+  //Serial1.begin(9600);      // default NMEA GPS baud
+  GPS.begin(9600);
   Serial.println("MCP9808 demo");
+
+  GPS.sendCommand(PMTK_SET_NMEA_OUTPUT_RMCONLY);
+  GPS.sendCommand(PMTK_SET_NMEA_UPDATE_1HZ);
+
+  pinMode(8,OUTPUT);
+  digitalWrite(8,HIGH);
 
   if (!tempsensor.begin()) {
     Serial.println("Couldn't find MCP9808!");
@@ -112,6 +122,31 @@ void loop() {
   Serial.print(" Mag=");
   Serial.println(mag, DEC);
 
+  Serial.println("--------");
+  char k = GPS.read();
+  Serial.println(k);
+  if (GPS.newNMEAreceived()) {
+    Serial.print("\nTime: ");
+    Serial.print(GPS.hour, DEC); Serial.print(':');
+    Serial.print(GPS.minute, DEC); Serial.print(':');
+    Serial.print(GPS.seconds, DEC); Serial.print('.');
+    Serial.println(GPS.milliseconds);
+    Serial.print("Date: ");
+    Serial.print(GPS.day, DEC); Serial.print('/');
+    Serial.print(GPS.month, DEC); Serial.print("/20");
+    Serial.println(GPS.year, DEC);
+    if (GPS.fix) {
+      Serial.print("Location: ");
+      Serial.print(GPS.latitude, 4); Serial.print(GPS.lat);
+      Serial.print(", ");
+      Serial.print(GPS.longitude, 4); Serial.println(GPS.lon);
+      Serial.print("Speed (knots): "); Serial.println(GPS.speed);
+      Serial.print("Angle: "); Serial.println(GPS.angle);
+      Serial.print("Altitude: "); Serial.println(GPS.altitude);
+      Serial.print("Satellites: "); Serial.println((int)GPS.satellites);
+    }
+  }
+  Serial.println("");
   Serial.println("====================");
 
   delay(1000);
