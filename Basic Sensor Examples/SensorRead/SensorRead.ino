@@ -101,9 +101,11 @@ void loop() {
     Serial.println();
 
     /* Display the floating point data */
-    imu::Vector<3> euler = bno.getVector(Adafruit_BNO055::VECTOR_ACCELEROMETER);
+    imu::Vector<3> euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
+    imu::Vector<3> acc = bno.getVector(Adafruit_BNO055::VECTOR_ACCELEROMETER);
   Serial.print("BNO055: \t");
-  Serial.print("X: ");
+  Serial.print("Euler angles: ");
+  Serial.print("X: "); 
   Serial.print(euler.x());
   Serial.print(" Y: ");
   Serial.print(euler.y());
@@ -121,6 +123,16 @@ void loop() {
   Serial.print(accel, DEC);
   Serial.print(" Mag=");
   Serial.println(mag, DEC);
+  
+  Serial.print("\t\tAcceleration: ");
+  Serial.print("X: "); 
+  Serial.print(acc.x());
+  Serial.print(" Y: ");
+  Serial.print(acc.y());
+  Serial.print(" Z: ");
+  Serial.print(acc.z());
+  Serial.println("\t\t");
+  
 
   Serial.println("--------");
   char k = GPS.read();
