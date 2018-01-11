@@ -1,0 +1,4 @@
+Go to this link:
+https://github.com/stm32duino/wiki/wiki/Getting-Started
+
+On that page^ DONT FORGET the "Add STM32 boards support to Arduino" step.  It wont work unless you do that first.
