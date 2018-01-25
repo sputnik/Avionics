@@ -1,4 +1,5 @@
 clear, clc
+tic
 G = 9.81;
 SeaDensity = 1.225;
 TimeDelta = .1;
@@ -36,9 +37,10 @@ for i = 700:3048 % height 2349
     x(1,i-699) = i;
 end
 figure
-surf(x,y,Matrix)
+mesh(x,y,Matrix)
 colorbar
 xlabel('brake height');
 ylabel('velocity');
 zlabel('end height');
 title('end height as a function of brake height, and velocity');
+toc
