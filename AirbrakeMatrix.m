@@ -13,6 +13,10 @@ Mass = WeightF / G;
 Matrix=zeros(300,2349);
 x=zeros(1,2349);
 y=zeros(1,300);
+HeightGood=zeros(1,1000);
+VelocityGood=zeros(1,1000);
+HeightVelocityGood=zeros(2,1000);
+c=1;
 for i = 700:3048 % height 2349
     for j = 1:300 % velocity 300
         Velocity = j;
@@ -33,6 +37,13 @@ for i = 700:3048 % height 2349
         end
         Matrix(j,i-699) = Height;
         y(1,j) = j;
+        if (Height>3046) && (Height<3050)
+            HeightGood(1,c) = i;
+            VelocityGood(1,c) = j;
+            HeightVelocityGood(1,c) = i;
+            HeightVelocityGood(2,c) = j;
+            c = c + 1;
+        end
     end
     x(1,i-699) = i;
 end
@@ -43,4 +54,9 @@ xlabel('brake height');
 ylabel('velocity');
 zlabel('end height');
 title('end height as a function of brake height, and velocity');
+figure
+plot(HeightGood,VelocityGood)
+xlabel('Brake Height m');
+ylabel('Brake Velocity m/s');
+title('Height & Velocity Pairs That Get Us Close');
 toc
