@@ -47,6 +47,8 @@ for i = 700:3048 % 2349 values for brake heights
     end
     x(1,i-699) = i; % stores the height at time of airbrake deployment
 end
+HeightGood(950:1162) = []; % Cuts the HeightGood Matrix down to 950 values to give a better linear fit for the data
+VelocityGood(950:1162) = []; % Cuts the VelocityGood Matrix down to 950 values to give a better linear fit for the data
 figure % makes a new figure
 mesh(x,y,Matrix) % plots all of the apogee values
 colorbar 
