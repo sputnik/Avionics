@@ -44,6 +44,11 @@ int main(void)
 	double brake; //newtons
 	double tend; //seconds
 	double fneed; //newtons
+	double y;
+	double x;
+	double t = 0;
+	double a = 0;
+	double b = 0;
 
 	thrust = START_THRUST; //newtons
 	weight = WEIGHT_I; //newtons
@@ -90,12 +95,24 @@ int main(void)
 		density = density_from_altitude(alt); //kg per cubic meter
 		drag = drag_from_density_and_velocity(density, velocity); //newtons
 		brake = brake_from_density_and_velocity(density, velocity); //newtons
-
-		if (drag + weight < fneed) {
-			force = -drag - brake - weight; //newtons
+		x = height;
+		y = (-0.11493 * x) + 395.26;
+		printf("velocity = %f\n", velocity);
+		printf("y = %f\n", y);
+		if (velocity >= y) {
+			a = 1;
+			printf("airbrakes deployed\n");
+		}
+		printf("lelelele\n");
+		if (a == 1) {
+			force = (-1 * drag) - brake - weight; //newtons
+			if (t < 2) {
+				force = force * t / 2;
+				t = t + TIME_DELTA;
+			}
 			printf("airbrakes on\n");
 		}
-		else {
+		else if (a == 0) {
 			force = -drag - weight; //newtons
 			printf("airbrakes off\n");
 		}
