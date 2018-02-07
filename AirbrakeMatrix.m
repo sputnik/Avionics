@@ -13,9 +13,9 @@ Mass = WeightF / G; % mass after burnout
 Matrix = zeros(300,2349); % matrix of appogee heights
 x = zeros(1,2349); % vector of brake heights
 y = zeros(1,300); % vector of brake velocities
-HeightGood = zeros(1,1000); % vector of brake heights that are "good"
-VelocityGood = zeros(1,1000); % vector of brake velocitiess that are "good"
-HeightVelocityGood = zeros(2,1000); % matrix of both brake height and velocities that are "good"
+HeightGood = zeros(1,500); % vector of brake heights that are "good"
+VelocityGood = zeros(1,500); % vector of brake velocitiess that are "good"
+HeightVelocityGood = zeros(2,500); % matrix of both brake height and velocities that are "good"
 c = 1; % its just a counter for later matrices
 for i = 700:3048 % 2349 values for brake heights
     for j = 1:300 % 300 values for brake velocities
@@ -37,7 +37,7 @@ for i = 700:3048 % 2349 values for brake heights
         end
         Matrix(j,i-699) = Height; % stores the apogee value 
         y(1,j) = j; % stores the velocity at time of airbrake deployment
-        if (Height>3046) && (Height<3050) % if the apogee was within goal values
+        if (Height>3047) && (Height<3049) % if the apogee was within goal values
             HeightGood(1,c) = i; % stores the airbrake deployment value 
             VelocityGood(1,c) = j; % stores the airbrake deployment velocity
             HeightVelocityGood(1,c) = i; % stores the airbrake deployment value 
@@ -47,9 +47,8 @@ for i = 700:3048 % 2349 values for brake heights
     end
     x(1,i-699) = i; % stores the height at time of airbrake deployment
 end
-HeightGood(950:1162) = []; % Cuts the HeightGood Matrix down to 950 values to give a better linear fit for the data
-VelocityGood(950:1162) = []; % Cuts the VelocityGood Matrix down to 950 values to give a better linear fit for the data
-figure % makes a new figure
+%HeightGood(950:1162) = []; % Cuts the HeightGood Matrix down to 950 values to give a better linear fit for the data
+%VelocityGood(950:1162) = []; % Cuts the VelocityGood Matrix down to 950 values to give a better linear fit for the data
 mesh(x,y,Matrix) % plots all of the apogee values
 colorbar 
 xlabel('brake height'); % labels the  axis
