@@ -96,7 +96,9 @@ int main(void)
 		drag = drag_from_density_and_velocity(density, velocity); //newtons
 		brake = brake_from_density_and_velocity(density, velocity); //newtons
 		x = height;
-		y = (-0.11493 * x) + 395.26;
+		//y = (-0.11493 * x) + 395.26;
+		//y = (-.12299 * x) + 407.94;
+		y = (-.000000000000000000047632*x*x*x*x*x*x*x) + (.00000000000000062127*x*x*x*x*x*x) - (.0000000000033923*x*x*x*x*x) + (.000000010032*x*x*x*x) - (.000017328*x*x*x) + (.01747*x*x) - (9.6508*x) + (2571.2);
 		printf("velocity = %f\n", velocity);
 		printf("y = %f\n", y);
 		if (velocity >= y) {
