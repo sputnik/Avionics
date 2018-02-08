@@ -2,7 +2,7 @@ clear, clc % clears previous values
 tic % starts time counter
 G = 9.81; % acceleration due to gravity in m/s^2
 SeaDensity = 1.225; % air density at sea level
-TimeDelta = .1; % itteration time for flight path
+TimeDelta = .01; % itteration time for flight path
 CDBrake = 1; % coefficient of drag of the airbrakes
 CDRocket = .4; % coefficient of drag of the rocket
 AreaRocket = .0182414692; % drag area of the rocket
@@ -10,15 +10,15 @@ AreaBrake = .0174; % drag area of the airbrakes
 StartAlt = 1219.2; % launch altitude
 WeightF = 306.927; % weight after burnout
 Mass = WeightF / G; % mass after burnout
-Matrix = zeros(300,2349); % matrix of appogee heights
-x = zeros(1,2349); % vector of brake heights
-y = zeros(1,300); % vector of brake velocities
-HeightGood = zeros(1,500); % vector of brake heights that are "good"
-VelocityGood = zeros(1,500); % vector of brake velocitiess that are "good"
-HeightVelocityGood = zeros(2,500); % matrix of both brake height and velocities that are "good"
+Matrix = zeros(201,1401); % matrix of appogee heights
+x = zeros(1,1401); % vector of brake heights
+y = zeros(1,201); % vector of brake velocities
+HeightGood = zeros(1,251); % vector of brake heights that are "good"
+VelocityGood = zeros(1,251); % vector of brake velocitiess that are "good"
+HeightVelocityGood = zeros(2,251); % matrix of both brake height and velocities that are "good"
 c = 1; % its just a counter for later matrices
-for i = 700:3048 % 2349 values for brake heights
-    for j = 1:300 % 300 values for brake velocities
+for i = 600:2000 % 2349 values for brake heights
+    for j = 100:300 % 300 values for brake velocities
         Velocity = j; % brake velocity 
         Time = 0; % time since brake deployment
         Altitude = StartAlt + i; % altitude from sea level
@@ -35,8 +35,8 @@ for i = 700:3048 % 2349 values for brake heights
             Velocity = Velocity + (Force * TimeDelta / Mass); % calculates velocity due to force
             Time = Time + TimeDelta; % time since airbrake deployment
         end
-        Matrix(j,i-699) = Height; % stores the apogee value 
-        y(1,j) = j; % stores the velocity at time of airbrake deployment
+        Matrix(j-99,i-599) = Height; % stores the apogee value 
+        y(1,j-99) = j; % stores the velocity at time of airbrake deployment
         if (Height>3047) && (Height<3049) % if the apogee was within goal values
             HeightGood(1,c) = i; % stores the airbrake deployment value 
             VelocityGood(1,c) = j; % stores the airbrake deployment velocity
@@ -45,10 +45,10 @@ for i = 700:3048 % 2349 values for brake heights
             c = c + 1; % counter
         end
     end
-    x(1,i-699) = i; % stores the height at time of airbrake deployment
+    x(1,i-599) = i; % stores the height at time of airbrake deployment
 end
-%HeightGood(950:1162) = []; % Cuts the HeightGood Matrix down to 950 values to give a better linear fit for the data
-%VelocityGood(950:1162) = []; % Cuts the VelocityGood Matrix down to 950 values to give a better linear fit for the data
+%HeightGood(250:581) = []; % Cuts the HeightGood Matrix down to 950 values to give a better linear fit for the data
+%VelocityGood(250:581) = []; % Cuts the VelocityGood Matrix down to 950 values to give a better linear fit for the data
 mesh(x,y,Matrix) % plots all of the apogee values
 colorbar 
 xlabel('brake height'); % labels the  axis
