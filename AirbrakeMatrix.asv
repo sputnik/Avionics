@@ -16,14 +16,13 @@ y = zeros(1,300); % vector of brake velocities
 HeightGood = zeros(1,581); % vector of brake heights that are "good"
 VelocityGood = zeros(1,581); % vector of brake velocitiess that are "good"
 HeightVelocityGood = zeros(2,581); % matrix of both brake height and velocities that are "good"
-HeightGood1 = zeros(1,359);
-VelocityGood1 = zeros(1,359);
-HeightVelocityGood1 = zeros(1,359);
-HeightGood2 = zeros(1,200);
-VelocityGood2 = zeros(1,200);
-HeightVelocityGood2 = zeros(1,200);
+HeightGood1 = zeros(1,581);
+VelocityGood1 = zeros(1,581);
+HeightVelocityGood1 = zeros(1,581);
+HeightGood2 = zeros(1,581);
+VelocityGood2 = zeros(1,581);
+HeightVelocityGood2 = zeros(1,581);
 c = 1; % its just a counter for later matrices
-d = 1;
 for i = 600:3048 % 2449 values for brake heights
     for j = 1:300 % 300 values for brake velocities
         Velocity = j; % brake velocity 
@@ -56,13 +55,11 @@ for i = 600:3048 % 2449 values for brake heights
                 HeightVelocityGood1(2,c) = j;
             end
             if (i>2500)
-                HeightGood2(1,d) = i;
-                VelocityGood2(1,d) = j;
-                HeightVelocityGood2(1,d) = i;
-                HeightVelocityGood2(2,d) = j;
-                d = d + 1;
-            end
-            c = c + 1;
+                HeightGood2(1,c) = i;
+                VelocityGood2(1,c) = j;
+                HeightVelocityGood2(1,c) = i;
+                HeightVelocityGood2(2,c) = j;
+            c = c + 1; % counter
         end
     end
     x(1,i-599) = i; % stores the height at time of airbrake deployment
@@ -80,14 +77,4 @@ plot(HeightGood,VelocityGood) % plots the "good" pairs of deployment height and 
 xlabel('Brake Height m'); % labels the x axis
 ylabel('Brake Velocity m/s'); % labels the y axis
 title('Height & Velocity Pairs That Get Us Close'); % titles the graph
-figure % makes a new figure
-plot(HeightGood1,VelocityGood1) % plots the "good" pairs of deployment height and velocity
-xlabel('Brake Height m'); % labels the x axis
-ylabel('Brake Velocity m/s'); % labels the y axis
-title('Height & Velocity Pairs That Get Us Close section 1'); % titles the graph
-figure % makes a new figure
-plot(HeightGood2,VelocityGood2) % plots the "good" pairs of deployment height and velocity
-xlabel('Brake Height m'); % labels the x axis
-ylabel('Brake Velocity m/s'); % labels the y axis
-title('Height & Velocity Pairs That Get Us Close section 2'); % titles the graph
 toc % ends time counter
