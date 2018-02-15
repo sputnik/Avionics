@@ -31,6 +31,9 @@ double brake_from_density_and_velocity(double dense, double vel) //drag equation
 
 int main(void)
 {
+	FILE* logfile;	//create log file
+	logfile = fopen("logfile.txt", "w");	//set that file to writeable named logfile.txt
+	
 	double time; //seconds
 	double alt = START_ALT; //meters
 	double height = 0; //meters
@@ -71,7 +74,7 @@ int main(void)
 		mass = weight / G; //kg
 		velocity += force / mass * TIME_DELTA; //meters per second
 
-		printf("height = %f\nvelocity = %f\nthrust = %f\ntime = %f\n\n", height, velocity, thrust, time);
+		fprintf(logfile, "height = %f\nvelocity = %f\nthrust = %f\ntime = %f\n\n", height, velocity, thrust, time);
 	}
 
 	weight = WEIGHT_F; //newtons
@@ -85,9 +88,9 @@ int main(void)
 		drag = drag_from_density_and_velocity(density, velocity); //newtons
 		brake = brake_from_density_and_velocity(density, velocity); //newtons
 		force = -drag - weight; //newtons
-		printf("airbrakes off\n");
+		fprintf(logfile, "airbrakes off\n");
 		velocity += force / mass * TIME_DELTA; //meters per second
-		printf("height = %f\nvelocity = %f\nbrake = %f\nthrust = %f\ntime = %f\n\n", height, velocity, brake, thrust, time);
+		fprintf(logfile, "height = %f\nvelocity = %f\nbrake = %f\nthrust = %f\ntime = %f\n\n", height, velocity, brake, thrust, time);
 	}
 	for (; velocity > 0; time += TIME_DELTA) {
 		tend = (GOAL_HEIGHT - height) * 2  / velocity; //seconds
@@ -113,8 +116,8 @@ int main(void)
 		//y = (-.00000000000000000005112*x*x*x*x*x*x*x) + (.00000000000000067005*x*x*x*x*x*x) - (.0000000000036784*x*x*x*x*x) + (.000000010943*x*x*x*x) - (.000019025*x*x*x) + (.019321*x*x) - (10.737*x) + (2839);
 		//y = (-.000000000000029742*x*x*x*x*x) + (.00000000027068*x*x*x*x) - (.00000096078*x*x*x) + (.0016631*x*x) - (1.5184*x) + 856.86;
 		//y = ((-.00000000000000000005112*x*x*x*x*x*x*x) + (.00000000000000067005*x*x*x*x*x*x) - (.0000000000036784*x*x*x*x*x) + (.000000010943*x*x*x*x) - (.000019025*x*x*x) + (.019321*x*x) - (10.737*x) + (2839) + (-.000000000000029742*x*x*x*x*x) + (.00000000027068*x*x*x*x) - (.00000096078*x*x*x) + (.0016631*x*x) - (1.5184*x) + 856.86) / 2;
-		printf("velocity = %f\n", velocity);
-		printf("y = %f\n", y);
+		fprintf(logfile, "velocity = %f\n", velocity);
+		fprintf(logfile, "y = %f\n", y);
 		if (velocity >= y) {
 			a = 1;
 			//printf("airbrakes opening\n");
@@ -126,33 +129,34 @@ int main(void)
 		if (a == 1) {
 			if (t >= 2) {
 				force = -drag - brake - weight; //newtons
-				printf("airbrakes open\n");
+				fprintf(logfile, "airbrakes open\n");
 			}
 			else if (t < 2) {
 				force = -drag - brake - weight; //newtons
 				force = force * t / 2;
 				percentopen = t * 50;
-				printf("airbrakes opening\nairbrakes %f percent open\n", percentopen);
+				fprintf(logfile, "airbrakes opening\nairbrakes %f percent open\n", percentopen);
 				t = t + TIME_DELTA;
 			}
 		}
 		else if (a == 0) {
 			if (t <= 0) {
 				force = -drag - weight;
-				printf("airbrakes closed\n");
+				fprintf(logfile, "airbrakes closed\n");
 			}
 			else if (t >0) {
 				force = -drag - brake - weight; //newtons
 				force = force * t / 2;
 				percentopen = t * 50;
-				printf("airbrakes closing\nairbrakes %f percent open\n", percentopen);
+				fprintf(logfile, "airbrakes closing\nairbrakes %f percent open\n", percentopen);
 				t = t - TIME_DELTA;
 			}
 		}
 
 		velocity += force / mass * TIME_DELTA; //meters per second
 
-		printf("height = %f\nvelocity = %f\nbrake = %f\ntime = %f\n\n", height, velocity, brake, time);
+		fprintf(logfile, "height = %f\nvelocity = %f\nbrake = %f\ntime = %f\n\n", height, velocity, brake, time);
 	}
+	fclose(logfile);
 	return 0;
 }
