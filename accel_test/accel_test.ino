@@ -36,7 +36,9 @@ void setup() {
   else {
     Serial.println("RTC Connected!");
   }
-
+  float height = 0;
+  float velocity = 0;
+  float yAccel = 0;
   //Serial.println("Not stuck");
 //  if (rtc.lostPower()) {
 //    Serial.println("RTC lost power, lets set the time!");
@@ -86,6 +88,9 @@ void loop() {
     float xAccel = xScaled / 1000.0;
     float yAccel = yScaled / 1000.0;
     float zAccel = zScaled / 1000.0;
+
+    height = height + (velocity * time_delta) + (.5 * yAccel * 9.81 * time_delta * time_delta);
+    velocity = velocity + (yAccel * 9.81 * time_delta);
 
     Serial.print(" :: ");
     Serial.print(xAccel);
