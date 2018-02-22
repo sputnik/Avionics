@@ -100,6 +100,10 @@ void loop() {
     Serial.print("G, ");
     Serial.print(zAccel);
     Serial.println("G");
+    Serial.print("Height:, ");
+    Serial.print(height);
+    Serial.print("Velocity:, ");
+    Serial.println(velocity);
 
 ////RTC
 //  DateTime now = rtc.now();
