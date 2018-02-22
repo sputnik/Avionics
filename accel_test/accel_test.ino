@@ -6,7 +6,7 @@
 
 RTC_DS3231 rtc;
 
-#define time_delta
+float time_delta = 0.01;
 
 char daysOfTheWeek[7][12] = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
 
@@ -14,7 +14,9 @@ char daysOfTheWeek[7][12] = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursd
 
 #define BNO055_SAMPLERATE_DELAY_MS (100)
 
-
+  float height = 0;
+  float velocity = 0;
+  float yAccel = 0;
 
 Adafruit_BNO055 bno = Adafruit_BNO055();
 
@@ -36,9 +38,8 @@ void setup() {
   else {
     Serial.println("RTC Connected!");
   }
-  float height = 0;
-  float velocity = 0;
-  float yAccel = 0;
+  
+
   //Serial.println("Not stuck");
 //  if (rtc.lostPower()) {
 //    Serial.println("RTC lost power, lets set the time!");
