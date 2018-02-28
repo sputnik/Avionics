@@ -1,11 +1,11 @@
 #include <Wire.h>
 #include <Adafruit_Sensor.h>
-#include <Adafruit_BNO055.h>
+#include <Adafruit_BNO055.h>      //AMU 9-Axis orientation sensor & accelerometer
 #include <utility/imumaths.h>
-#include "Adafruit_MCP9808.h"
-#include <Adafruit_MPL115A2.h>
-#include <Adafruit_GPS.h>
-#include "RTClib.h"
+#include "Adafruit_MCP9808.h"     // High Accuracy I2C Temperature Breakout Board
+#include <Adafruit_MPL115A2.h>    // I2C Barometric Pressure/Temperature Sensor Board
+#include <Adafruit_GPS.h>         // GPS...Duh
+#include "RTClib.h"               // Real-Time Clock
 
 Adafruit_MCP9808 tempsensor = Adafruit_MCP9808();
 Adafruit_MPL115A2 mpl115a2;
@@ -19,8 +19,7 @@ Adafruit_BNO055 bno = Adafruit_BNO055();
 Adafruit_GPS GPS(&Serial1);
 
 void setup() {
-  Serial.begin(9600);
-  //Serial1.begin(9600);      // default NMEA GPS baud
+  Serial.begin(9600);    // default NMEA GPS baud
   GPS.begin(9600);
   Serial.println("MCP9808 demo");
 
