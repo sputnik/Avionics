@@ -78,6 +78,67 @@ void loop() {
     print_ADXL_data();
     print_BNO_data();
 
+  }
+  else {
+    Serial.println("Setup never ran, trying to run again");
+    delay(1000);
+    setup();
+  }
+  delay(time_delta * 1000);
+}
+
+void print_BNO_data() {
+  imu::Vector<3> euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
+  imu::Vector<3> acc = bno.getVector(Adafruit_BNO055::VECTOR_ACCELEROMETER);
+  imu::Vector<3> linear = bno.getVector(Adafruit_BNO055::VECTOR_LINEARACCEL);
+  Serial.print("BNO055: \t");
+  Serial.print("Euler angles: ");
+  Serial.print("X: ");
+  Serial.print(euler.x());
+  Serial.print(" Y: ");
+  Serial.print(euler.y());
+  Serial.print(" Z: ");
+  Serial.print(euler.z());
+  Serial.print("\t\t");
+  /* Display calibration status for each sensor. */
+  uint8_t system, gyro, accel, mag = 0;
+  bno.getCalibration(&system, &gyro, &accel, &mag);
+  Serial.print("CALIBRATION: Sys=");
+  Serial.print(system, DEC);
+  Serial.print(" Gyro=");
+  Serial.print(gyro, DEC);
+  Serial.print(" Accel=");
+  Serial.print(accel, DEC);
+  Serial.print(" Mag=");
+  Serial.println(mag, DEC);
+
+  Serial.print("\t\tAcceleration: ");
+  Serial.print("X: ");
+  Serial.print(acc.x());
+  Serial.print(" Y: ");
+  Serial.print(acc.y());
+  Serial.print(" Z: ");
+  Serial.print(acc.z());
+  Serial.println("\t\t");
+
+  Serial.print("\t\tLinear Acceleration: ");
+  Serial.print("X: ");
+  Serial.print(linear.x());
+  Serial.print(" Y: ");
+  Serial.print(linear.y());
+  Serial.print(" Z: ");
+  Serial.print(linear.z());
+  Serial.println("\t\t");
+  lheight = lheight + (lvelocity * time_delta) + (.5 * linear.z() * 9.81 * time_delta * time_delta);
+  lvelocity = lvelocity + (linear.z() * 9.81 * time_delta);
+  Serial.print("LHeight:, ");
+  Serial.print(lheight);
+  Serial.print("LVelocity:, ");
+  Serial.println(lvelocity);
+  Serial.println("--------");
+
+
+  Serial.println("====================");
 }
 
 void print_ADXL_data() {
