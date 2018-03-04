@@ -161,8 +161,10 @@ void print_ADXL_data() {
   float yAccel = yScaled / 1000.0;
   float zAccel = zScaled / 1000.0;
 
-  height = height + (velocity * time_delta) + (.5 * yAccel * 9.81 * time_delta * time_delta);
-  velocity = velocity + (yAccel * 9.81 * time_delta);
+  // onvert linear value and euler angles to purely vertical accel
+  // float vertical_accel = xAccel * sin( invcos( (sqrt( (xAccel * cos( euler.x ))^2 + (xAccel * cos( euler.y ))^2)/ xAccel)));
+  height = height + (velocity * time_delta) + (.5 * vertical_accel * 9.81 * time_delta * time_delta);
+  velocity = velocity + (vertical _accel * 9.81 * time_delta);
 
   Serial.print(" :: ");
   Serial.print(xAccel);
