@@ -4,17 +4,18 @@
 #define G 9.81 //meters per second squared
 #define SEA_DENSITY 1.225 //kg per cubic meter
 #define TIME_DELTA 0.1 //seconds
-#define CD_BRAKE 1
-#define CD_DRAG 0.4
+#define CD_BRAKE 1.28
+#define CD_DRAG 0.42
 #define AREA_ROCKET .0182414692 //meters squared
-#define AREA_BRAKE .0174 //meters squared
+#define AREA_BRAKE .00692 //meters squared
 #define START_ALT 1219.2 //meters
 #define GOAL_HEIGHT 3048 //meters
-#define WEIGHT_I 373.651 //newtons
-#define WEIGHT_F 306.927 //newtons
+#define WEIGHT_I 422.581 //newtons
+#define WEIGHT_F 354.256 //newtons
 #define START_THRUST 2500 //newtons
 #define FUEL_BURN_RATE 15.44504651 //newtons per second
-
+// new time to acctuate is 3 secs
+// N2850
 
 double density_from_altitude(double altitude) //density equation
 {
@@ -80,8 +81,6 @@ int main(void)
 	weight = WEIGHT_F; //newtons
 	mass = weight / G; //kg
 	for (; time < 7.3; time += TIME_DELTA) {
-		tend = (GOAL_HEIGHT - height) * 2 / velocity; //seconds
-		fneed = velocity * mass / tend; //newtons
 		alt += velocity * TIME_DELTA; //meters
 		height = alt - START_ALT; //meters
 		density = density_from_altitude(alt); //kg per cubic meter
@@ -93,8 +92,6 @@ int main(void)
 		fprintf(logfile, "height = %f\nvelocity = %f\nbrake = %f\nthrust = %f\ntime = %f\n\n", height, velocity, brake, thrust, time);
 	}
 	for (; velocity > 0; time += TIME_DELTA) {
-		tend = (GOAL_HEIGHT - height) * 2  / velocity; //seconds
-		fneed = velocity * mass / tend; //newtons
 		alt += velocity * TIME_DELTA; //meters
 		height = alt - START_ALT; //meters
 		density = density_from_altitude(alt); //kg per cubic meter

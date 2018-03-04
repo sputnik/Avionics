@@ -3,12 +3,12 @@ tic % starts time counter
 G = 9.81; % acceleration due to gravity in m/s^2
 SeaDensity = 1.225; % air density at sea level
 TimeDelta = .01; % itteration time for flight path
-CDBrake = 1; % coefficient of drag of the airbrakes
-CDRocket = .4; % coefficient of drag of the rocket
+CDBrake = 1.28; % coefficient of drag of the airbrakes
+CDRocket = .42; % coefficient of drag of the rocket
 AreaRocket = .0182414692; % drag area of the rocket
-AreaBrake = .0174; % drag area of the airbrakes
+AreaBrake = .00692; % drag area of the airbrakes
 StartAlt = 1219.2; % launch altitude
-WeightF = 306.927; % weight after burnout
+WeightF = 354.256; % weight after burnout
 Mass = WeightF / G; % mass after burnout
 Matrix = zeros(300,2449); % matrix of appogee heights
 x = zeros(1,2449); % vector of brake heights
@@ -35,8 +35,11 @@ for i = 600:3048 % 2449 values for brake heights
             Density = SeaDensity * (1 + (-.0065 * Altitude / 287))^(4.25363734); % calculates density at altitude
             Drag = .5 * Density * Velocity * Velocity * CDRocket * AreaRocket; % calculates rocket drag
             Brake = .5 * Density * Velocity * Velocity * CDBrake * AreaBrake; % calculates air brake drag
-            if Time < 2 % if the airbrakes are still opening
-                Brake = (Brake / 2) * Time; % the drag force of the airbrakes is a fraction of its full force
+            if Time < 3 % if the airbrakes are still opening
+                Brake = (Brake / 3) * Time; % the drag force of the airbrakes is a fraction of its full force
+            end
+            if (Brake > 67)
+                fprintf('you done fucked up');
             end
             Force = -Drag - Brake - WeightF; % calculates force from the components
             Velocity = Velocity + (Force * TimeDelta / Mass); % calculates velocity due to force
