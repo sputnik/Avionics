@@ -2,13 +2,35 @@
 #include <Adafruit_Sensor.h>
 #include <Adafruit_BNO055.h>      //AMU 9-Axis orientation sensor & accelerometer
 #include <utility/imumaths.h>
+#include <Adafruit_MPL115A2.h>
 
+Adafruit_MPL115A2 mpl115a2;
 
 float time_delta = .50;
 
 
 void print_BNO_data();
 void print_adxl_data();
+float calc_altitude(float pressure, float temp)
+{
+  float Po = 1013.25; //Sea Level Pressure (hPa)
+  float alt = 0.0;
+
+  pressure = pressure / 10.0; //Convert to hPa
+
+  alt = (1 - (pow((pressure / Po), (1 / 5.257)))) * 44330;
+
+  Serial.print("\n\nPressure Data: ");
+  Serial.print("P0: ");
+  Serial.print(Po);
+  Serial.print(" MPL115A2: ");
+  Serial.print(pressure);
+  Serial.print(" Altitude: ");
+  Serial.print(alt);
+  Serial.print("\t\t\n");
+  return alt;
+}
+
 #define BNO055_SAMPLERATE_DELAY_MS (time_delta * 1000)
 
 float height = 0;
@@ -56,6 +78,9 @@ void setup() {
 
   //ADXL377
   Serial.println("ADXL Connected!");
+
+  Serial.println("Getting barometric pressure ...");
+  mpl115a2.begin();
 }
 
 
@@ -65,18 +90,135 @@ void loop() {
 
     /* Display the floating point data */
     /*pseudo code
-     * if(vertical_accel < 2G && > -2G) {
-     *  then find altitude from accelerometer
-     *  --this entails using euler angles to find
-     *  }
-     *  else {
-     *  do nothing
-     *  }
-     *  
-     * 
-     */
-    print_ADXL_data();
-    print_BNO_data();
+       if(vertical_accel < 2G && > -2G) {
+        then find altitude from accelerometer
+        --this entails using euler angles to find
+        }
+        else {
+        do nothing
+        }
+    */
+
+    //get all values from accelerometer
+    imu::Vector<3> euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
+    imu::Vector<3> acc = bno.getVector(Adafruit_BNO055::VECTOR_ACCELEROMETER);
+    imu::Vector<3> linear = bno.getVector(Adafruit_BNO055::VECTOR_LINEARACCEL);
+    imu::Vector<3> gravity = bno.getVector(Adafruit_BNO055::VECTOR_GRAVITY);
+    int ADXL377_X_axis = analogRead(A0);
+    int ADXL377_Y_axis = analogRead(A1);
+    int ADXL377_Z_axis = analogRead(A2);
+
+    // Convert raw values to 'milli-Gs"
+    long xScaled = map(ADXL377_X_axis, 512, 517, -1000, 1000);
+    long yScaled = map(ADXL377_Y_axis, 512, 517, -1000, 1000);
+    long zScaled = map(ADXL377_Z_axis, 511, 517, -1000, 1000);
+
+    // re-scale to fractional Gs
+    float xAccel = xScaled / 1000.0;
+    float yAccel = yScaled / 1000.0;
+    float zAccel = zScaled / 1000.0;
+
+    Serial.print("BNO055: \t");
+    Serial.print("Euler angles: ");
+    Serial.print("X: ");
+    Serial.print(euler.x());
+    Serial.print(" Y: ");
+    Serial.print(euler.y());
+    Serial.print(" Z: ");
+    Serial.print(euler.z());
+    Serial.print("\t\t");
+    /* Display calibration status for each sensor. */
+    uint8_t system, gyro, accel, mag = 0;
+    bno.getCalibration(&system, &gyro, &accel, &mag);
+    Serial.print("CALIBRATION: Sys=");
+    Serial.print(system, DEC);
+    Serial.print(" Gyro=");
+    Serial.print(gyro, DEC);
+    Serial.print(" Accel=");
+    Serial.print(accel, DEC);
+    Serial.print(" Mag=");
+    Serial.println(mag, DEC);
+
+    Serial.print("\t\tAcceleration: ");
+    Serial.print("X: ");
+    Serial.print(acc.x());
+    Serial.print(" Y: ");
+    Serial.print(acc.y());
+    Serial.print(" Z: ");
+    Serial.print(acc.z());
+    Serial.println("\t\t");
+
+    //  lheight = lheight + (lvelocity * time_delta) + (.5 * linear.z() * 9.81 * time_delta * time_delta);
+    //  lvelocity = lvelocity + (linear.z() * 9.81 * time_delta);
+    //  Serial.print("LHeight:, ");
+    //  Serial.print(lheight);
+    //  Serial.print("LVelocity:, ");
+    //  Serial.println(lvelocity);
+    //  Serial.println("--------");
+
+    Serial.print("\t\tGravity: ");
+    Serial.print("X: ");
+    Serial.print(gravity.x());
+    Serial.print(" Y: ");
+    Serial.print(gravity.y());
+    Serial.print(" Z: ");
+    Serial.print(gravity.z());
+    Serial.println("\t\t");
+
+    Serial.print("\t\tHARDWARE Linear Acceleration: ");
+    Serial.print("X: ");
+    Serial.print(linear.x());
+    Serial.print(" Y: ");
+    Serial.print(linear.y());
+    Serial.print(" Z: ");
+    Serial.print(linear.z());
+    Serial.println("\t\t");
+
+    Serial.print("\t\tESTIMATED Linear Acceleration: ");
+    Serial.print("X: ");
+    Serial.print(acc.x() - gravity.x());
+    Serial.print(" Y: ");
+    Serial.print(acc.y() - gravity.y());
+    Serial.print(" Z: ");
+    Serial.print(acc.z() - gravity.z());
+    Serial.println("\t\t");
+
+    Serial.print("\t\tComparing BNO to ADXL: ");
+    Serial.print("X: ");
+    Serial.print(acc.x() / 9.81);
+    Serial.print(" Y: ");
+    Serial.print(acc.y() / 9.81);
+    Serial.print(" Z: ");
+    Serial.print(acc.z() / 9.81);
+    Serial.print("\t\tADXL");
+    Serial.print("X: ");
+    Serial.print(xAccel);
+    Serial.print(" Y: ");
+    Serial.print(yAccel);
+    Serial.print(" Z: ");
+    Serial.print(zAccel);
+    Serial.println("\t\t");
+
+
+    Serial.println("====================");
+
+
+    float pressureKPA = 0, temperatureC = 0, altitude = 0.0;
+
+    mpl115a2.getPT(&pressureKPA, &temperatureC);
+    Serial.print("Pressure (kPa): "); Serial.print(pressureKPA, 4); Serial.print(" kPa  ");
+    Serial.print("Temp (*C): "); Serial.print(temperatureC, 1); Serial.println(" *C both measured together");
+
+    pressureKPA = mpl115a2.getPressure();
+    Serial.print("Pressure (kPa): "); Serial.print(pressureKPA, 4); Serial.println(" kPa");
+
+    temperatureC = mpl115a2.getTemperature();
+    Serial.print("Temp (*C): "); Serial.print(temperatureC, 1); Serial.println(" *C");
+
+    altitude = calc_altitude(pressureKPA, temperatureC);
+    Serial.print("Altitude:"); Serial.print(altitude, 1); Serial.println(" meters");
+    // print_ADXL_data();
+    //print_BNO_data();
 
   }
   else {
@@ -88,57 +230,7 @@ void loop() {
 }
 
 void print_BNO_data() {
-  imu::Vector<3> euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
-  imu::Vector<3> acc = bno.getVector(Adafruit_BNO055::VECTOR_ACCELEROMETER);
-  imu::Vector<3> linear = bno.getVector(Adafruit_BNO055::VECTOR_LINEARACCEL);
-  Serial.print("BNO055: \t");
-  Serial.print("Euler angles: ");
-  Serial.print("X: ");
-  Serial.print(euler.x());
-  Serial.print(" Y: ");
-  Serial.print(euler.y());
-  Serial.print(" Z: ");
-  Serial.print(euler.z());
-  Serial.print("\t\t");
-  /* Display calibration status for each sensor. */
-  uint8_t system, gyro, accel, mag = 0;
-  bno.getCalibration(&system, &gyro, &accel, &mag);
-  Serial.print("CALIBRATION: Sys=");
-  Serial.print(system, DEC);
-  Serial.print(" Gyro=");
-  Serial.print(gyro, DEC);
-  Serial.print(" Accel=");
-  Serial.print(accel, DEC);
-  Serial.print(" Mag=");
-  Serial.println(mag, DEC);
 
-  Serial.print("\t\tAcceleration: ");
-  Serial.print("X: ");
-  Serial.print(acc.x());
-  Serial.print(" Y: ");
-  Serial.print(acc.y());
-  Serial.print(" Z: ");
-  Serial.print(acc.z());
-  Serial.println("\t\t");
-
-  Serial.print("\t\tLinear Acceleration: ");
-  Serial.print("X: ");
-  Serial.print(linear.x());
-  Serial.print(" Y: ");
-  Serial.print(linear.y());
-  Serial.print(" Z: ");
-  Serial.print(linear.z());
-  Serial.println("\t\t");
-  lheight = lheight + (lvelocity * time_delta) + (.5 * linear.z() * 9.81 * time_delta * time_delta);
-  lvelocity = lvelocity + (linear.z() * 9.81 * time_delta);
-  Serial.print("LHeight:, ");
-  Serial.print(lheight);
-  Serial.print("LVelocity:, ");
-  Serial.println(lvelocity);
-  Serial.println("--------");
-
-
-  Serial.println("====================");
 }
 
 void print_ADXL_data() {
@@ -163,8 +255,8 @@ void print_ADXL_data() {
 
   // onvert linear value and euler angles to purely vertical accel
   // float vertical_accel = xAccel * sin( invcos( (sqrt( (xAccel * cos( euler.x ))^2 + (xAccel * cos( euler.y ))^2)/ xAccel)));
-  height = height + (velocity * time_delta) + (.5 * vertical_accel * 9.81 * time_delta * time_delta);
-  velocity = velocity + (vertical _accel * 9.81 * time_delta);
+  //  height = height + (velocity * time_delta) + (.5 * vertical_accel * 9.81 * time_delta * time_delta);
+  //velocity = velocity + (vertical _accel * 9.81 * time_delta);
 
   Serial.print(" :: ");
   Serial.print(xAccel);
@@ -177,5 +269,6 @@ void print_ADXL_data() {
   Serial.print(height);
   Serial.print("Velocity:, ");
   Serial.println(velocity);
+  Serial.println("\n");
 }
 
