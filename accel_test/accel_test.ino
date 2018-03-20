@@ -149,7 +149,7 @@ void loop() {
     Serial.print(acc.z());
     Serial.println("\t\t");
 
-    verticalAccel = ((linear.x * gravity.x) + (linear.y * gravity.y) + (linear.z * gravity.z)) / (9.81);
+    verticalAccel = ((linear.x() * gravity.x()) + (linear.y() * gravity.y()) + (linear.z() * gravity.z())) / (-9.81);
     lheight = lheight + (lvelocity * time_delta) + (.5 * verticalAccel * time_delta * time_delta);
     lvelocity = lvelocity + (verticalAccel * time_delta);
     Serial.print("LHeight:, ");
