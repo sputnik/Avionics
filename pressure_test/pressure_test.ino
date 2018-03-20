@@ -48,21 +48,22 @@ void setup() {
 void loop() {
   if (setuprun == true) {
     unsigned short i = 0, iterations = 20;
-    float pressureKPA = 0, temperatureC = 0, altitude[iterations + 2], avg_alt = 0.0;
-    unsigned long currentMillis = millis();
+    float pressureKPA = 0, temperatureC = 0, sum_pressureKPA = 0, sum_temperatureC = 0, avg_pressureKPA = 0, avg_temperatureC = 0, altitude = 0.0;
 
     for (i = 0; i < iterations; i++) {
        mpl115a2.getPT(&pressureKPA, &temperatureC);
-       altitude[i] = calc_altitude(pressureKPA, temperatureC);
-       altitude[iterations + 1] += altitude[i];
-       
+       sum_pressureKPA += pressureKPA;
+       sum_temperatureC += temperatureC;
     }
+
+    avg_pressureKPA = sum_pressureKPA / iterations;
+    avg_temperatureC = sum_temperatureC / iterations;
     
-    avg_alt = altitude[iterations + 1] / iterations;
+    altitude = calc_altitude(avg_pressureKPA, avg_temperatureC);
 
     Serial.print("Pressure (kPa): "); Serial.print(pressureKPA, 4); Serial.print(" kPa  ");
     Serial.println("Temp (*C): "); Serial.print(temperatureC, 1); Serial.println(" *C both measured together");    
-    Serial.print("Altitude:"); Serial.print(avg_alt, 1); Serial.println(" meters");
+    Serial.print("Altitude:"); Serial.print(altitude, 1); Serial.println(" meters");
 
   }
   else {
