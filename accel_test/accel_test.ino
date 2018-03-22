@@ -151,20 +151,24 @@ void loop() {
     verticalAccel = ((linear.x() * gravity.x()) + (linear.y() * gravity.y()) + (linear.z() * gravity.z())) / (-9.81);
     if (verticalAccel >= .5) {
       launchvalue = true ;
-      Serial.print("INSIDEIFSTATEMENT:, ");
+      Serial.print("WE HAVE LAUNCHED:, ");
       Serial.println(verticalAccel);
     }
     if (verticalAccel <= -.5) {
       launchvalue = true ;
-      Serial.print("INSIDEIFSTATEMENT:, ");
+      Serial.print("WE HAVE LAUNCHED:, ");
       Serial.println(verticalAccel);
     }
-    if (launchvalue = false); {
+    if (launchvalue == false) {
       verticalAccel = 0;
+    }
+    else {
+      Serial.print("THIS NUMBER SHOULD NOT BE ZERO. EVER");
+      Serial.println(verticalAccel);
     }
     lheight = lheight + (lvelocity * time_delta) + (.5 * verticalAccel * time_delta * time_delta);
     lvelocity = lvelocity + (verticalAccel * time_delta);
-    
+
     Serial.print("LHeight:, ");
     Serial.print(lheight);
     Serial.print("LVelocity:, ");
