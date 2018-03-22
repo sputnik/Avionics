@@ -39,6 +39,7 @@ float yAccel = 0;
 float lheight = 0;
 float lvelocity = 0;
 float verticalAccel = 0;
+bool launchvalue = false;
 
 Adafruit_BNO055 bno = Adafruit_BNO055();
 
@@ -150,6 +151,14 @@ void loop() {
     Serial.println("\t\t");
 
     verticalAccel = ((linear.x() * gravity.x()) + (linear.y() * gravity.y()) + (linear.z() * gravity.z())) / (-9.81);
+    if ((verticalAccel <= 1) && (verticalAccel >= -1 )); {
+      launchvalue = true ;
+      Serial.print("INSIDEIFSTATEMENT:, ");
+      Serial.println(verticalAccel);
+    }
+    if (launchvalue = false); {
+      verticalAccel = 0;
+    }
     lheight = lheight + (lvelocity * time_delta) + (.5 * verticalAccel * time_delta * time_delta);
     lvelocity = lvelocity + (verticalAccel * time_delta);
     Serial.print("LHeight:, ");
