@@ -148,7 +148,7 @@ void loop() {
     Serial.print(acc.z());
     Serial.println("\t\t");
 
-    verticalAccel = ((linear.x() * gravity.x()) + (linear.y() * gravity.y()) + (linear.z() * gravity.z())) / (-9.81);
+    verticalAccel = ((linear.x() * gravity.x()) + (linear.y() * gravity.y()) + (linear.z() * gravity.z())) / (9.81);
     if (verticalAccel >= .5) {
       launchvalue = true ;
       Serial.print("WE HAVE LAUNCHED:, ");
