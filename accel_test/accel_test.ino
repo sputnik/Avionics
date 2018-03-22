@@ -56,8 +56,6 @@ void setup() {
   Serial.println("It's working!");
   setuprun = true;
 
-
-
   Serial.println("Still working, Not stuck");
 
   if (!bno.begin())
@@ -151,7 +149,12 @@ void loop() {
     Serial.println("\t\t");
 
     verticalAccel = ((linear.x() * gravity.x()) + (linear.y() * gravity.y()) + (linear.z() * gravity.z())) / (-9.81);
-    if ((verticalAccel <= 1) && (verticalAccel >= -1 )); {
+    if (verticalAccel >= .5) {
+      launchvalue = true ;
+      Serial.print("INSIDEIFSTATEMENT:, ");
+      Serial.println(verticalAccel);
+    }
+    if (verticalAccel <= -.5) {
       launchvalue = true ;
       Serial.print("INSIDEIFSTATEMENT:, ");
       Serial.println(verticalAccel);
@@ -161,6 +164,7 @@ void loop() {
     }
     lheight = lheight + (lvelocity * time_delta) + (.5 * verticalAccel * time_delta * time_delta);
     lvelocity = lvelocity + (verticalAccel * time_delta);
+    
     Serial.print("LHeight:, ");
     Serial.print(lheight);
     Serial.print("LVelocity:, ");

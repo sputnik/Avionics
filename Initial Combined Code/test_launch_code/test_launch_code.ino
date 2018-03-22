@@ -7,6 +7,18 @@
 Adafruit_MPL115A2 mpl115a2;
 
 float time_delta = .50;
+float height = 0;
+float velocity = 0;
+float yAccel = 0;
+float lheight = 0;
+float lvelocity = 0;
+float verticalAccel = 0;
+
+bool launchvalue = false;
+
+#define BNO055_SAMPLERATE_DELAY_MS (time_delta * 1000)
+
+Adafruit_BNO055 bno = Adafruit_BNO055();
 
 float calc_altitude(float pressure, float temp) 
 {
@@ -26,6 +38,24 @@ void setup(void)
   Serial.println("Hello!");
   
   float acceleration[3];
+  mpl115a2.begin();
+  
+  if (!bno.begin())
+  {
+    /* There was a problem detecting the BNO055 ... check your connections */
+    Serial.print("Ooops, no BNO055 detected ... Check your wiring or I2C ADDR!");
+  }
+  else {
+    Serial.println("BNO Connected!");
+    if (bno.isFullyCalibrated()) {
+      Serial.println("BNO Fully Calibrated!");
+    }
+    else {
+      Serial.println("BNO NOT Calibrated");
+    }
+  }
+
+  bno.setExtCrystalUse(true);
   mpl115a2.begin();
 }
 
