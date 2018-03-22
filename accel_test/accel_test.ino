@@ -6,7 +6,7 @@
 
 Adafruit_MPL115A2 mpl115a2;
 
-float time_delta = .50;
+float time_delta = .1;
 
 
 void print_BNO_data();
