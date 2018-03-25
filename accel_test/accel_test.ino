@@ -40,6 +40,9 @@ float lheight = 0;
 float lvelocity = 0;
 float verticalAccel = 0;
 bool launchvalue = false;
+float verticalAccelADXL = 0;
+float lheightADXL = 0;
+float lvelocityADXL = 0;
 
 Adafruit_BNO055 bno = Adafruit_BNO055();
 
@@ -151,13 +154,14 @@ void loop() {
     verticalAccel = ((linear.x() * gravity.x()) + (linear.y() * gravity.y()) + (linear.z() * gravity.z())) / (9.81);
     if (verticalAccel >= .5) {
       launchvalue = true ;
-      Serial.print("WE HAVE LAUNCHED:, ");
       Serial.println(verticalAccel);
     }
     if (verticalAccel <= -.5) {
       launchvalue = true ;
-      Serial.print("WE HAVE LAUNCHED:, ");
       Serial.println(verticalAccel);
+    }
+    if (launchvalue == true) {
+      Serial.print("WE HAVE LAUNCHED:, ");
     }
     if (launchvalue == false) {
       verticalAccel = 0;
@@ -168,13 +172,21 @@ void loop() {
     }
     lheight = lheight + (lvelocity * time_delta) + (.5 * verticalAccel * time_delta * time_delta);
     lvelocity = lvelocity + (verticalAccel * time_delta);
-
+    verticalAccelADXL = verticalAccel * 9.81 * sqrt((xAccel * xAccel) + (yAccel * yAccel) + (zAccel * zAccel)) / sqrt((acc.x() * acc.x()) + (acc.y() * acc.y()) + (acc.z() * acc.z()));
+    lheightADXL = lheightADXL + (lvelocityADXL * time_delta) + (.5 * verticalAccelADXL * time_delta * time_delta);
+    lvelocityADXL = lvelocityADXL + (verticalAccelADXL * time_delta);
     Serial.print("LHeight:, ");
-    Serial.print(lheight);
+    Serial.println(lheight);
     Serial.print("LVelocity:, ");
     Serial.println(lvelocity);
     Serial.print("VerticalAccel:, ");
     Serial.println(verticalAccel);
+    Serial.print("LHeight from ADXL:, ");
+    Serial.println(lheightADXL);
+    Serial.print("LVelocity from ADXL:, ");
+    Serial.println(lvelocityADXL);
+    Serial.print("VerticalAccel from ADXL:, ");
+    Serial.println(verticalAccelADXL);
     Serial.println("--------");
 
     Serial.print("\t\tGravity: ");
