@@ -1,7 +1,7 @@
 const int xInput = A0;
 const int yInput = A1;
 const int zInput = A2;
-const int buttonPin = 2;
+const int buttonPin = 10;
 
 // Raw Ranges:
 // initialize to mid-range and allow calibration to
@@ -20,7 +20,7 @@ const int sampleSize = 10;
 
 void setup() 
 {
-  analogReference(EXTERNAL);
+//  analogReference(EXTERNAL);
   Serial.begin(9600);
 }
 

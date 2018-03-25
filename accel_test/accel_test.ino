@@ -39,10 +39,11 @@ float yAccel = 0;
 float lheight = 0;
 float lvelocity = 0;
 float verticalAccel = 0;
-bool launchvalue = false;
 float verticalAccelADXL = 0;
 float lheightADXL = 0;
 float lvelocityADXL = 0;
+bool launchvalue = false;
+
 
 Adafruit_BNO055 bno = Adafruit_BNO055();
 
@@ -112,9 +113,9 @@ void loop() {
     int ADXL377_Z_axis = analogRead(A2);
 
     // Convert raw values to 'milli-Gs"
-    long xScaled = map(ADXL377_X_axis, 512, 517, -1000, 1000);
-    long yScaled = map(ADXL377_Y_axis, 512, 517, -1000, 1000);
-    long zScaled = map(ADXL377_Z_axis, 511, 517, -1000, 1000);
+    long xScaled = map(ADXL377_X_axis, 512, 537, -1000, 1000);
+    long yScaled = map(ADXL377_Y_axis, 512, 539, -1000, 1000);
+    long zScaled = map(ADXL377_Z_axis, 512, 537, -1000, 1000);
 
     // re-scale to fractional Gs
     float xAccel = xScaled / 1000.0;
@@ -172,9 +173,14 @@ void loop() {
     }
     lheight = lheight + (lvelocity * time_delta) + (.5 * verticalAccel * time_delta * time_delta);
     lvelocity = lvelocity + (verticalAccel * time_delta);
-    verticalAccelADXL = verticalAccel * 9.81 * sqrt((xAccel * xAccel) + (yAccel * yAccel) + (zAccel * zAccel)) / sqrt((acc.x() * acc.x()) + (acc.y() * acc.y()) + (acc.z() * acc.z()));
-    lheightADXL = lheightADXL + (lvelocityADXL * time_delta) + (.5 * verticalAccelADXL * time_delta * time_delta);
-    lvelocityADXL = lvelocityADXL + (verticalAccelADXL * time_delta);
+    float part1 = (acc.x() * acc.x()) + (acc.y() * acc.y()) + (acc.z() * acc.z());
+    float part2 = (xAccel * xAccel) + (yAccel * yAccel) + (zAccel * zAccel);
+    if (launchvalue == true) {
+      verticalAccelADXL = verticalAccel * 9.81 * sqrt((xAccel * xAccel) + (yAccel * yAccel) + (zAccel * zAccel)) / sqrt((acc.x() * acc.x()) + (acc.y() * acc.y()) + (acc.z() * acc.z()));
+   // verticalAccelADXL = verticalAccel * 9.81 * sqrt((xAccel * xAccel) + (yAccel * yAccel) + (zAccel * zAccel)) / sqrt((acc.x() * acc.x()) + (acc.y() * acc.y()) + (acc.z() * acc.z()));
+      lheightADXL = lheightADXL + (lvelocityADXL * time_delta) + (.5 * verticalAccelADXL * time_delta * time_delta);
+      lvelocityADXL = lvelocityADXL + (verticalAccelADXL * time_delta);
+    }
     Serial.print("LHeight:, ");
     Serial.println(lheight);
     Serial.print("LVelocity:, ");
@@ -187,6 +193,10 @@ void loop() {
     Serial.println(lvelocityADXL);
     Serial.print("VerticalAccel from ADXL:, ");
     Serial.println(verticalAccelADXL);
+    Serial.print("part1:, ");
+    Serial.println(part1);
+    Serial.print("part2:, ");
+    Serial.println(part2);
     Serial.println("--------");
 
     Serial.print("\t\tGravity: ");
