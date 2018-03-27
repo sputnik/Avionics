@@ -43,6 +43,12 @@ float verticalAccelADXL = 0;
 float lheightADXL = 0;
 float lvelocityADXL = 0;
 bool launchvalue = false;
+float time1;
+float time2;
+float timedelta;
+float waittime;
+float time3;
+float looptime;
 
 
 Adafruit_BNO055 bno = Adafruit_BNO055();
@@ -91,7 +97,7 @@ void setup() {
 
 void loop() {
   if (setuprun == true) {
-
+    time1 = micros();
     /* Display the floating point data */
     /*pseudo code
        if(vertical_accel < 2G && > -2G) {
@@ -269,7 +275,18 @@ void loop() {
     delay(1000);
     setup();
   }
-  delay(time_delta * 1000);
+  time2 = micros();
+  timedelta = (time2 - time1) / 1000000;
+  waittime = time_delta - timedelta;
+  delay(waittime * 1000);
+  time3 = micros();
+  looptime = (time3 - time1)/1000000;
+  Serial.print(" timedelta: ");
+  Serial.println(timedelta);
+  Serial.print(" timedelta assumed: ");
+  Serial.println(time_delta);
+  Serial.print(" loop time: ");
+  Serial.println(looptime);
 }
 
 void print_BNO_data() {
