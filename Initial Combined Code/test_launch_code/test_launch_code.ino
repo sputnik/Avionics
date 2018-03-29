@@ -32,6 +32,7 @@ Adafruit_MPL115A2 mpl115a2;
   #define BNO055_SAMPLERATE_DELAY_MS (time_delta * 1000)
   #define GPSSerial Serial1
   #define GPSECHO true
+  #define SDCS_pin  5
 
 Adafruit_BNO055 bno = Adafruit_BNO055();
 Adafruit_GPS GPS(&GPSSerial);
@@ -42,7 +43,6 @@ float calc_altitude(void);
 
 void setup(void) 
 {
-  
   Serial.begin(9600);
   Serial.print("Initializing systems...");
   
@@ -50,9 +50,9 @@ void setup(void)
   // Note that even if it's not used as the CS pin, the hardware SS pin 
   // (10 on most Arduino boards, 53 on the Mega) must be left as an output 
   // or the SD library functions will not work. 
-   pinMode(10, OUTPUT);
+   pinMode(SDCS_pin, OUTPUT);
  
-  if (!SD.begin(10)) {
+  if (!SD.begin(SDCS_pin)) {
     Serial.println("SD card initialization failed! Check connections and/or insert a valid microSD card");
     return;
   }
@@ -120,6 +120,7 @@ void loop() {
 void write_to_SD(char SD_info[]) {
   
   Serial.print("Writing data to SD...");
+  Serial.println(SD_info);
   rocket_data = SD.open("rocket_data.txt",FILE_WRITE);
   rocket_data.println(SD_info);
   rocket_data.close();
