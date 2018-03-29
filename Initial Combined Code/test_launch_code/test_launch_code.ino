@@ -7,13 +7,12 @@
 #include <SD.h>
 #include "RTClib.h"
  
-File myFile;
+File rocket_data;
 
 RTC_DS3231 rtc;
 Adafruit_MPL115A2 mpl115a2;
 
   float time_delta = .50;
-  float height = 0;
   float velocity = 0;
   float yAccel = 0;
   float lheight = 0;
@@ -22,6 +21,8 @@ Adafruit_MPL115A2 mpl115a2;
   float ADXL_accel[3];
   float BNO_accel[3];
   float pressure = 0;
+  float altitude = 0;
+  short num = 0;
   
   char SD_data[400];
   char daysOfTheWeek[7][12] = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
@@ -36,8 +37,8 @@ Adafruit_BNO055 bno = Adafruit_BNO055();
 Adafruit_GPS GPS(&GPSSerial);
 
 void get_ADXL_data(float accel_vals[]);
-float get_BNO_change_height();
-float calc_altitude(float pressure, float temp);
+void get_BNO_change_height(void);
+float calc_altitude(void);
 
 void setup(void) 
 {
@@ -101,13 +102,18 @@ void setup(void)
 
 void loop() {
   get_ADXL_data(ADXL_accel);
+  get_BNO_change_height();
+  altitude = calc_altitude();
+  DateTime now = rtc.now();
 
-  sprintf(SD_data, "The height is: %lf\n
-                    The velocity is: %lf\n
-                    The acceleration is: %lf\n
-                    The pressure is: %lf\n
-                    The time is: %d:%d:%d\n
-                    The date is: %d/%d/%d\n", height, velocity, verticalAccel, );
+  sprintf(SD_data, "The height is: %lf\nThe velocity is: %lf\nThe acceleration is: %lf\nThe pressure is: %lf\nThe time is: %d:%d:%d\nThe date is: %d/%d/%d\n\n\n", lheight, lvelocity, verticalAccel, pressure, now.hour(), now.minute(), now.second(), now.month(), now.day(), now.year());
+  write_to_SD(SD_data);
+
+  num = num + 1;
+
+  Serial.print("Printing Data, time:");
+  Serial.println(num);
+  delay(3000);
 
 }
 
@@ -121,7 +127,7 @@ void write_to_SD(char SD_info[]) {
   
 }
 
-float get_BNO_change_height() {
+void get_BNO_change_height() {
 
     imu::Vector<3> euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
     imu::Vector<3> acc = bno.getVector(Adafruit_BNO055::VECTOR_ACCELEROMETER);
@@ -143,7 +149,7 @@ float get_BNO_change_height() {
 
 }
 
-void get_ADXL_data(accel_vals[]) {
+void get_ADXL_data(float accel_vals[]) {
   int ADXL377_X_axis = analogRead(A0);
   int ADXL377_Y_axis = analogRead(A1);
   int ADXL377_Z_axis = analogRead(A2);
@@ -169,14 +175,27 @@ void get_ADXL_data(accel_vals[]) {
 
 }
 
-float calc_altitude(float pressure, float temp) 
+float calc_altitude() 
 {
+
+    unsigned short i = 0, iterations = 20;
+    float pressureKPA = 0, temperatureC = 0, sum_pressureKPA = 0, sum_temperatureC = 0, avg_pressureKPA = 0, avg_temperatureC = 0, altitude = 0.0;
+
+    for (i = 0; i < iterations; i++) {
+       mpl115a2.getPT(&pressureKPA, &temperatureC);
+       sum_pressureKPA += pressureKPA;
+       sum_temperatureC += temperatureC;
+    }
+
+    avg_pressureKPA = sum_pressureKPA / iterations;
+    avg_temperatureC = sum_temperatureC / iterations;
+    
   float Po = 1013.25; //Sea Level Pressure (hPa)
   float alt = 0.0;
 
-  pressure = pressure / 10.0; //Convert to hPa
+  pressure = avg_pressureKPA / 10.0; //Convert to hPa
 
-  alt = ((pow(Po/pressure,1/5.257)-1)*(temp+273.15))/(0.0065);
+  alt = ((pow(Po/pressure,1/5.257)-1)*(avg_temperatureC+273.15))/(0.0065);
 
   return alt;
 }
