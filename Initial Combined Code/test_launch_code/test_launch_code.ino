@@ -23,6 +23,9 @@ Adafruit_MPL115A2 mpl115a2;
   float pressure = 0;
   float altitude = 0;
   short num = 0;
+  float t = 0;
+  float percentopen = 0;
+  float a = 0;
   
   char SD_data[400];
   char daysOfTheWeek[7][12] = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
@@ -146,7 +149,40 @@ void get_BNO_change_height() {
     }
     lheight = lheight + (lvelocity * time_delta) + (.5 * verticalAccel * time_delta * time_delta);
     lvelocity = lvelocity + (verticalAccel * time_delta);
-
+    if (lvelocity >= y) {
+      a = 1;
+      //printf("airbrakes opening\n");
+    }
+    else if (lvelocity < y) {
+      a = 0;
+      //printf("airbrakes closing");
+    }
+    if (a == 1) {
+      if (t >= 2) {
+        //force = -drag - brake - weight; //newtons
+        //fprintf(logfile, "airbrakes open\n");
+      }
+      else if (t < 2) {
+        //force = -drag - brake - weight; //newtons
+        //force = force * t / 2;
+        percentopen = t * 50;
+        //fprintf(logfile, "airbrakes opening\nairbrakes %f percent open\n", percentopen);
+        t = t + TIME_DELTA;
+      }
+    }
+    else if (a == 0) {
+      if (t <= 0) {
+        //force = -drag - weight;
+        //fprintf(logfile, "airbrakes closed\n");
+      }
+      else if (t >0) {
+        //force = -drag - brake - weight; //newtons
+        //force = force * t / 2;
+        percentopen = t * 50;
+        //(logfile, "airbrakes closing\nairbrakes %f percent open\n", percentopen);
+        t = t - TIME_DELTA;
+      }
+    }
 }
 
 void get_ADXL_data(float accel_vals[]) {
