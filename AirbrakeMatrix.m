@@ -13,15 +13,15 @@ Mass = WeightF / G; % mass after burnout
 Matrix = zeros(300,2449); % matrix of appogee heights
 x = zeros(1,2449); % vector of brake heights
 y = zeros(1,300); % vector of brake velocities
-HeightGood = zeros(1,581); % vector of brake heights that are "good"
-VelocityGood = zeros(1,581); % vector of brake velocitiess that are "good"
-HeightVelocityGood = zeros(2,581); % matrix of both brake height and velocities that are "good"
-HeightGood1 = zeros(1,359);
-VelocityGood1 = zeros(1,359);
-HeightVelocityGood1 = zeros(1,359);
+HeightGood = zeros(1,547); % vector of brake heights that are "good"
+VelocityGood = zeros(1,547); % vector of brake velocitiess that are "good"
+HeightVelocityGood = zeros(2,547); % matrix of both brake height and velocities that are "good"
+HeightGood1 = zeros(1,333);
+VelocityGood1 = zeros(1,333);
+HeightVelocityGood1 = zeros(2,333);
 HeightGood2 = zeros(1,200);
 VelocityGood2 = zeros(1,200);
-HeightVelocityGood2 = zeros(1,200);
+HeightVelocityGood2 = zeros(2,200);
 c = 1; % its just a counter for later matrices
 d = 1;
 for i = 600:3048 % 2449 values for brake heights
@@ -37,9 +37,6 @@ for i = 600:3048 % 2449 values for brake heights
             Brake = .5 * Density * Velocity * Velocity * CDBrake * AreaBrake; % calculates air brake drag
             if Time < 3 % if the airbrakes are still opening
                 Brake = (Brake / 3) * Time; % the drag force of the airbrakes is a fraction of its full force
-            end
-            if (Brake > 67)
-                fprintf('you done fucked up');
             end
             Force = -Drag - Brake - WeightF; % calculates force from the components
             Velocity = Velocity + (Force * TimeDelta / Mass); % calculates velocity due to force
