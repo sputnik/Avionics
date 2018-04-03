@@ -1,3 +1,7 @@
+//#include <NewSoftSerial.h>
+
+//#include <SoftwareSerial.h>
+
 #include <TinyGPS++.h>
 //#include <SoftwareSerial.h>
 /*
@@ -5,7 +9,7 @@
    It requires the use of SoftwareSerial, and assumes that you have a
    4800-baud serial GPS device hooked up on pins 4(rx) and 3(tx).
 */
-static const int RXPin = 11, TXPin = 10;
+//static const int RXPin = 11, TXPin = 10;
 static const uint32_t GPSBaud = 9600;
 
 // The TinyGPS++ object
@@ -34,13 +38,15 @@ void loop()
 {
   // This sketch displays information every time a new sentence is correctly encoded.
   while (Serial.available() > 0)
-  if (gps.encode(Serial.read()))
-    displayInfo();
+    if (gps.encode(Serial.read()))
+      displayInfo();
 
   if (millis() > 5000 && gps.charsProcessed() < 1)
   {
     Serial.println(F("No GPS detected: check wiring."));
-    while (true);
+
+    while (true)
+      Serial.println(Serial.read());
   }
 }
 
