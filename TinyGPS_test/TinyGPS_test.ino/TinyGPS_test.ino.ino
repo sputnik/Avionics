@@ -27,15 +27,20 @@ TinyGPSPlus gps;
 
 void setup()
 {
-  Serial.begin(115200);
+  delay(1000);
+  Serial.begin(9600);
   //SerialMonitor.begin(9600);
   //gpsPort.begin(GPS_BAUD);
+  delay(1000);
   Serial.println(F("BasicExample.ino"));
   Serial.println(F("Basic demonstration of TinyGPS++ (no device needed)"));
   Serial.print(F("Testing TinyGPS++ library v. ")); Serial.println(TinyGPSPlus::libraryVersion());
   Serial.println(F("by Mikal Hart"));
   Serial.println();
 
+  for(int i = 0; i < 100; i++) {
+    Serial.println("THE CODE IS WORKING");
+  }
   while (*gpsStream)
     if (gps.encode(*gpsStream++))
       displayInfo();
