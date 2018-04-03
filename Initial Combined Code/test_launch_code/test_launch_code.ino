@@ -6,36 +6,37 @@
 #include <Adafruit_GPS.h>
 #include <SD.h>
 #include "RTClib.h"
- 
+
 File rocket_data;
 
 RTC_DS3231 rtc;
 Adafruit_MPL115A2 mpl115a2;
 
-  float time_delta = .50;
-  float velocity = 0;
-  float yAccel = 0;
-  float lheight = 0;
-  float lvelocity = 0;
-  float verticalAccel = 0;
-  float ADXL_accel[3];
-  float BNO_accel[3];
-  float pressure = 0;
-  float altitude = 0;
-  short num = 0;
-  float t = 0;
-  float percentopen = 0;
-  float a = 0;
-  
-  char SD_data[400];
-  char daysOfTheWeek[7][12] = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
-  
-  bool launchvalue = false;
+float time_delta = .50;
+float velocity = 0;
+float yAccel = 0;
+float lheight = 0;
+float lvelocity = 0;
+float verticalAccel = 0;
+float ADXL_accel[3];
+float BNO_accel[3];
+float pressure = 0;
+float altitude = 0;
+short num = 0;
+float t = 0;
+float percentopen = 0;
+float a = 0;
 
-  #define BNO055_SAMPLERATE_DELAY_MS (time_delta * 1000)
-  #define GPSSerial Serial1
-  #define GPSECHO true
-  #define SDCS_pin  5
+char SD_data[400];
+char daysOfTheWeek[7][12] = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
+
+bool launchvalue = false;
+bool setuptrue = false;
+
+#define BNO055_SAMPLERATE_DELAY_MS (time_delta * 1000)
+#define GPSSerial Serial1
+#define GPSECHO true
+#define SDCS_pin  5
 
 Adafruit_BNO055 bno = Adafruit_BNO055();
 Adafruit_GPS GPS(&GPSSerial);
@@ -44,24 +45,24 @@ void get_ADXL_data(float accel_vals[]);
 void get_BNO_change_height(void);
 float calc_altitude(void);
 
-void setup(void) 
+void setup(void)
 {
   Serial.begin(9600);
   Serial.print("Initializing systems...");
-  
+
   // On the Ethernet Shield, CS is pin 4. It's set as an output by default.
-  // Note that even if it's not used as the CS pin, the hardware SS pin 
-  // (10 on most Arduino boards, 53 on the Mega) must be left as an output 
-  // or the SD library functions will not work. 
-   pinMode(SDCS_pin, OUTPUT);
- 
+  // Note that even if it's not used as the CS pin, the hardware SS pin
+  // (10 on most Arduino boards, 53 on the Mega) must be left as an output
+  // or the SD library functions will not work.
+  pinMode(SDCS_pin, OUTPUT);
+
   if (!SD.begin(SDCS_pin)) {
     Serial.println("SD card initialization failed! Check connections and/or insert a valid microSD card");
     return;
   }
-  
+
   Serial.println("SD Card initialization successful.");
-    
+
   mpl115a2.begin();
 
   if (!bno.begin())
@@ -98,92 +99,98 @@ void setup(void)
     // January 21, 2014 at 3am you would call:
     // rtc.adjust(DateTime(2014, 1, 21, 3, 0, 0));
   }
-  
+  setuptrue = true;
 }
 
 
 
 void loop() {
-  get_ADXL_data(ADXL_accel);
-  get_BNO_change_height();
-  altitude = calc_altitude();
-  DateTime now = rtc.now();
+  if (setuptrue == true) {
+    get_ADXL_data(ADXL_accel);
+    get_BNO_change_height();
+    altitude = calc_altitude();
+    DateTime now = rtc.now();
 
-  sprintf(SD_data, "The height is: %lf\nThe velocity is: %lf\nThe acceleration is: %lf\nThe pressure is: %lf\nThe time is: %d:%d:%d\nThe date is: %d/%d/%d\n\n\n", lheight, lvelocity, verticalAccel, pressure, now.hour(), now.minute(), now.second(), now.month(), now.day(), now.year());
-  write_to_SD(SD_data);
+    sprintf(SD_data, "The height is: %lf\nThe velocity is: %lf\nThe acceleration is: %lf\nThe pressure is: %lf\nThe time is: %d:%d:%d\nThe date is: %d/%d/%d\n\n\n", lheight, lvelocity, verticalAccel, pressure, now.hour(), now.minute(), now.second(), now.month(), now.day(), now.year());
+    write_to_SD(SD_data);
 
-  num = num + 1;
+    num = num + 1;
 
-  Serial.print("Printing Data, time:");
-  Serial.println(num);
-  delay(3000);
-
+    Serial.print("Printing Data, time:");
+    Serial.println(num);
+    delay(3000);
+  }
+  else {
+    Serial.println("Setup didn't run, trying again");
+    delay(500);
+    setup();
+  }
 }
 
 void write_to_SD(char SD_info[]) {
-  
+
   Serial.print("Writing data to SD...");
   Serial.println(SD_info);
-  rocket_data = SD.open("rocket_data.txt",FILE_WRITE);
+  rocket_data = SD.open("rocket_data.txt", FILE_WRITE);
   rocket_data.println(SD_info);
   rocket_data.close();
   Serial.println("DONE!");
-  
+
 }
 
 void get_BNO_change_height() {
 
-    imu::Vector<3> euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
-    imu::Vector<3> acc = bno.getVector(Adafruit_BNO055::VECTOR_ACCELEROMETER);
-    imu::Vector<3> linear = bno.getVector(Adafruit_BNO055::VECTOR_LINEARACCEL);
-    imu::Vector<3> gravity = bno.getVector(Adafruit_BNO055::VECTOR_GRAVITY);
- 
-    verticalAccel = ((linear.x() * gravity.x()) + (linear.y() * gravity.y()) + (linear.z() * gravity.z())) / (-9.81);
-    if (verticalAccel >= .5) {
-      launchvalue = true ;
+  imu::Vector<3> euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
+  imu::Vector<3> acc = bno.getVector(Adafruit_BNO055::VECTOR_ACCELEROMETER);
+  imu::Vector<3> linear = bno.getVector(Adafruit_BNO055::VECTOR_LINEARACCEL);
+  imu::Vector<3> gravity = bno.getVector(Adafruit_BNO055::VECTOR_GRAVITY);
+
+  verticalAccel = ((linear.x() * gravity.x()) + (linear.y() * gravity.y()) + (linear.z() * gravity.z())) / (-9.81);
+  if (verticalAccel >= .5) {
+    launchvalue = true ;
+  }
+  if (verticalAccel <= -.5) {
+    launchvalue = true ;
+  }
+  if (launchvalue = false); {
+    verticalAccel = 0;
+  }
+  lheight = lheight + (lvelocity * time_delta) + (.5 * verticalAccel * time_delta * time_delta);
+  lvelocity = lvelocity + (verticalAccel * time_delta);
+  if (lvelocity >= y) {
+    a = 1;
+    //printf("airbrakes opening\n");
+  }
+  else if (lvelocity < y) {
+    a = 0;
+    //printf("airbrakes closing");
+  }
+  if (a == 1) {
+    if (t >= 2) {
+      //force = -drag - brake - weight; //newtons
+      //fprintf(logfile, "airbrakes open\n");
     }
-    if (verticalAccel <= -.5) {
-      launchvalue = true ;
+    else if (t < 2) {
+      //force = -drag - brake - weight; //newtons
+      //force = force * t / 2;
+      percentopen = t * 50;
+      //fprintf(logfile, "airbrakes opening\nairbrakes %f percent open\n", percentopen);
+      t = t + TIME_DELTA;
     }
-    if (launchvalue = false); {
-      verticalAccel = 0;
+  }
+  else if (a == 0) {
+    if (t <= 0) {
+      //force = -drag - weight;
+      //fprintf(logfile, "airbrakes closed\n");
     }
-    lheight = lheight + (lvelocity * time_delta) + (.5 * verticalAccel * time_delta * time_delta);
-    lvelocity = lvelocity + (verticalAccel * time_delta);
-    if (lvelocity >= y) {
-      a = 1;
-      //printf("airbrakes opening\n");
+    else if (t > 0) {
+      //force = -drag - brake - weight; //newtons
+      //force = force * t / 2;
+      percentopen = t * 50;
+      //(logfile, "airbrakes closing\nairbrakes %f percent open\n", percentopen);
+      t = t - TIME_DELTA;
     }
-    else if (lvelocity < y) {
-      a = 0;
-      //printf("airbrakes closing");
-    }
-    if (a == 1) {
-      if (t >= 2) {
-        //force = -drag - brake - weight; //newtons
-        //fprintf(logfile, "airbrakes open\n");
-      }
-      else if (t < 2) {
-        //force = -drag - brake - weight; //newtons
-        //force = force * t / 2;
-        percentopen = t * 50;
-        //fprintf(logfile, "airbrakes opening\nairbrakes %f percent open\n", percentopen);
-        t = t + TIME_DELTA;
-      }
-    }
-    else if (a == 0) {
-      if (t <= 0) {
-        //force = -drag - weight;
-        //fprintf(logfile, "airbrakes closed\n");
-      }
-      else if (t >0) {
-        //force = -drag - brake - weight; //newtons
-        //force = force * t / 2;
-        percentopen = t * 50;
-        //(logfile, "airbrakes closing\nairbrakes %f percent open\n", percentopen);
-        t = t - TIME_DELTA;
-      }
-    }
+  }
 }
 
 void get_ADXL_data(float accel_vals[]) {
@@ -212,27 +219,27 @@ void get_ADXL_data(float accel_vals[]) {
 
 }
 
-float calc_altitude() 
+float calc_altitude()
 {
 
-    unsigned short i = 0, iterations = 20;
-    float pressureKPA = 0, temperatureC = 0, sum_pressureKPA = 0, sum_temperatureC = 0, avg_pressureKPA = 0, avg_temperatureC = 0, altitude = 0.0;
+  unsigned short i = 0, iterations = 20;
+  float pressureKPA = 0, temperatureC = 0, sum_pressureKPA = 0, sum_temperatureC = 0, avg_pressureKPA = 0, avg_temperatureC = 0, altitude = 0.0;
 
-    for (i = 0; i < iterations; i++) {
-       mpl115a2.getPT(&pressureKPA, &temperatureC);
-       sum_pressureKPA += pressureKPA;
-       sum_temperatureC += temperatureC;
-    }
+  for (i = 0; i < iterations; i++) {
+    mpl115a2.getPT(&pressureKPA, &temperatureC);
+    sum_pressureKPA += pressureKPA;
+    sum_temperatureC += temperatureC;
+  }
 
-    avg_pressureKPA = sum_pressureKPA / iterations;
-    avg_temperatureC = sum_temperatureC / iterations;
-    
+  avg_pressureKPA = sum_pressureKPA / iterations;
+  avg_temperatureC = sum_temperatureC / iterations;
+
   float Po = 1013.25; //Sea Level Pressure (hPa)
   float alt = 0.0;
 
   pressure = avg_pressureKPA / 10.0; //Convert to hPa
 
-  alt = ((pow(Po/pressure,1/5.257)-1)*(avg_temperatureC+273.15))/(0.0065);
+  alt = ((pow(Po / pressure, 1 / 5.257) - 1) * (avg_temperatureC + 273.15)) / (0.0065);
 
   return alt;
 }
