@@ -1,7 +1,3 @@
-//#include <NewSoftSerial.h>
-
-//#include <SoftwareSerial.h>
-
 #include <TinyGPS++.h>
 //#include <SoftwareSerial.h>
 /*
@@ -18,37 +14,57 @@ TinyGPSPlus gps;
 // The serial connection to the GPS device
 //SoftwareSerial ss(RXPin, TXPin);
 
+
 void setup()
 {
+  pinMode(13, OUTPUT);
+  digitalWrite(13, LOW);
   delay(1000);
   Serial.begin(9600);
   delay(1000);
   //ss.begin(GPSBaud);
-  for (int i = 0; i < 10; i++) {
-    Serial.println("THE CODE IS WORKING");
+  for (int i = 0; i < 5; i++) {
+    //Serial.println("THE CODE IS WORKING");
   }
-  Serial.println(F("DeviceExample.ino"));
-  Serial.println(F("A simple demonstration of TinyGPS++ with an attached GPS module"));
-  Serial.print(F("Testing TinyGPS++ library v. ")); Serial.println(TinyGPSPlus::libraryVersion());
-  Serial.println(F("by Mikal Hart"));
-  Serial.println();
+  //  Serial.println(F("DeviceExample.ino"));
+  //  Serial.println(F("A simple demonstration of TinyGPS++ with an attached GPS module"));
+  //  Serial.print(F("Testing TinyGPS++ library v. ")); Serial.println(TinyGPSPlus::libraryVersion());
+  //  Serial.println(F("by Mikal Hart"));
+  //  Serial.println();
+
 }
 
 void loop()
 {
   // This sketch displays information every time a new sentence is correctly encoded.
-  while (Serial.available() > 0)
-    if (gps.encode(Serial.read()))
+  while (Serial.available() > 0) {
+    Serial.println("Serial.Available");
+    if (gps.encode(Serial.read())) {
       displayInfo();
+      digitalWrite(13, HIGH);
+      delay(100);
+      digitalWrite(13, LOW);
+      delay(100);
+    }
 
-  if (millis() > 5000 && gps.charsProcessed() < 1)
-  {
-    Serial.println(F("No GPS detected: check wiring."));
-
-    while (true)
-      Serial.println(Serial.read());
+    if (millis() > 5000 && gps.charsProcessed() < 1)
+    {
+      Serial.println(F("No GPS detected: check wiring."));
+      digitalWrite(13, HIGH);
+      delay(500);
+      digitalWrite(13, LOW);
+      delay(500);
+    }
+  }
+  if (Serial.available() < 1) {
+    Serial.println("Serial.notAvailable");
+    digitalWrite(13, HIGH);
+    delay(2000);
+    digitalWrite(13, LOW);
+    delay(2000);
   }
 }
+
 
 void displayInfo()
 {
