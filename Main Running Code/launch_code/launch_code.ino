@@ -51,7 +51,26 @@ void loop() {
     //all code goes inside here
     //----------------------------------------------------------------------------------------------------------------------------------------note: Probably want different stages in either the loop or functions to signify the difference between sitting on launch pad, heading to 10k ft, and our descent.
     //get_ADXL_data(acceleration);
-
+    //while (we are on the pad) {
+      //calculate vertical acceleration and set it to zero if it is negligible
+      //send gps coordinates and radio pings so the rocket can be located in case of total software failure
+    //}
+    while (we are thrusting) {
+      calculate vertical acceleration, and calculate height and velocity from vertical acceleration
+      calculate height from the barometer
+      calculate averaged height and averaged velocity from the barometer and accererometer values, and use these values for the next iteration of calculations
+      send gps coordinates and radio pings so the rocket can be located in case of total software failure
+    }
+    while (we are ascending) {
+      calculate vertical acceleration, and calculate height and velocity from vertical acceleration
+      calculate height from the barometer
+      calculate averaged height and averaged velocity from the barometer and accererometer values, and use these values for the next iteration of calculations
+      send gps coordinates and radio pings so the rocket can be located in case of total software failure
+      compare current height and velocity to pre generated height/velocity curve to determine if the rocket should be braking
+      make sure to save the vaules for how far open the airbrakes are at any given time, along with the height, velocity, and acceleration values
+      check the weird bolts to make sure that the airbrakes are not broken
+      CONSIDER ADDING SOMETHING TO MAKE SURE THE AIRBRAKES OPEN AT LEAST ONCE IN ORDER TO GATHER DATA IN CASE OF REALLY LOW FLIGHT
+    }
   }
   else {
     Serial.println("Setup did not run correctly. Running again.");
