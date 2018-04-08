@@ -13,9 +13,9 @@ Mass = WeightF / G; % mass after burnout
 Matrix = zeros(300,2449); % matrix of appogee heights
 x = zeros(1,2449); % vector of brake heights
 y = zeros(1,300); % vector of brake velocities
-HeightGood = zeros(1,547); % vector of brake heights that are "good"
-VelocityGood = zeros(1,547); % vector of brake velocitiess that are "good"
-HeightVelocityGood = zeros(2,547); % matrix of both brake height and velocities that are "good"
+HeightGood = zeros(1,523); % vector of brake heights that are "good"
+VelocityGood = zeros(1,523); % vector of brake velocitiess that are "good"
+HeightVelocityGood = zeros(2,523); % matrix of both brake height and velocities that are "good"
 HeightGood1 = zeros(1,333);
 VelocityGood1 = zeros(1,333);
 HeightVelocityGood1 = zeros(2,333);
@@ -38,7 +38,7 @@ for i = 600:3048 % 2449 values for brake heights
             if Time < 3 % if the airbrakes are still opening
                 Brake = (Brake / 3) * Time; % the drag force of the airbrakes is a fraction of its full force
             end
-            Force = -Drag - Brake - WeightF; % calculates force from the components
+            Force = -Drag - (.66 * Brake) - WeightF; % calculates force from the components
             Velocity = Velocity + (Force * TimeDelta / Mass); % calculates velocity due to force
             Time = Time + TimeDelta; % time since airbrake deployment
         end
