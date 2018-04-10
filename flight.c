@@ -3,7 +3,7 @@
 
 #define G 9.81 //meters per second squared
 #define SEA_DENSITY 1.225 //kg per cubic meter
-#define TIME_DELTA 0.1 //seconds
+#define TIME_DELTA 0.01 //seconds
 #define CD_BRAKE 1.28
 #define CD_DRAG 0.42
 #define AREA_ROCKET .0182414692 //meters squared
@@ -74,8 +74,7 @@ int main(void)
 		force = thrust - drag - weight; //newtons
 		mass = weight / G; //kg
 		velocity += force / mass * TIME_DELTA; //meters per second
-
-		fprintf(logfile, "height = %f\nvelocity = %f\nthrust = %f\ntime = %f\n\n", height, velocity, thrust, time);
+		fprintf(logfile, "height = %f\nvelocity = %f\nthrust = %f\ndrag = %f\ntime = %f\n\n", height, velocity, thrust, drag, time);
 	}
 
 	weight = WEIGHT_F; //newtons
@@ -99,12 +98,12 @@ int main(void)
 		brake = brake_from_density_and_velocity(density, velocity); //newtons
 		x = height;
 		if (height <= 2500) {
-			//y = (-.000000000000019001*x*x*x*x*x) + (.00000000015977*x*x*x*x) - (.00000051643*x*x*x) + (.0007944*x*x) - (.66328 * x) + (486.62);
-			y = (-.00000000000001899*x*x*x*x*x) + (.00000000015956*x*x*x*x) - (.00000051519*x*x*x) + (.00079063*x*x) - (.65635 * x) + (480.28);
+			y = (-.000000000000019001*x*x*x*x*x) + (.00000000015977*x*x*x*x) - (.00000051643*x*x*x) + (.0007944*x*x) - (.66328 * x) + (486.62);
+			//y = (-.00000000000001899*x*x*x*x*x) + (.00000000015956*x*x*x*x) - (.00000051519*x*x*x) + (.00079063*x*x) - (.65635 * x) + (480.28);
 		}
 		else if (height >= 2500) {
-			//y = (-.000000000000019001*x*x*x*x*x) + (.00000000015977*x*x*x*x) - (.00000051643*x*x*x) + (.0007944*x*x) - (.66328 * x) + (486.62);
-			y = (-.00000000000001899*x*x*x*x*x) + (.00000000015956*x*x*x*x) - (.00000051519*x*x*x) + (.00079063*x*x) - (.65635 * x) + (480.28);
+			y = (-.000000000000019001*x*x*x*x*x) + (.00000000015977*x*x*x*x) - (.00000051643*x*x*x) + (.0007944*x*x) - (.66328 * x) + (486.62);
+			//y = (-.00000000000001899*x*x*x*x*x) + (.00000000015956*x*x*x*x) - (.00000051519*x*x*x) + (.00079063*x*x) - (.65635 * x) + (480.28);
 		}
 		fprintf(logfile, "velocity = %f\n", velocity);
 		fprintf(logfile, "y = %f\n", y);
@@ -122,8 +121,8 @@ int main(void)
 				fprintf(logfile, "airbrakes open\n");
 			}
 			else if (t < ACTUATION_TIME) {
+				brake = brake * t / ACTUATION_TIME;
 				force = -drag - brake - weight; //newtons
-				force = force * t / ACTUATION_TIME;
 				percentopen = t * 33.33333;
 				fprintf(logfile, "airbrakes opening\nairbrakes %f percent open\n", percentopen);
 				t = t + TIME_DELTA;
@@ -135,17 +134,17 @@ int main(void)
 				fprintf(logfile, "airbrakes closed\n");
 			}
 			else if (t >0) {
+				brake = brake * t / ACTUATION_TIME;
 				force = -drag - brake - weight; //newtons
-				force = force * t / ACTUATION_TIME;
 				percentopen = t * 33.33333;
 				fprintf(logfile, "airbrakes closing\nairbrakes %f percent open\n", percentopen);
 				t = t - TIME_DELTA;
 			}
 		}
-		force = -drag - weight;
+		//force = -drag - weight;
 		velocity += force / mass * TIME_DELTA; //meters per second
 
-		fprintf(logfile, "height = %f\nvelocity = %f\nbrake = %f\ntime = %f\n\n", height, velocity, brake, time);
+		fprintf(logfile, "height = %f\nvelocity = %f\nbrake = %f\ndrage = %f\ntime = %f\n\n", height, velocity, brake, drag, time);
 	}
 	fclose(logfile);
 	return 0;
