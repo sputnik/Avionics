@@ -60,10 +60,10 @@ int main(void)
 	weight = WEIGHT_I; //newtons
 	for (time = 0; time < 4.8; time += TIME_DELTA) {
 		if (time <= 4.0) {
-			thrust = 3000;
+			thrust = 2850	;
 		}
 		else if (time > 4.0) {
-			thrust -= (3750) * TIME_DELTA;
+			thrust -= (3562.5) * TIME_DELTA;
 		} //thrust equation
 
 		alt += velocity * TIME_DELTA; //meters
@@ -100,11 +100,11 @@ int main(void)
 		x = height;
 		if (height <= 2500) {
 			//y = (-.000000000000019001*x*x*x*x*x) + (.00000000015977*x*x*x*x) - (.00000051643*x*x*x) + (.0007944*x*x) - (.66328 * x) + (486.62);
-			y = (-.00000000000001899*x*x*x*x*x) + (.00000000015956*x*x*x*x) - (.00000051519*x*x*x) + (.00079063*x*x) - (.65635 * x) + (480.28);
+			y = (-.0000000000000189962*x*x*x*x*x) + (.00000000015904*x*x*x*x) - (.00000051214*x*x*x) + (.00078168*x*x) - (.64028 * x) + (465.58);
 		}
 		else if (height >= 2500) {
 			//y = (-.000000000000019001*x*x*x*x*x) + (.00000000015977*x*x*x*x) - (.00000051643*x*x*x) + (.0007944*x*x) - (.66328 * x) + (486.62);
-			y = (-.00000000000001899*x*x*x*x*x) + (.00000000015956*x*x*x*x) - (.00000051519*x*x*x) + (.00079063*x*x) - (.65635 * x) + (480.28);
+			y = (-.0000000000000189962*x*x*x*x*x) + (.00000000015904*x*x*x*x) - (.00000051214*x*x*x) + (.00078168*x*x) - (.64028 * x) + (465.58);
 		}
 		fprintf(logfile, "velocity = %f\n", velocity);
 		fprintf(logfile, "y = %f\n", y);
@@ -142,7 +142,7 @@ int main(void)
 				t = t - TIME_DELTA;
 			}
 		}
-		force = -drag - weight;
+
 		velocity += force / mass * TIME_DELTA; //meters per second
 
 		fprintf(logfile, "height = %f\nvelocity = %f\nbrake = %f\ntime = %f\n\n", height, velocity, brake, time);
