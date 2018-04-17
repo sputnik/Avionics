@@ -5,6 +5,8 @@
 #include <Adafruit_MPL115A2.h>
 #include <TinyGPS++.h>
 #include <SoftwareSerial.h>
+#include <SD.h>
+#include "VariableDefinitions.h"
 
 // The TinyGPS++ Object
 //TinyGPSPlus gps;
@@ -17,9 +19,9 @@ Adafruit_MPL115A2 mpl115a2;
    variable_definitions file
  ***************************************************/
 
-
 //Variable to make sure setup ran
 bool SetupRun = false;
+
 //Accelerometer
 Adafruit_BNO055 bno = Adafruit_BNO055();
 

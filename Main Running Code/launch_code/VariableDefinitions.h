@@ -1,3 +1,6 @@
+#ifndef VariableDefinitions.h
+#define VariableDefinitions.h
+
 
 //Defines for the Air Brake Calculations
 #define G               9.81          // Gravity...Duh (meters per second squared)
@@ -12,6 +15,7 @@
 #define ACTUATION_TIME  3             // Time to fully Extend the Airbrakes (seconds)
 
 int START_ALT                 = 0;
+int current_status 			= 0;
 
 double VelocityPlot           = 0.0;
 double CurrentActuationPeriod = 0.0;
@@ -37,8 +41,12 @@ float ADXL_accel[3];  //[9]: X, [1]: Y, [2]: Z
 //SD Card
 File rocket_data;
 #define SDCS_pin  5
+char SD_data[400];
+extern SDCS_pin;
 
 // Variables/Defines for doing the Altitude Calculations (Pressure Sensor)
 #define SEA_LEVEL_PRESSURE              1013.25 //Sea Level Pressure (hPa)
 #define PRESSURE_AVERAGING_ITERATIONS   15      //Number of Pressure and Temperature readings to take and average
 
+
+#endif
