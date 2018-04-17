@@ -7,7 +7,7 @@
 #include <SoftwareSerial.h>
 
 // The TinyGPS++ Object
-TinyGPSPlus gps;
+//TinyGPSPlus gps;
 
 // The MP115A2  Object
 Adafruit_MPL115A2 mpl115a2;
@@ -22,8 +22,8 @@ void setup(void)
   Serial.begin(9600);
   Serial.print("Launching Board...");
 
-  ss.begin(GPSBaud);
-  Serial.print("GPS Software Serial Started...");
+  //ss.begin(GPSBaud);
+  //Serial.print("GPS Software Serial Started...");
   
   mpl115a2.begin();
   Serial.print("MP1115A2 Initialized...");

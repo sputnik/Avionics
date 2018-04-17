@@ -22,9 +22,9 @@ bool AirbrakeStatus           = false;
 
 
 //Defines for the GPS
-#define RXPin   6     // Software Serial RX pin
-#define TXPin   5     // Software Serial TX pin
-#define GPSBaud 9600  // Baud Rate
+//#define RXPin   6     // Software Serial RX pin
+//#define TXPin   5     // Software Serial TX pin
+//#define GPSBaud 9600  // Baud Rate
 
 float adxl_altitude;
 float adxl_velocity;
