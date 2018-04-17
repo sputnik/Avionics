@@ -5,7 +5,6 @@
   double percentopen;
 
 
-    drag = drag_from_density_and_velocity(density, velocity); //newtons
 void check_airbrakes() {  
   x = height;
   y = (-.00000000000001899*x*x*x*x*x) + (.00000000015956*x*x*x*x) - (.00000051519*x*x*x) + (.00079063*x*x) - (.65635 * x) + (480.28);
