@@ -18,7 +18,8 @@ void while_launching() {
 }
 
 void while_still_rising() {
-        //calculate vertical acceleration, and calculate height and velocity from vertical acceleration
+      float IterationStartTime = micros();
+      //calculate vertical acceleration, and calculate height and velocity from vertical acceleration
       //calculate height from the barometer
       //calculate averaged height and averaged velocity from the barometer and accererometer values, and use these values for the next iteration of calculations
       //send gps coordinates and radio pings so the rocket can be located in case of total software failure
@@ -26,7 +27,10 @@ void while_still_rising() {
       //make sure to save the vaules for how far open the airbrakes are at any given time, along with the height, velocity, and acceleration values
       //check the weird bolts to make sure that the airbrakes are not broken
       //CONSIDER ADDING SOMETHING TO MAKE SURE THE AIRBRAKES OPEN AT LEAST ONCE IN ORDER TO GATHER DATA IN CASE OF REALLY LOW FLIGHT
-   
+      float IterationEndTime = micros();
+      float ComputationTime = (IterationEndTime - IterationStartTime) / 1000000;
+      float WaitTime = TIME_DELTA - ComputationTime;
+      delay(WaitTime * 1000);
 }
 
 void while_descending() {
