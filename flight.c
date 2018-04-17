@@ -14,7 +14,7 @@
 #define WEIGHT_F 354.256 //newtons
 #define START_THRUST 2500 //newtons
 #define FUEL_BURN_RATE 14.22991494 //newtons per second
-#define ACTUATION_TIME 3 // secs
+#define ACTUATION_TIME 2.2 // secs
 // N2850
 
 double density_from_altitude(double altitude) //density equation
@@ -46,8 +46,6 @@ int main(void)
 	double force; //newtons
 	double thrust; //newtons
 	double brake; //newtons
-	double tend; //seconds
-	double fneed; //newtons
 	double y;
 	double x;
 	double z;
@@ -98,12 +96,12 @@ int main(void)
 		brake = brake_from_density_and_velocity(density, velocity); //newtons
 		x = height;
 		if (height <= 2500) {
-			y = (-.000000000000019001*x*x*x*x*x) + (.00000000015977*x*x*x*x) - (.00000051643*x*x*x) + (.0007944*x*x) - (.66328 * x) + (486.62);
-			//y = (-.00000000000001899*x*x*x*x*x) + (.00000000015956*x*x*x*x) - (.00000051519*x*x*x) + (.00079063*x*x) - (.65635 * x) + (480.28);
+			//y = (-.000000000000019001*x*x*x*x*x) + (.00000000015977*x*x*x*x) - (.00000051643*x*x*x) + (.0007944*x*x) - (.66328 * x) + (486.62);
+			y = (-.00000000000001899*x*x*x*x*x) + (.00000000015956*x*x*x*x) - (.00000051519*x*x*x) + (.00079063*x*x) - (.65635 * x) + (480.28);
 		}
 		else if (height >= 2500) {
-			y = (-.000000000000019001*x*x*x*x*x) + (.00000000015977*x*x*x*x) - (.00000051643*x*x*x) + (.0007944*x*x) - (.66328 * x) + (486.62);
-			//y = (-.00000000000001899*x*x*x*x*x) + (.00000000015956*x*x*x*x) - (.00000051519*x*x*x) + (.00079063*x*x) - (.65635 * x) + (480.28);
+			//y = (-.000000000000019001*x*x*x*x*x) + (.00000000015977*x*x*x*x) - (.00000051643*x*x*x) + (.0007944*x*x) - (.66328 * x) + (486.62);
+			y = (-.00000000000001899*x*x*x*x*x) + (.00000000015956*x*x*x*x) - (.00000051519*x*x*x) + (.00079063*x*x) - (.65635 * x) + (480.28);
 		}
 		fprintf(logfile, "velocity = %f\n", velocity);
 		fprintf(logfile, "y = %f\n", y);
@@ -123,7 +121,7 @@ int main(void)
 			else if (t < ACTUATION_TIME) {
 				brake = brake * t / ACTUATION_TIME;
 				force = -drag - brake - weight; //newtons
-				percentopen = t * 33.33333;
+				percentopen = t * 45.454545454545;
 				fprintf(logfile, "airbrakes opening\nairbrakes %f percent open\n", percentopen);
 				t = t + TIME_DELTA;
 			}
@@ -136,7 +134,7 @@ int main(void)
 			else if (t >0) {
 				brake = brake * t / ACTUATION_TIME;
 				force = -drag - brake - weight; //newtons
-				percentopen = t * 33.33333;
+				percentopen = t * 45.454545454545;
 				fprintf(logfile, "airbrakes closing\nairbrakes %f percent open\n", percentopen);
 				t = t - TIME_DELTA;
 			}
