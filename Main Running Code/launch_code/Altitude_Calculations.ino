@@ -1,9 +1,32 @@
 //Comment description here
-
-
+double VerticalAccelBNO;
+bool LaunhValue = false;
+double HeightBNO;
+double VelocityBNO;
+double HeightPress;
+double VerticalAccelADXL;
+double HeightADXL;
+double VelocityADXL;
+float AvgHeightPrevious = 0;
 void get_Alt_BNO() 
 {
+  imu::Vector<3> euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
+  imu::Vector<3> acc = bno.getVector(Adafruit_BNO055::VECTOR_ACCELEROMETER);
+  imu::Vector<3> linear = bno.getVector(Adafruit_BNO055::VECTOR_LINEARACCEL);
+  imu::Vector<3> gravity = bno.getVector(Adafruit_BNO055::VECTOR_GRAVITY);
 
+  VerticalAccelBNO = ((linear.x() * gravity.x()) + (linear.y() * gravity.y()) + (linear.z() * gravity.z())) / 9.81;
+  if (VerticalAccelBNO >= .5) {
+    LaunchValue = true ;
+  }
+  if (VerticalAccelBNO <= -.5) {
+    LaunchValue = true ;
+  }
+  if (LaunchValue == false) {
+    VerticalAccelBNO = 0;
+  }
+  HeightBNO = AvgHeight + (AvgVelocity * TIME_DELTA) + (.5 * VerticalAccelBNO * TIME_DELTA * TIME_DELTA);
+  VelocityBNO = AvgVelocity + (VerticalAccelBNO * TIME_DELTA);
 }
 
 
@@ -38,11 +61,12 @@ float get_Alt_Pressure()
   pressure = pressure / 10.0; //Convert to hPa
 
   altitude_from_pressure = ((pow(Po / pressure, 1 / 5.257) - 1) * (temp + 273.15)) / (0.0065);
+  HeightPress = altitude_from_pressure - START_ALT;
 
   return altitude_from_pressure;
 }
 
-void get_Accel_ADXL(float accel_vals[]) 
+void get_Accel_ADXL() 
 /*
  * this function gets the data from the ADXL, 
  * calculates height and velocity, 
@@ -65,14 +89,25 @@ void get_Accel_ADXL(float accel_vals[])
   float xAccel = xScaled / 1000.0;
   float yAccel = yScaled / 1000.0;
   float zAccel = zScaled / 1000.0;
-
-  // convert linear value and euler angles to purely vertical accel
-  // float vertical_accel = xAccel * sin( invcos( (sqrt( (xAccel * cos( euler.x ))^2 + (xAccel * cos( euler.y ))^2)/ xAccel)));
-  // height = height + (velocity * time_delta) + (.5 * vertical_accel * 9.81 * time_delta * time_delta);
-  // velocity = velocity + (vertical _accel * 9.81 * time_delta);
-
-  accel_vals[0] = xAccel;
-  accel_vals[1] = yAccel;
-  accel_vals[2] = zAccel; 
-
+  float ADXLRatioPart1 = (acc.x() * acc.x()) + (acc.y() * acc.y()) + (acc.z() * acc.z());
+  float ADXLRatioPart2 = (xAccel * xAccel) + (yAccel * yAccel) + (zAccel * zAccel);
+  if (LaunchValue == true) {
+    VerticalAccelADXL = VerticalAccelBN) * 9.81 * sqrt((xAccel * xAccel) + (yAccel * yAccel) + (zAccel * zAccel)) / sqrt((acc.x() * acc.x()) + (acc.y() * acc.y()) + (acc.z() * acc.z()));
+    HeightADXL = AvgHeight + (AvgVelocity * TIME_DELTA) + (.5 * VerticalAccelADXL * TIME_DELTA * TIME_DELTA);
+    VelocityADXL = AvgVelocity + (VerticalAccelADXL * TIME_DELTA);
+  }
 }
+void get_Avg_Alt()
+/*
+ * this function averages the height and velocity values, 
+ * calculates AvgHeight and AvgVelocity, 
+ * 
+ * INPUTS(global):
+ * OUTPUTS(global): AvgHeight and AvgVelocity
+ */
+{
+  AvgHeight = (HeightBNO + HeightPress + HeightADXL) / 3;
+  AvgVelocity = (AvgHeight - AvgHeightPrevious) / TIME_DELTA;
+  AvgHeightPrevious = AvgHeight;
+}
+
