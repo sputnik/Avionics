@@ -26,11 +26,16 @@ bool AirbrakeStatus           = false;
 //#define TXPin   5     // Software Serial TX pin
 //#define GPSBaud 9600  // Baud Rate
 
+
+
 float adxl_altitude;
 float adxl_velocity;
 float bno_altitude;
 float bno_velocity;
 float ADXL_accel[3];  //[9]: X, [1]: Y, [2]: Z
+
+//SD Card
+File rocket_data;
 
 // Variables/Defines for doing the Altitude Calculations (Pressure Sensor)
 #define SEA_LEVEL_PRESSURE              1013.25 //Sea Level Pressure (hPa)
