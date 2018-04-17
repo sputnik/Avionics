@@ -11,7 +11,15 @@
 #define FUEL_BURN_RATE  14.22991494   // Weight in fuel Burned Per Unit Time (newtons per second)
 #define ACTUATION_TIME  3             // Time to fully Extend the Airbrakes (seconds)
 
-int START_ALT = 0;
+int START_ALT                 = 0;
+
+double VelocityPlot           = 0.0;
+double CurrentActuationPeriod = 0.0;
+double PercentOpen            = 0.0;
+double ActuationTime          = 0.0;
+
+bool AirbrakeStatus           = false;
+
 
 //Defines for the GPS
 #define RXPin   6     // Software Serial RX pin
@@ -22,7 +30,7 @@ float adxl_altitude;
 float adxl_velocity;
 float bno_altitude;
 float bno_velocity;
-float acceleration[3];
+float ADXL_accel[3];  //[9]: X, [1]: Y, [2]: Z
 
 // Variables/Defines for doing the Altitude Calculations (Pressure Sensor)
 #define SEA_LEVEL_PRESSURE              1013.25 //Sea Level Pressure (hPa)

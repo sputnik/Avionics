@@ -1,8 +1,3 @@
-  double VelocityPlot;
-  double CurrentActuationPeriod = 0;
-  bool AirbrakeStatus = false;
-  double PercentOpen;
-  double ActuationTime
 // inputs , AvgHeight, AvgVelocity,
 
 void check_airbrakes() {  
