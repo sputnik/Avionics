@@ -14,16 +14,25 @@ void get_Alt_BNO()
 
 }
 
-void get_Alt_Pressure()
+
 /*
- * this function (gets), 
- * calculates (math), 
- * and puts the results in (variables)
+ * Function Summary:
+ *    This function gets the altitude from the barometric pressure sensor through a x-point averager
+ *    as defined by the PRESSURE_AVERAGING_ITERATIONS defined value.
  * 
- * INPUTS(global/internal(passed in)): 
- * OUTPUTS(global/internal(returned)): 
+ * Parameters:
+ *    Input: Void
+ *    Output: (float) altitude_from_pressure, 
+ * 
  */
+float get_Alt_Pressure()
 {
+
+  float pressureKPA = 0;
+  float temperatureC = 0;
+  float pressureKPA = 0;
+  float temperatureC = 0;
+  float altitude_from_pressure = 0.0;
 
   for (pressure_avg_counter = 0; pressure_avg_counter < PRESSURE_AVERAGING_ITERATIONS; pressure_avg_counter++) {
      mpl115a2.getPT(&pressureKPA, &temperatureC);
@@ -38,7 +47,7 @@ void get_Alt_Pressure()
 
   altitude_from_pressure = ((pow(Po / pressure, 1 / 5.257) - 1) * (temp + 273.15)) / (0.0065);
 
-  return alt;
+  return altitude_from_pressure;
 }
 
 void get_Alt_ADXL(float accel_vals[]) 

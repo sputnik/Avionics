@@ -28,13 +28,3 @@ float acceleration[3];
 #define SEA_LEVEL_PRESSURE              1013.25 //Sea Level Pressure (hPa)
 #define PRESSURE_AVERAGING_ITERATIONS   15      //Number of Pressure and Temperature readings to take and average
 
-float pressureKPA = 0
-float temperatureC = 0
-float sum_pressureKPA = 0
-float sum_temperatureC = 0
-float avg_pressureKPA = 0
-float avg_temperatureC = 0
-float altitude_from_pressure = 0.0;
-
-unsigned short pressure_avg_counter = 0;
-
