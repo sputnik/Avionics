@@ -1,43 +1,43 @@
-  double y;
-  double x;
-  double t = 0;
-  double a = 0;
-  double percentopen;
-
+  double VelocityPlot;
+  double CurrentActuationPeriod = 0;
+  bool AirbrakeStatus = false;
+  double PercentOpen;
+  double ActuationTime
+// inputs , AvgHeight, AvgVelocity,
 
 void check_airbrakes() {  
-  x = height;
-  y = (-.00000000000001899*x*x*x*x*x) + (.00000000015956*x*x*x*x) - (.00000051519*x*x*x) + (.00079063*x*x) - (.65635 * x) + (480.28);
-  if (velocity >= y) {
-    a = 1;
+  double x = AvgHeight;
+  VelocityPlot = (-.00000000000001899*x*x*x*x*x) + (.00000000015956*x*x*x*x) - (.00000051519*x*x*x) + (.00079063*x*x) - (.65635 * x) + (480.28);
+  if (AvgVelocity >= VelocityPlot) {
+    AirbrakeStatus = true;
     //printf("airbrakes opening\n");
   }
-  else if (velocity < y) {
-    a = 0;
+  else if (AvgVelocity < VelocityPlot) {
+    AirbrakeStatus = false;
     //printf("airbrakes closing");
   }
-  if (a == 1) {
-    if (t >= ACTUATION_TIME) {
-      Open Airbrakes;
+  if (AirbrakeStatus == true) {
+    if (CurrentActuationPeriod >= ActuationTime) {
+      //Open Airbrakes;
       //they are all of the way open
-      percentopen = 100;
+      PercentOpen = 100;
     }
-    else if (t < ACTUATION_TIME) {
-      Open Airbrakes;
-      percentopen = t * 45.4545454545;
-      t = t + TIME_DELTA;
+    else if (CurrentActuationPeriod < ActuationTime) {
+      //Open Airbrakes;
+      PercentOpen = CurrentActuationPeriod * 45.4545454545;
+      CurrentActuationPeriod = CurrentActuationPeriod + TIME_DELTA;
     }
   }
-  else if (a == 0) {
-    if (t <= 0) {
-      Close Airbrakes;
+  else if (AirbrakeStatus == false) {
+    if (CurrentActuationPeriod <= 0) {
+      //Close Airbrakes;
       //they are all of the way closed
-      percentopen = 0;
+      PercentOpen = 0;
     }
-    else if (t >0) {
-      Close Airbrakes
-      percentopen = t * 33.33333;
-      t = t - TIME_DELTA;
+    else if (CurrentActuationPeriod >0) {
+      //Close Airbrakes
+      PercentOpen = CurrentActuationPeriod * 33.33333;
+      CurrentActuationPeriod = CurrentActuationPeriod - TIME_DELTA;
     }
   }
 }
