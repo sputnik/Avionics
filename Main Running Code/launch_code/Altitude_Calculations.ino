@@ -1,4 +1,7 @@
-void update_altitude_from_BNO() 
+//Comment description here
+
+
+void get_Alt_BNO() 
 /*
  * this function gets the data from the BNO055, 
  * calculates height and velocity, 
@@ -11,20 +14,7 @@ void update_altitude_from_BNO()
 
 }
 
-void update_altitude_from_BNO() 
-/*
- * this function gets the data from the BNO055, 
- * calculates height and velocity, 
- * and puts the results in bno_altitude and bno_velocity
- * 
- * INPUTS(global): none, have to create vectors using imu::vector
- * OUTPUTS(global): bno_altitude, bno_velocity
- */
-{
-
-}
-
-float alt_from_pressure(float pressure, float temp)
+void get_Alt_Pressure()
 /*
  * this function (gets), 
  * calculates (math), 
@@ -34,17 +24,24 @@ float alt_from_pressure(float pressure, float temp)
  * OUTPUTS(global/internal(returned)): 
  */
 {
-  float Po = 1013.25; //Sea Level Pressure (hPa)
-  float alt = 0.0;
+
+  for (pressure_avg_counter = 0; pressure_avg_counter < PRESSURE_AVERAGING_ITERATIONS; pressure_avg_counter++) {
+     mpl115a2.getPT(&pressureKPA, &temperatureC);
+     pressureKPA += pressureKPA;
+     temperatureC += temperatureC;
+  }
+
+  pressureKPA = pressureKPA / PRESSURE_AVERAGING_ITERATIONS;
+  temperatureC = temperatureC / PRESSURE_AVERAGING_ITERATIONS;
 
   pressure = pressure / 10.0; //Convert to hPa
 
-  alt = ((pow(Po / pressure, 1 / 5.257) - 1) * (temp + 273.15)) / (0.0065);
+  altitude_from_pressure = ((pow(Po / pressure, 1 / 5.257) - 1) * (temp + 273.15)) / (0.0065);
 
   return alt;
 }
 
-void update_altitude_from_ADXL(float accel_vals[]) 
+void get_Alt_ADXL(float accel_vals[]) 
 /*
  * this function gets the data from the ADXL, 
  * calculates height and velocity, 

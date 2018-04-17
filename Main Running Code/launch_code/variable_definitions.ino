@@ -1,15 +1,40 @@
-#define G 9.81 //meters per second squared
-#define SEA_DENSITY 1.225 //kg per cubic meter
-#define TIME_DELTA 0.01 //seconds
-#define CD_BRAKE 1.28
-#define CD_DRAG 0.42
-#define AREA_ROCKET .0182414692 //meters squared
-#define AREA_BRAKE .00692 //meters squared
-#define START_ALT 1219.2 //meters
-#define GOAL_HEIGHT 3048 //meters
-#define WEIGHT_I 422.581 //newtons
-#define WEIGHT_F 354.256 //newtons
-#define START_THRUST 2500 //newtons
-#define FUEL_BURN_RATE 14.22991494 //newtons per second
-#define ACTUATION_TIME 3 // secs
-// N2850
+
+//Defines for the Air Brake Calculations
+#define G               9.81          // Gravity...Duh (meters per second squared)
+#define SEA_DENSITY     1.225         // Air Density at Sea Level (kg per cubic meter)
+#define TIME_DELTA      0.01          // Time Between measurements (seconds)
+#define AREA_ROCKET     0.0182414692  // Area of the rocket (meters squared)
+#define AREA_BRAKE      0.00692       // Area of the brakes (meters squared)
+#define WEIGHT_I        422.581       // Initial Weight (newtons)
+#define WEIGHT_F        354.256       // Final Weight (newtons)
+#define START_THRUST    2500          // Starting Thrust (newtons)
+#define FUEL_BURN_RATE  14.22991494   // Weight in fuel Burned Per Unit Time (newtons per second)
+#define ACTUATION_TIME  3             // Time to fully Extend the Airbrakes (seconds)
+
+int START_ALT = 0;
+
+//Defines for the GPS
+#define RXPin   6     // Software Serial RX pin
+#define TXPin   5     // Software Serial TX pin
+#define GPSBaud 9600  // Baud Rate
+
+float adxl_altitude;
+float adxl_velocity;
+float bno_altitude;
+float bno_velocity;
+float acceleration[3];
+
+// Variables/Defines for doing the Altitude Calculations (Pressure Sensor)
+#define SEA_LEVEL_PRESSURE              1013.25 //Sea Level Pressure (hPa)
+#define PRESSURE_AVERAGING_ITERATIONS   15      //Number of Pressure and Temperature readings to take and average
+
+float pressureKPA = 0
+float temperatureC = 0
+float sum_pressureKPA = 0
+float sum_temperatureC = 0
+float avg_pressureKPA = 0
+float avg_temperatureC = 0
+float altitude_from_pressure = 0.0;
+
+unsigned short pressure_avg_counter = 0;
+
