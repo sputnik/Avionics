@@ -26,18 +26,35 @@ Adafruit_BNO055 bno = Adafruit_BNO055();
 void setup(void)
 {
   SetupRun = true;
+  
+  //SD Card
+  pinMode(SDCS_pin, OUTPUT);
+  if (!SD.begin(SDCS_pin)) {
+    Serial.println("SD card initialization failed! Check connections and/or insert a valid microSD card");
+  }
+  else {
+    Serial.println("SD Card initialization successful.");
+  }
+  
   Serial.begin(9600);
-  Serial.print("Launching Board...");
+  sprintf(SD_data, "Launching Board...\n");
+  write_to_SD(SD_data);
+  //Serial.print("Launching Board...");
 
   //ss.begin(GPSBaud);
   //Serial.print("GPS Software Serial Started...");
 
+
+
   mpl115a2.begin();
-  Serial.print("MP1115A2 Initialized...");
+    sprintf(SD_data, "MPL115A2 Initialized...\n");
+  write_to_SD(SD_data);
+  //Serial.print("MP1115A2 Initialized...");
 
   //Setup More Stuff here
-
-  Serial.println("Setup Finished");
+  sprintf(SD_data, "Setup Finished!\n");
+  write_to_SD(SD_data);
+  //Serial.println("Setup Finished");
 }
 
 void loop() {
@@ -59,6 +76,8 @@ void loop() {
     while (current_status = 2) {
       current_status = get_current_status();
       while_still_rising();
+      sprintf(SD_data, "The height is: %lf\nThe velocity is: %lf\nThe acceleration is: %lf\nThe pressure is: %lf\nThe time is: %d:%d:%d\nThe date is: %d/%d/%d\n\n\n", AvgHeight, AvgVelocity, VerticalAccelBNO, pressure, now.hour(), now.minute(), now.second(), now.month(), now.day(), now.year());
+      write_to_SD(SD_data);
     }
 
     //During Descent

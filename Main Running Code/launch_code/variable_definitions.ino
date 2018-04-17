@@ -36,6 +36,7 @@ float ADXL_accel[3];  //[9]: X, [1]: Y, [2]: Z
 
 //SD Card
 File rocket_data;
+#define SDCS_pin  5
 
 // Variables/Defines for doing the Altitude Calculations (Pressure Sensor)
 #define SEA_LEVEL_PRESSURE              1013.25 //Sea Level Pressure (hPa)
