@@ -57,10 +57,13 @@ void loop() {
       //send gps coordinates and radio pings so the rocket can be located in case of total software failure
     }
     while (current_status == 1) {
-      calculate vertical acceleration, and calculate height and velocity from vertical acceleration
+      check_airbrakes();
+      
+      /*calculate vertical acceleration, and calculate height and velocity from vertical acceleration
       calculate height from the barometer
       calculate averaged height and averaged velocity from the barometer and accererometer values, and use these values for the next iteration of calculations
       send gps coordinates and radio pings so the rocket can be located in case of total software failure
+      */
     }
     while (current_status = 2) {
       calculate vertical acceleration, and calculate height and velocity from vertical acceleration

@@ -1,20 +1,3 @@
-double density_from_altitude(double altitude) //density equation
-{
-  return SEA_DENSITY * pow(1 + (-.0065 * altitude / 287), 4.25363734);
-}
-double drag_from_density_and_velocity(double dense, double vel) //drag equation for rocket
-{
-  return .5 * dense * vel * vel * CD_DRAG * AREA_ROCKET;
-}
-double brake_from_density_and_velocity(double dense, double vel) //drag equation for airbrakes
-{
-  return .5 * dense * vel * vel * CD_BRAKE * AREA_BRAKE;
-}
-
-int main(void)
-{
-  FILE* logfile;  //create log file
-  logfile = fopen("logfile.txt", "w");  //set that file to writeable named logfile.txt
   
   double time; //seconds
   double alt = START_ALT; //meters
@@ -37,6 +20,9 @@ int main(void)
   double b = 0;
   double percentopen;
 
+
+void check_airbrakes() {
+  
   thrust = START_THRUST; //newtons
   weight = WEIGHT_I; //newtons
   for (time = 0; time < 4.8; time += TIME_DELTA) {
@@ -105,28 +91,22 @@ int main(void)
         brake = brake * t / ACTUATION_TIME;
         force = -drag - brake - weight; //newtons
         percentopen = t * 33.33333;
-        fprintf(logfile, "airbrakes opening\nairbrakes %f percent open\n", percentopen);
         t = t + TIME_DELTA;
       }
     }
     else if (a == 0) {
       if (t <= 0) {
         force = -drag - weight;
-        fprintf(logfile, "airbrakes closed\n");
       }
       else if (t >0) {
         brake = brake * t / ACTUATION_TIME;
         force = -drag - brake - weight; //newtons
         percentopen = t * 33.33333;
-        fprintf(logfile, "airbrakes closing\nairbrakes %f percent open\n", percentopen);
         t = t - TIME_DELTA;
       }
     }
     //force = -drag - weight;
     velocity += force / mass * TIME_DELTA; //meters per second
 
-    fprintf(logfile, "height = %f\nvelocity = %f\nbrake = %f\ndrage = %f\ntime = %f\n\n", height, velocity, brake, drag, time);
   }
-  fclose(logfile);
-  return 0;
 }
