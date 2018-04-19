@@ -34,12 +34,7 @@ void get_Alt_BNO()
 float get_Alt_Pressure()
 {
 
-  float pressureKPA = 0;
-  float temperatureC = 0;
-  float jpressureKPA = 0;
-  float temperatureC = 0;
-  float altitude_from_pressure = 0.0;
-
+  
   for (pressure_avg_counter = 0; pressure_avg_counter < PRESSURE_AVERAGING_ITERATIONS; pressure_avg_counter++) {
      mpl115a2.getPT(&pressureKPA, &temperatureC);
      pressureKPA += pressureKPA;

@@ -1,6 +1,23 @@
 //current_status is 0 if on the launchpad, 1 if  accellerating up, 2 if still going up but acceleration reducing, and 3 if descending
 int get_current_status() {
   //Get current rocket status & update if necessary
+  if (current_status == 0) {
+    if (abs(VerticalAccelBNO) > .5) {
+      TimeAtLaunch = 1000 * millis();
+      current_status = 1;
+    }
+  }
+  if (current_status == 1) {
+    TimeSinceLaunch = millis() - TimeAtLaunch;
+    if (((TimeSinceLaunch > 4.8) && (VerticalAccelBNO < 0)) || (TimeSinceLaunch > 8)) {
+      current_status = 2;
+    }
+  }
+  if (current_status == 2) {
+    if (AvgVelocity < 0) {
+      current_status = 3;
+    }
+  }
 }
 
 

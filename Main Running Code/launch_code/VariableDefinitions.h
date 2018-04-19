@@ -14,7 +14,7 @@
 //Defines for the Air Brake Calculations
 #define G               9.81          // Gravity...Duh (meters per second squared)
 #define SEA_DENSITY     1.225         // Air Density at Sea Level (kg per cubic meter)
-#define TIME_DELTA      0.01          // Time Between measurements (seconds)
+#define TIME_DELTA      0.1            // Time Between measurements (seconds)
 #define AREA_ROCKET     0.0182414692  // Area of the rocket (meters squared)
 #define AREA_BRAKE      0.00692       // Area of the brakes (meters squared)
 #define WEIGHT_I        422.581       // Initial Weight (newtons)
@@ -68,8 +68,16 @@ double AvgHeightPrevious = 0;
 float IterationStartTime;
 float IterationEndTime;
 float ComputationTime;
-float WaitTime;
+float Wait_Time = 0;
 float pressure;
+float TimeAtLaunch;
+float TimeSinceLaunch;
+float pressureKPA = 0;
+float temperatureC = 0;
+float jpressureKPA = 0;
+float temperatureC = 0;
+float altitude_from_pressure = 0.0;
+
 
 
 //SD Card
