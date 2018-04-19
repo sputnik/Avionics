@@ -1,4 +1,5 @@
 #include <Wire.h>
+#include <math.h>
 #include <Adafruit_Sensor.h>
 #include <Adafruit_BNO055.h>      //AMU 9-Axis orientation sensor & accelerometer
 #include <utility/imumaths.h>
@@ -6,6 +7,7 @@
 #include <TinyGPS++.h>
 #include <SoftwareSerial.h>
 #include <SD.h>
+#include "RTClib.h"
 #include "VariableDefinitions.h"
 
 // The TinyGPS++ Object
@@ -13,6 +15,9 @@
 
 // The MP115A2  Object
 Adafruit_MPL115A2 mpl115a2;
+
+// The RTC DS3231 Object
+RTC_DS3231 rtc;
 
 /****************************************************
    All variable are global and are in the
@@ -46,7 +51,14 @@ void setup(void)
   //ss.begin(GPSBaud);
   //Serial.print("GPS Software Serial Started...");
 
-
+  // Initialize RTC
+  if (! rtc.begin()) {
+    Serial.println("Couldn't find RTC");
+    while (1);
+  }
+  else {
+    Serial.println("RTC initialization successful.");
+  }
 
   mpl115a2.begin();
     sprintf(SD_data, "MPL115A2 Initialized...\n");

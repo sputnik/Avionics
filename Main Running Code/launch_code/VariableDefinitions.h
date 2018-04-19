@@ -85,6 +85,14 @@ File rocket_data;
 #define SDCS_pin 5
 char SD_data[400];
 
+//RTC
+int rtc_Second = 0;
+int rtc_Minute = 0;
+int rtc_Hour = 0;
+int rtc_Day = 0;
+int rtc_Month = 0;
+int rtc_Year = 0; 
+
 // Variables/Defines for doing the Altitude Calculations (Pressure Sensor)
 #define SEA_LEVEL_PRESSURE              1013.25 //Sea Level Pressure (hPa)
 #define PRESSURE_AVERAGING_ITERATIONS   15      //Number of Pressure and Temperature readings to take and average
