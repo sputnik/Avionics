@@ -41,6 +41,11 @@ double VerticalAccelADXL;
 double HeightADXL;
 double VelocityADXL;
 double AvgHeightPrevious = 0;
+float IterationStartTime;
+float IterationEndTime;
+float ComputationTime;
+float WaitTime;
+
 
 //SD Card
 File rocket_data;

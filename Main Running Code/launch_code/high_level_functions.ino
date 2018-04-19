@@ -10,20 +10,19 @@ void while_on_pad() {
 }
 
 void while_launching() {
-        /*calculate vertical acceleration, and calculate height and velocity from vertical acceleration
-      calculate height from the barometer
-      calculate averaged height and averaged velocity from the barometer and accererometer values, and use these values for the next iteration of calculations
-      send gps coordinates and radio pings so the rocket can be located in case of total software failure
-      */
+      IterationStartTime = micros();
+      //Run Altitude_Calculations
+      IterationEndTime = micros();
+      ComputationTime = (IterationEndTime - IterationStartTime) / 1000000;
+      WaitTime = TIME_DELTA - ComputationTime;
+      delay(WaitTime * 1000);
 }
 
 void while_still_rising() {
       float IterationStartTime = micros();
-      //calculate vertical acceleration, and calculate height and velocity from vertical acceleration
-      //calculate height from the barometer
-      //calculate averaged height and averaged velocity from the barometer and accererometer values, and use these values for the next iteration of calculations
-      //send gps coordinates and radio pings so the rocket can be located in case of total software failure
-      //compare current height and velocity to pre generated height/velocity curve to determine if the rocket should be braking
+      //Run Altitude_Calculations
+      //Run GPS_Stuff
+      //Run Air_Brake_Calculations
       //make sure to save the vaules for how far open the airbrakes are at any given time, along with the height, velocity, and acceleration values
       //check the weird bolts to make sure that the airbrakes are not broken
       //CONSIDER ADDING SOMETHING TO MAKE SURE THE AIRBRAKES OPEN AT LEAST ONCE IN ORDER TO GATHER DATA IN CASE OF REALLY LOW FLIGHT
