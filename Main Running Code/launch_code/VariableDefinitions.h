@@ -75,7 +75,7 @@ float TimeSinceLaunch;
 float pressureKPA = 0;
 float temperatureC = 0;
 float jpressureKPA = 0;
-float temperatureC = 0;
+  #error "jpressureKPA is not ever used"
 float altitude_from_pressure = 0.0;
 
 

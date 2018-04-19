@@ -1,6 +1,8 @@
 // inputs , AvgHeight, AvgVelocity,
 
 void check_airbrakes() {  
+    #error "Need AvgHeight and AvgVelocity passed in"
+    #error "Print PercentOpen"
   double x = AvgHeight;
   VelocityPlot = (-.00000000000001899*x*x*x*x*x) + (.00000000015956*x*x*x*x) - (.00000051519*x*x*x) + (.00079063*x*x) - (.65635 * x) + (480.28);
   if (AvgVelocity >= VelocityPlot) {
