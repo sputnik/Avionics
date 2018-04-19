@@ -5,8 +5,13 @@ int get_current_status() {
 
 
 void while_on_pad() {
+      IterationStartTime = micros();
         //calculate vertical acceleration and set it to zero if it is negligible
       //send gps coordinates and radio pings so the rocket can be located in case of total software failure
+      IterationEndTime = micros();
+      ComputationTime = (IterationEndTime - IterationStartTime) / 1000000;
+      WaitTime = TIME_DELTA - ComputationTime;
+      delay(WaitTime * 1000);
 }
 
 void while_launching() {
@@ -33,5 +38,11 @@ void while_still_rising() {
 }
 
 void while_descending() {
-  
+      IterationStartTime = micros();
+      //Run Altitude_Calculations
+      //Run GPS_Stuff
+      IterationEndTime = micros();
+      ComputationTime = (IterationEndTime - IterationStartTime) / 1000000;
+      WaitTime = TIME_DELTA - ComputationTime;
+      delay(WaitTime * 1000);
 }
