@@ -16,7 +16,10 @@ void while_on_pad() {
 
 void while_launching() {
       IterationStartTime = micros();
-      //Run Altitude_Calculations
+      get_Alt_BNO();
+      get_Alt_Pressure();
+      get_Accel_ADXL();
+      get_Avg_Alt();
       IterationEndTime = micros();
       ComputationTime = (IterationEndTime - IterationStartTime) / 1000000;
       WaitTime = TIME_DELTA - ComputationTime;
@@ -25,9 +28,12 @@ void while_launching() {
 
 void while_still_rising() {
       IterationStartTime = micros();
-      //Run Altitude_Calculations
+      get_Alt_BNO();
+      get_Alt_Pressure();
+      get_Accel_ADXL();
+      get_Avg_Alt();
       //Run GPS_Stuff
-      //Run Air_Brake_Calculations
+      check_airbrakes();
       //make sure to save the vaules for how far open the airbrakes are at any given time, along with the height, velocity, and acceleration values
       //check the weird bolts to make sure that the airbrakes are not broken
       //CONSIDER ADDING SOMETHING TO MAKE SURE THE AIRBRAKES OPEN AT LEAST ONCE IN ORDER TO GATHER DATA IN CASE OF REALLY LOW FLIGHT
@@ -39,7 +45,10 @@ void while_still_rising() {
 
 void while_descending() {
       IterationStartTime = micros();
-      //Run Altitude_Calculations
+      get_Alt_BNO();
+      get_Alt_Pressure();
+      get_Accel_ADXL();
+      get_Avg_Alt();
       //Run GPS_Stuff
       IterationEndTime = micros();
       ComputationTime = (IterationEndTime - IterationStartTime) / 1000000;
