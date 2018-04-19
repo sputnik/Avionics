@@ -12,17 +12,16 @@
 #define WEIGHT_F        354.256       // Final Weight (newtons)
 #define START_THRUST    2500          // Starting Thrust (newtons)
 #define FUEL_BURN_RATE  14.22991494   // Weight in fuel Burned Per Unit Time (newtons per second)
-#define ACTUATION_TIME  3             // Time to fully Extend the Airbrakes (seconds)
+#define ACTUATION_TIME  2.2             // Time to fully Extend the Airbrakes (seconds)
 
-int START_ALT                 = 0;
-int current_status 			= 0;
+int START_ALT = 0;
+int current_status = 0;
 
-double VelocityPlot           = 0.0;
+double VelocityPlot = 0.0;
 double CurrentActuationPeriod = 0.0;
-double PercentOpen            = 0.0;
-double ActuationTime          = 0.0;
-
-bool AirbrakeStatus           = false;
+double PercentOpen = 0.0;
+double ActuationTime = 0.0;
+bool AirbrakeStatus = false;
 
 
 //Defines for the GPS
@@ -31,12 +30,17 @@ bool AirbrakeStatus           = false;
 //#define GPSBaud 9600  // Baud Rate
 
 
-
-float adxl_altitude;
-float adxl_velocity;
-float bno_altitude;
-float bno_velocity;
-float ADXL_accel[3];  //[9]: X, [1]: Y, [2]: Z
+double AvgHeight = 0;
+double AvgVelocity;
+double VerticalAccelBNO;
+bool LaunchValue = false;
+double HeightBNO;
+double VelocityBNO;
+double HeightPress;
+double VerticalAccelADXL;
+double HeightADXL;
+double VelocityADXL;
+double AvgHeightPrevious = 0;
 
 //SD Card
 File rocket_data;

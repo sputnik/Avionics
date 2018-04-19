@@ -1,13 +1,4 @@
 //Comment description here
-double VerticalAccelBNO;
-bool LaunhValue = false;
-double HeightBNO;
-double VelocityBNO;
-double HeightPress;
-double VerticalAccelADXL;
-double HeightADXL;
-double VelocityADXL;
-float AvgHeightPrevious = 0;
 void get_Alt_BNO() 
 {
   imu::Vector<3> euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
