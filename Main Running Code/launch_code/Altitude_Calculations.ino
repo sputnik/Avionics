@@ -69,9 +69,9 @@ void get_Accel_ADXL()
  * OUTPUTS(global): bno_altitude, bno_velocity
  */
 {
-  int ADXL377_X_axis = analogRead(A0);
+  int ADXL377_X_axis = analogRead(A2);
   int ADXL377_Y_axis = analogRead(A1);
-  int ADXL377_Z_axis = analogRead(A2);
+  int ADXL377_Z_axis = analogRead(A0);
 
   // Convert raw values to 'milli-Gs"
   long xScaled = map(ADXL377_X_axis, 512, 517, -1000, 1000);

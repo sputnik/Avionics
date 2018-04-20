@@ -78,7 +78,15 @@ float jpressureKPA = 0;
   #error "jpressureKPA is not ever used"
 float altitude_from_pressure = 0.0;
 
+//Status Lights
+#define Status4 11
+#define Status3 10
+#define Status2 9
+#define Status1 5
 
+//Linear Actuator
+#define LA_FDBK_0 A3
+#define LA_FDBK_1 A4
 
 //SD Card
 File rocket_data;
