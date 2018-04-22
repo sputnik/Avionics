@@ -78,14 +78,17 @@ float pressure_avg_counter;
 bool LaunchValue = false;
 
 //Status Lights
-#define Status4 11
+#error "If there's any purpose, use these. If not, that's fine too."
 #define Status3 10
 #define Status2 9
 #define Status1 5
 
 //Linear Actuator
+#error "Make sure we are using these pins"
 #define LA_FDBK_0 A3
 #define LA_FDBK_1 A4
+#define LA_dir 12
+#define LA_PWM 11
 
 //SD Card
 File rocket_data;
