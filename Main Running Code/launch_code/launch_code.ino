@@ -78,19 +78,23 @@ void loop() {
     while (current_status == 0) {
       current_status = get_current_status();
       while_on_pad();
+      sprintf(SD_data, "The height is: %lf\nThe velocity is: %lf\nThe acceleration is: %lf\nThe pressure is: %lf\nThe time is: %d:%d:%d\nThe date is: %d/%d/%d\n\n\n", AvgHeight, AvgVelocity, VerticalAccelBNO, pressure, now.hour(), now.minute(), now.second(), now.month(), now.day(), now.year());
+      write_to_SD(SD_data);
     }
 
     //During Engine Burn
     while (current_status == 1) {
       current_status = get_current_status();
       while_launching();
+      sprintf(SD_data, "The height is: %lf\nThe velocity is: %lf\nThe acceleration is: %lf\nThe pressure is: %lf\nThe time is: %d:%d:%d\nThe date is: %d/%d/%d\n\n\n", AvgHeight, AvgVelocity, VerticalAccelBNO, pressure, now.hour(), now.minute(), now.second(), now.month(), now.day(), now.year());
+      write_to_SD(SD_data);
     }
 
     //During Upward Travel Engine Burned Out
     while (current_status = 2) {
       current_status = get_current_status();
       while_still_rising();
-      sprintf(SD_data, "The height is: %lf\nThe velocity is: %lf\nThe acceleration is: %lf\nThe pressure is: %lf\nThe time is: %d:%d:%d\nThe date is: %d/%d/%d\n\n\n", AvgHeight, AvgVelocity, VerticalAccelBNO, pressure, now.hour(), now.minute(), now.second(), now.month(), now.day(), now.year());
+      sprintf(SD_data, "The height is: %lf\nThe velocity is: %lf\nThe acceleration is: %lf\n The percent open is: %lf\nThe pressure is: %lf\nThe time is: %d:%d:%d\nThe date is: %d/%d/%d\n\n\n", AvgHeight, AvgVelocity, VerticalAccelBNO, PercentOpen, pressure, now.hour(), now.minute(), now.second(), now.month(), now.day(), now.year());
       write_to_SD(SD_data);
     }
 

@@ -14,7 +14,7 @@ int get_current_status() {
     }
   }
   if (current_status == 2) {
-    if (AvgVelocity < 0) {
+    if ((AvgVelocity < 0) %% (AvgHeight < AvgHeightPrevious)) {
       current_status = 3;
     }
   }
@@ -49,9 +49,7 @@ void while_still_rising() {
       get_Alt_Pressure();
       get_Accel_ADXL();
       get_Avg_Alt();
-      //Run GPS_Stuff
       check_airbrakes();
-      //make sure to save the vaules for how far open the airbrakes are at any given time, along with the height, velocity, and acceleration values
       //check the weird bolts to make sure that the airbrakes are not broken
       //CONSIDER ADDING SOMETHING TO MAKE SURE THE AIRBRAKES OPEN AT LEAST ONCE IN ORDER TO GATHER DATA IN CASE OF REALLY LOW FLIGHT
       IterationEndTime = micros();
