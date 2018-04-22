@@ -16,7 +16,7 @@
 Adafruit_MPL115A2 mpl115a2;
 
 // The RTC DS3231 Object
-RTC_DS3231 rtc;
+//RTC_DS3231 rtc;
 
 /****************************************************
    All variable are global and are in the
@@ -51,13 +51,13 @@ void setup(void)
   //Serial.print("GPS Software Serial Started...");
 
   // Initialize RTC
-  if (! rtc.begin()) {
-    Serial.println("Couldn't find RTC");
-    while (1);
-  }
-  else {
-    Serial.println("RTC initialization successful.");
-  }
+  //if (! rtc.begin()) {
+    //Serial.println("Couldn't find RTC");
+    //while (1);
+  //}
+  //else {
+    //Serial.println("RTC initialization successful.");
+  //}
 
   mpl115a2.begin();
     sprintf(SD_data, "MPL115A2 Initialized...\n");
@@ -77,6 +77,7 @@ void loop() {
     while (current_status == 0) {
       current_status = get_current_status();
       while_on_pad();
+	  #error "We aren't using the RTC, so now.whatever won't do anything. Pretend I propogated this error to the other 2 print statements."
       sprintf(SD_data, "The height is: %lf\nThe velocity is: %lf\nThe acceleration is: %lf\nThe pressure is: %lf\nThe time is: %d:%d:%d\nThe date is: %d/%d/%d\n\n\n", AvgHeight, AvgVelocity, VerticalAccelBNO, pressure, now.hour(), now.minute(), now.second(), now.month(), now.day(), now.year());
       write_to_SD(SD_data);
     }
@@ -90,7 +91,7 @@ void loop() {
     }
 
     //During Upward Travel Engine Burned Out
-    while (current_status = 2) {
+    while (current_status == 2) {
       current_status = get_current_status();
       while_still_rising();
       sprintf(SD_data, "The height is: %lf\nThe velocity is: %lf\nThe acceleration is: %lf\n The percent open is: %lf\nThe pressure is: %lf\nThe time is: %d:%d:%d\nThe date is: %d/%d/%d\n\n\n", AvgHeight, AvgVelocity, VerticalAccelBNO, PercentOpen, pressure, now.hour(), now.minute(), now.second(), now.month(), now.day(), now.year());
@@ -98,7 +99,7 @@ void loop() {
     }
 
     //During Descent
-    while (current_status = 3) {
+    while (current_status == 3) {
       while_descending();
     }
   }

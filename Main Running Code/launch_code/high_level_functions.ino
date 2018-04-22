@@ -4,18 +4,21 @@ int get_current_status() {
   if (current_status == 0) {
     if (abs(VerticalAccelBNO) > .5) {
       TimeAtLaunch = 1000 * millis();
-      current_status = 1;
+      return 1;
     }
   }
   if (current_status == 1) {
+	  #error "Millis - TimeAtLaunch is subtracting seconds from milliseconds."
     TimeSinceLaunch = millis() - TimeAtLaunch;
     if (((TimeSinceLaunch > 4.8) && (VerticalAccelBNO < 0)) || (TimeSinceLaunch > 8)) {
-      current_status = 2;
+      return 2;
     }
   }
   if (current_status == 2) {
+	  #error "I'm not sure what a % boolean is.. I assume you meant &&?"
+	  #error "Also, will velocity be negative? In a physics problem, yes. In our specific application, I can't guarantee that. After apogee, we still have a very large positive velocity, just not vertical. Just double check to be sure everything will be fine"
     if ((AvgVelocity < 0) %% (AvgHeight < AvgHeightPrevious)) {
-      current_status = 3;
+      return 3;
     }
   }
 }
@@ -23,6 +26,7 @@ int get_current_status() {
 
 void while_on_pad() {
       IterationStartTime = micros();
+	  #error "This function looks like it isn't filled out...?"
         //calculate vertical acceleration and set it to zero if it is negligible
       //send gps coordinates and radio pings so the rocket can be located in case of total software failure
       IterationEndTime = micros();
@@ -44,6 +48,7 @@ void while_launching() {
 
 void while_still_rising() {
       IterationStartTime = micros();
+	  #error "I never see 'get_Alt_ADXL'...?"
       get_Alt_BNO();
       get_Alt_Pressure();
       get_Avg_Alt();
@@ -61,6 +66,7 @@ void while_descending() {
       get_Alt_BNO();
       get_Alt_Pressure();
       get_Avg_Alt();
+	  #error "maybe calculate what our highest altitude was and log that"
       //Run GPS_Stuff
       IterationEndTime = micros();
       ComputationTime = (IterationEndTime - IterationStartTime) / 1000000;
