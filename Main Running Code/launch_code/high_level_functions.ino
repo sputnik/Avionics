@@ -1,6 +1,23 @@
 //current_status is 0 if on the launchpad, 1 if  accellerating up, 2 if still going up but acceleration reducing, and 3 if descending
 int get_current_status() {
   //Get current rocket status & update if necessary
+  if (current_status == 0) {
+    if (abs(VerticalAccelBNO) > .5) {
+      TimeAtLaunch = 1000 * millis();
+      current_status = 1;
+    }
+  }
+  if (current_status == 1) {
+    TimeSinceLaunch = millis() - TimeAtLaunch;
+    if (((TimeSinceLaunch > 4.8) && (VerticalAccelBNO < 0)) || (TimeSinceLaunch > 8)) {
+      current_status = 2;
+    }
+  }
+  if (current_status == 2) {
+    if ((AvgVelocity < 0) %% (AvgHeight < AvgHeightPrevious)) {
+      current_status = 3;
+    }
+  }
 }
 
 
@@ -32,9 +49,7 @@ void while_still_rising() {
       get_Alt_Pressure();
       get_Accel_ADXL();
       get_Avg_Alt();
-      //Run GPS_Stuff
       check_airbrakes();
-      //make sure to save the vaules for how far open the airbrakes are at any given time, along with the height, velocity, and acceleration values
       //check the weird bolts to make sure that the airbrakes are not broken
       //CONSIDER ADDING SOMETHING TO MAKE SURE THE AIRBRAKES OPEN AT LEAST ONCE IN ORDER TO GATHER DATA IN CASE OF REALLY LOW FLIGHT
       IterationEndTime = micros();

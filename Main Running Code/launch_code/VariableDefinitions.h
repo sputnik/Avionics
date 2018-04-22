@@ -14,7 +14,7 @@
 //Defines for the Air Brake Calculations
 #define G               9.81          // Gravity...Duh (meters per second squared)
 #define SEA_DENSITY     1.225         // Air Density at Sea Level (kg per cubic meter)
-#define TIME_DELTA      0.01          // Time Between measurements (seconds)
+#define TIME_DELTA      0.1            // Time Between measurements (seconds)
 #define AREA_ROCKET     0.0182414692  // Area of the rocket (meters squared)
 #define AREA_BRAKE      0.00692       // Area of the brakes (meters squared)
 #define WEIGHT_I        422.581       // Initial Weight (newtons)
@@ -55,22 +55,38 @@ void while_still_rising();
 void while_descending();
 
 double AvgHeight = 0;
-double AvgVelocity;
+double AvgVelocity = 0;
 double VerticalAccelBNO;
 bool LaunchValue = false;
-double HeightBNO;
-double VelocityBNO;
-double HeightPress;
-double VerticalAccelADXL;
-double HeightADXL;
-double VelocityADXL;
+double HeightBNO = 0;
+double VelocityBNO = 0;
+double HeightPress = 0;
+double VerticalAccelADXL = 0;
+double HeightADXL = 0;
+double VelocityADXL = 0;
 double AvgHeightPrevious = 0;
 float IterationStartTime;
 float IterationEndTime;
 float ComputationTime;
-float WaitTime;
+float Wait_Time = 0;
 float pressure;
+float TimeAtLaunch;
+float TimeSinceLaunch;
+float pressureKPA = 0;
+float temperatureC = 0;
+float jpressureKPA = 0;
+  #error "jpressureKPA is not ever used"
+float altitude_from_pressure = 0.0;
 
+//Status Lights
+#define Status4 11
+#define Status3 10
+#define Status2 9
+#define Status1 5
+
+//Linear Actuator
+#define LA_FDBK_0 A3
+#define LA_FDBK_1 A4
 
 //SD Card
 File rocket_data;
