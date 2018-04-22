@@ -2,14 +2,13 @@
 #define VariableDefinitions.h
 
 
-#include <Wire.h>
-#include <Adafruit_Sensor.h>
-#include <Adafruit_BNO055.h>      //AMU 9-Axis orientation sensor & accelerometer
-#include <utility/imumaths.h>
-#include <Adafruit_MPL115A2.h>
-#include <TinyGPS++.h>
-#include <SoftwareSerial.h>
-#include <SD.h>
+//#include <Wire.h>
+//#include <Adafruit_Sensor.h>
+//#include <Adafruit_BNO055.h>      //AMU 9-Axis orientation sensor & accelerometer
+//#include <utility/imumaths.h>
+//#include <Adafruit_MPL115A2.h>
+//#include <TinyGPS++.h>
+//#include <SD.h>
 
 //Defines for the Air Brake Calculations
 #define G               9.81          // Gravity...Duh (meters per second squared)
@@ -34,7 +33,6 @@ double ActuationTime = 0.0;
 bool AirbrakeStatus = false;
 
 //RTC
-RTC_DS3231 rtc;
 
 //Defines for the GPS
 //#define RXPin   6     // Software Serial RX pin

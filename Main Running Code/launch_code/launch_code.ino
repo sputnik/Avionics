@@ -5,7 +5,6 @@
 #include <utility/imumaths.h>
 #include <Adafruit_MPL115A2.h>
 #include <TinyGPS++.h>
-#include <SoftwareSerial.h>
 #include <SD.h>
 #include "RTClib.h"
 #include "VariableDefinitions.h"
