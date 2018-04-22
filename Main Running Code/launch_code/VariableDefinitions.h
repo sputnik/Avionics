@@ -54,29 +54,30 @@ void while_launching();
 void while_still_rising();
 void while_descending();
 
-double AvgHeight = 0;
-double AvgVelocity = 0;
-double VerticalAccelBNO;
+double AvgHeight          = 0;
+double AvgVelocity        = 0;
+double VerticalAccelBNO   = 0;
+double HeightBNO          = 0;
+double VelocityBNO        = 0;
+double HeightPress        = 0;
+double VerticalAccelADXL  = 0;
+double HeightADXL         = 0;
+double VelocityADXL       = 0;
+double AvgHeightPrevious  = 0;
+
+float IterationStartTime      = 0;
+float IterationEndTime        = 0;
+float ComputationTime         = 0;
+float Wait_Time               = 0;
+float pressure                = 0;
+float TimeAtLaunch            = 0;
+float TimeSinceLaunch         = 0;
+float pressureKPA             = 0;
+float temperatureC            = 0;
+float tempC                   = 0;
+float altitude_from_pressure  = 0;
+
 bool LaunchValue = false;
-double HeightBNO = 0;
-double VelocityBNO = 0;
-double HeightPress = 0;
-double VerticalAccelADXL = 0;
-double HeightADXL = 0;
-double VelocityADXL = 0;
-double AvgHeightPrevious = 0;
-float IterationStartTime;
-float IterationEndTime;
-float ComputationTime;
-float Wait_Time = 0;
-float pressure;
-float TimeAtLaunch;
-float TimeSinceLaunch;
-float pressureKPA = 0;
-float temperatureC = 0;
-float jpressureKPA = 0;
-  #error "jpressureKPA is not ever used"
-float altitude_from_pressure = 0.0;
 
 //Status Lights
 #define Status4 11

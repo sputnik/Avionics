@@ -40,19 +40,17 @@ float get_Alt_Pressure()
     
      #error "might be wrong, but it looks like this for loop gets the current p/t and then doubles it, then next iteration deletes old value and starts over"
      mpl115a2.getPT(&pressureKPA, &temperatureC);
-     pressureKPA += pressureKPA;
-     temperatureC += temperatureC;
+     pressure += pressureKPA;
+     tempC += temperatureC;
   }
 
-  pressureKPA = pressureKPA / PRESSURE_AVERAGING_ITERATIONS;
-  temperatureC = temperatureC / PRESSURE_AVERAGING_ITERATIONS;
-  #error "This is the only place pressure is written. makes me think it'll just shrink contantly."
+  pressure = pressure / PRESSURE_AVERAGING_ITERATIONS;
+  tempC = tempC / PRESSURE_AVERAGING_ITERATIONS;
 
   pressure = pressure / 10.0; //Convert to hPa
-  #error "Po never initialized"
-    #error "temp never initialized or written"
 
-  altitude_from_pressure = ((pow(Po / pressure, 1 / 5.257) - 1) * (temp + 273.15)) / (0.0065);
+  //Calculating Altitude from Pressure and Temperature Equation
+  altitude_from_pressure = ((pow(SEA_LEVEL_PRESSURE / pressure, 1 / 5.257) - 1) * (tempC + 273.15)) / (0.0065); 
   HeightPress = altitude_from_pressure - START_ALT;
 
   return altitude_from_pressure;
