@@ -35,7 +35,6 @@ void while_launching() {
       IterationStartTime = micros();
       get_Alt_BNO();
       get_Alt_Pressure();
-      get_Accel_ADXL();
       get_Avg_Alt();
       IterationEndTime = micros();
       ComputationTime = (IterationEndTime - IterationStartTime) / 1000000;
@@ -47,7 +46,6 @@ void while_still_rising() {
       IterationStartTime = micros();
       get_Alt_BNO();
       get_Alt_Pressure();
-      get_Accel_ADXL();
       get_Avg_Alt();
       check_airbrakes();
       //check the weird bolts to make sure that the airbrakes are not broken
@@ -62,7 +60,6 @@ void while_descending() {
       IterationStartTime = micros();
       get_Alt_BNO();
       get_Alt_Pressure();
-      get_Accel_ADXL();
       get_Avg_Alt();
       //Run GPS_Stuff
       IterationEndTime = micros();

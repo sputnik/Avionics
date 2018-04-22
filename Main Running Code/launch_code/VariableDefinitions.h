@@ -45,7 +45,6 @@ RTC_DS3231 rtc;
 void check_airbrakes();
 void get_Alt_BNO();
 float get_Alt_Pressure();
-void get_Accel_ADXL();
 void get_Avg_Alt();
 void write_to_SD(char SD_info[]);
 int get_current_status();
@@ -68,7 +67,7 @@ double AvgHeightPrevious  = 0;
 float IterationStartTime      = 0;
 float IterationEndTime        = 0;
 float ComputationTime         = 0;
-float Wait_Time               = 0;
+float WaitTime               = 0;
 float pressure                = 0;
 float TimeAtLaunch            = 0;
 float TimeSinceLaunch         = 0;
@@ -76,6 +75,7 @@ float pressureKPA             = 0;
 float temperatureC            = 0;
 float tempC                   = 0;
 float altitude_from_pressure  = 0;
+float pressure_avg_counter;
 
 bool LaunchValue = false;
 
