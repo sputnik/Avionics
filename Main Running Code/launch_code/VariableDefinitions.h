@@ -39,18 +39,6 @@ bool AirbrakeStatus = false;
 //#define TXPin   5     // Software Serial TX pin
 //#define GPSBaud 9600  // Baud Rate
 
-//function declarations
-void check_airbrakes();
-void get_Alt_BNO();
-float get_Alt_Pressure();
-void get_Avg_Alt();
-void write_to_SD(char SD_info[]);
-int get_current_status();
-void while_on_pad();
-void while_launching();
-void while_still_rising();
-void while_descending();
-
 double AvgHeight          = 0;
 double AvgVelocity        = 0;
 double VerticalAccelBNO   = 0;
@@ -78,13 +66,13 @@ float pressure_avg_counter;
 bool LaunchValue = false;
 
 //Status Lights
-#error "If there's any purpose, use these. If not, that's fine too."
+//TODO: "If there's any purpose, use these. If not, that's fine too."
 #define Status3 10
 #define Status2 9
 #define Status1 5
 
 //Linear Actuator
-#error "Make sure we are using these pins"
+//TODO: "Make sure we are using these pins"
 #define LA_FDBK_0 A3
 #define LA_FDBK_1 A4
 #define LA_dir 12
@@ -96,12 +84,7 @@ File rocket_data;
 char SD_data[400];
 
 //RTC
-int rtc_Second = 0;
-int rtc_Minute = 0;
-int rtc_Hour = 0;
-int rtc_Day = 0;
-int rtc_Month = 0;
-int rtc_Year = 0; 
+int rtc_time[6];
 
 // Variables/Defines for doing the Altitude Calculations (Pressure Sensor)
 #define SEA_LEVEL_PRESSURE              1013.25 //Sea Level Pressure (hPa)

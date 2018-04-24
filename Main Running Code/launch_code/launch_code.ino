@@ -4,10 +4,23 @@
 #include <Adafruit_BNO055.h>      //AMU 9-Axis orientation sensor & accelerometer
 #include <utility/imumaths.h>
 #include <Adafruit_MPL115A2.h>
-#include <TinyGPS++.h>
+//#include <TinyGPS++.h>
 #include <SD.h>
 #include "RTClib.h"
 #include "VariableDefinitions.h"
+
+//function declarations
+void check_airbrakes();
+void get_Alt_BNO();
+void get_Avg_Alt();
+void write_to_SD(char SD_info[]);
+void while_on_pad();
+void while_launching();
+void while_still_rising();
+void while_descending();
+void get_Time(void);
+int get_current_status(void);
+float get_Alt_Pressure();
 
 // The TinyGPS++ Object
 //TinyGPSPlus gps;
@@ -16,7 +29,7 @@
 Adafruit_MPL115A2 mpl115a2;
 
 // The RTC DS3231 Object
-//RTC_DS3231 rtc;
+RTC_DS3231 rtc;
 
 /****************************************************
    All variable are global and are in the
@@ -32,6 +45,7 @@ Adafruit_BNO055 bno = Adafruit_BNO055();
 void setup(void)
 {
   SetupRun = true;
+  Serial.begin(9600);
   
   //SD Card
   pinMode(SDCS_pin, OUTPUT);
@@ -42,7 +56,6 @@ void setup(void)
     Serial.println("SD Card initialization successful.");
   }
   
-  Serial.begin(9600);
   sprintf(SD_data, "Launching Board...\n");
   write_to_SD(SD_data);
   //Serial.print("Launching Board...");
@@ -51,13 +64,16 @@ void setup(void)
   //Serial.print("GPS Software Serial Started...");
 
   // Initialize RTC
-  //if (! rtc.begin()) {
-    //Serial.println("Couldn't find RTC");
-    //while (1);
-  //}
-  //else {
-    //Serial.println("RTC initialization successful.");
-  //}
+  if (! rtc.begin()) {
+    Serial.println("Couldn't find RTC");
+    while (1);
+  }
+  else {
+    Serial.println("RTC initialization successful.");
+  }
+  // This line sets the RTC with an explicit date & time, for example to set
+  // January 21, 2014 at 3am you would call:
+  // rtc.adjust(DateTime(2014, 1, 21, 3, 0, 0));
 
   mpl115a2.begin();
     sprintf(SD_data, "MPL115A2 Initialized...\n");
@@ -77,8 +93,8 @@ void loop() {
     while (current_status == 0) {
       current_status = get_current_status();
       while_on_pad();
-	  #error "We aren't using the RTC, so now.whatever won't do anything. Pretend I propogated this error to the other 2 print statements."
-      sprintf(SD_data, "The height is: %lf\nThe velocity is: %lf\nThe acceleration is: %lf\nThe pressure is: %lf\nThe time is: %d:%d:%d\nThe date is: %d/%d/%d\n\n\n", AvgHeight, AvgVelocity, VerticalAccelBNO, pressure, now.hour(), now.minute(), now.second(), now.month(), now.day(), now.year());
+      get_Time();
+      sprintf(SD_data, "The height is: %lf\nThe velocity is: %lf\nThe acceleration is: %lf\nThe pressure is: %lf\nThe time is: %d:%d:%d\nThe date is: %d/%d/%d\n\n\n", AvgHeight, AvgVelocity, VerticalAccelBNO, pressure, rtc_time[0], rtc_time[1], rtc_time[2], rtc_time[3], rtc_time[4], rtc_time[5]);
       write_to_SD(SD_data);
     }
 
@@ -86,7 +102,8 @@ void loop() {
     while (current_status == 1) {
       current_status = get_current_status();
       while_launching();
-      sprintf(SD_data, "The height is: %lf\nThe velocity is: %lf\nThe acceleration is: %lf\nThe pressure is: %lf\nThe time is: %d:%d:%d\nThe date is: %d/%d/%d\n\n\n", AvgHeight, AvgVelocity, VerticalAccelBNO, pressure, now.hour(), now.minute(), now.second(), now.month(), now.day(), now.year());
+      get_Time();
+      sprintf(SD_data, "The height is: %lf\nThe velocity is: %lf\nThe acceleration is: %lf\nThe pressure is: %lf\nThe time is: %d:%d:%d\nThe date is: %d/%d/%d\n\n\n", AvgHeight, AvgVelocity, VerticalAccelBNO, pressure, rtc_time[0], rtc_time[1], rtc_time[2], rtc_time[3], rtc_time[4], rtc_time[5]);
       write_to_SD(SD_data);
     }
 
@@ -94,13 +111,15 @@ void loop() {
     while (current_status == 2) {
       current_status = get_current_status();
       while_still_rising();
-      sprintf(SD_data, "The height is: %lf\nThe velocity is: %lf\nThe acceleration is: %lf\n The percent open is: %lf\nThe pressure is: %lf\nThe time is: %d:%d:%d\nThe date is: %d/%d/%d\n\n\n", AvgHeight, AvgVelocity, VerticalAccelBNO, PercentOpen, pressure, now.hour(), now.minute(), now.second(), now.month(), now.day(), now.year());
+      get_Time();
+      sprintf(SD_data, "The height is: %lf\nThe velocity is: %lf\nThe acceleration is: %lf\n The percent open is: %lf\nThe pressure is: %lf\nThe time is: %d:%d:%d\nThe date is: %d/%d/%d\n\n\n", AvgHeight, AvgVelocity, VerticalAccelBNO, PercentOpen, pressure, rtc_time[0], rtc_time[1], rtc_time[2], rtc_time[3], rtc_time[4], rtc_time[5]);
       write_to_SD(SD_data);
     }
 
     //During Descent
     while (current_status == 3) {
       while_descending();
+      get_Time();
     }
   }
   else {

@@ -1,12 +1,12 @@
-//
-//void get_Time() {
-//
-//  DateTime now = rtc.now();
-//  rtc_Second = now.second();
-//  rtc_Minute = now.minute();
-//  rtc_Hour = now.hour();
-//  rtc_Day = now.day();
-//  rtc_Month = now.month();
-//  rtc_Year = now.year();
-//
-//}
+
+void get_Time(void) {
+
+  DateTime now = rtc.now();
+  rtc_time[0] = now.second();
+  rtc_time[1] = now.minute();
+  rtc_time[2] = now.hour();
+  rtc_time[3] = now.day();
+  rtc_time[4] = now.month();
+  rtc_time[5] = now.year();
+
+}

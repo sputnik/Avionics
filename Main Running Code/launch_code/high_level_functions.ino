@@ -1,32 +1,32 @@
 //current_status is 0 if on the launchpad, 1 if  accellerating up, 2 if still going up but acceleration reducing, and 3 if descending
-int get_current_status() {
+int get_current_status(void) {
+  int return_val = 0;
   //Get current rocket status & update if necessary
   if (current_status == 0) {
     if (abs(VerticalAccelBNO) > .5) {
-      TimeAtLaunch = 1000 * millis();
-      return 1;
+      TimeAtLaunch = millis();
+      return_val = 1;
     }
   }
   if (current_status == 1) {
-	  #error "Millis - TimeAtLaunch is subtracting seconds from milliseconds."
     TimeSinceLaunch = millis() - TimeAtLaunch;
     if (((TimeSinceLaunch > 4.8) && (VerticalAccelBNO < 0)) || (TimeSinceLaunch > 8)) {
-      return 2;
+      return_val = 2;
     }
   }
   if (current_status == 2) {
-	  #error "I'm not sure what a % boolean is.. I assume you meant &&?"
-	  #error "Also, will velocity be negative? In a physics problem, yes. In our specific application, I can't guarantee that. After apogee, we still have a very large positive velocity, just not vertical. Just double check to be sure everything will be fine"
-    if ((AvgVelocity < 0) %% (AvgHeight < AvgHeightPrevious)) {
-      return 3;
+	  //TODO: "Also, will velocity be negative? In a physics problem, yes. In our specific application, I can't guarantee that. After apogee, we still have a very large positive velocity, just not vertical. Just double check to be sure everything will be fine"
+    if ((AvgVelocity < 0) && (AvgHeight < AvgHeightPrevious)) {
+      return_val = 3;
     }
   }
+  return return_val;
 }
 
 
 void while_on_pad() {
       IterationStartTime = micros();
-	  #error "This function looks like it isn't filled out...?"
+	  //TODO: "This function looks like it isn't filled out...?"
         //calculate vertical acceleration and set it to zero if it is negligible
       //send gps coordinates and radio pings so the rocket can be located in case of total software failure
       IterationEndTime = micros();
@@ -48,7 +48,7 @@ void while_launching() {
 
 void while_still_rising() {
       IterationStartTime = micros();
-	  #error "I never see 'get_Alt_ADXL'...?"
+	  //TODO: "I never see 'get_Alt_ADXL'...?"
       get_Alt_BNO();
       get_Alt_Pressure();
       get_Avg_Alt();
@@ -66,7 +66,7 @@ void while_descending() {
       get_Alt_BNO();
       get_Alt_Pressure();
       get_Avg_Alt();
-	  #error "maybe calculate what our highest altitude was and log that"
+	  //TODO: "maybe calculate what our highest altitude was and log that"
       //Run GPS_Stuff
       IterationEndTime = micros();
       ComputationTime = (IterationEndTime - IterationStartTime) / 1000000;
