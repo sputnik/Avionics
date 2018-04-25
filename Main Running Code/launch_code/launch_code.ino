@@ -69,6 +69,10 @@ void setup(void)
       Serial.print("Writing to "); 
       Serial.println("rocket_data.txt"); 
     }
+    pinMode(LA_FDBK, INPUT);
+    pinMode(LA_DIR, OUTPUT);
+    pinMode(LA_PWM, OUTPUT);
+    
   }
   
   sprintf(SD_data, "Launching Board...\n");
