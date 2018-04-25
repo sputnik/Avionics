@@ -10,7 +10,6 @@ void check_airbrakes() {
   }
   else if (AvgVelocity < VelocityPlot) {
     AirbrakeStatus = false;
-    //printf("airbrakes closing");
   }
   if (AirbrakeStatus == true) {
     if (CurrentActuationPeriod >= ActuationTime) {

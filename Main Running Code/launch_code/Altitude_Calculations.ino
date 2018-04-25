@@ -56,7 +56,7 @@ void get_Alt_BNO()
  *    Output: (float) altitude_from_pressure, 
  * 
  */
-float get_Alt_Pressure()
+void get_Alt_Pressure()
 {
 
   
@@ -75,8 +75,6 @@ float get_Alt_Pressure()
   //Calculating Altitude from Pressure and Temperature Equation
   altitude_from_pressure = ((pow(SEA_LEVEL_PRESSURE / pressure, 1 / 5.257) - 1) * (tempC + 273.15)) / (0.0065); 
   HeightPress = altitude_from_pressure - START_ALT;
-
-  return altitude_from_pressure;
 }
 void get_Avg_Alt()
 /*

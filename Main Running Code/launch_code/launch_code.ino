@@ -15,12 +15,12 @@ void get_Alt_BNO();
 void get_Avg_Alt();
 void write_to_SD(char SD_info[]);
 void while_on_pad();
-void while_launching();
+void while_launching(); 
 void while_still_rising();
 void while_descending();
 void get_Time(void);
 int get_current_status(void);
-float get_Alt_Pressure();
+void get_Alt_Pressure();
 
 // The TinyGPS++ Object
 //TinyGPSPlus gps;
@@ -30,6 +30,8 @@ Adafruit_MPL115A2 mpl115a2;
 
 // The RTC DS3231 Object
 RTC_DS3231 rtc;
+
+File rocket_data;
 
 /****************************************************
    All variable are global and are in the
@@ -46,14 +48,27 @@ void setup(void)
 {
   SetupRun = true;
   Serial.begin(9600);
+  Serial.println("Starting Setup");
   
   //SD Card
-  pinMode(SDCS_pin, OUTPUT);
   if (!SD.begin(SDCS_pin)) {
     Serial.println("SD card initialization failed! Check connections and/or insert a valid microSD card");
   }
   else {
+    
     Serial.println("SD Card initialization successful.");
+    if (! SD.exists("rocket_data.txt")) {
+      
+    }
+    else {
+      rocket_data = SD.open("rocket_data.txt", FILE_WRITE);
+      if( ! rocket_data ) {
+        Serial.print("Couldnt create "); 
+        Serial.println("rocket_data.txt");
+      }
+      Serial.print("Writing to "); 
+      Serial.println("rocket_data.txt"); 
+    }
   }
   
   sprintf(SD_data, "Launching Board...\n");
@@ -72,8 +87,8 @@ void setup(void)
     Serial.println("RTC initialization successful.");
   }
   // This line sets the RTC with an explicit date & time, for example to set
-  // January 21, 2014 at 3am you would call:
-  // rtc.adjust(DateTime(2014, 1, 21, 3, 0, 0));
+  // April 24, 2018 at 10:37am you would call:
+  //rtc.adjust(DateTime(2018, 4, 24, 10, 37, 0));
 
   mpl115a2.begin();
     sprintf(SD_data, "MPL115A2 Initialized...\n");
@@ -94,7 +109,11 @@ void loop() {
       current_status = get_current_status();
       while_on_pad();
       get_Time();
-      sprintf(SD_data, "The height is: %lf\nThe velocity is: %lf\nThe acceleration is: %lf\nThe pressure is: %lf\nThe time is: %d:%d:%d\nThe date is: %d/%d/%d\n\n\n", AvgHeight, AvgVelocity, VerticalAccelBNO, pressure, rtc_time[0], rtc_time[1], rtc_time[2], rtc_time[3], rtc_time[4], rtc_time[5]);
+      get_Alt_BNO();
+      get_Alt_Pressure();
+      get_Avg_Alt();
+      sprintf(SD_data, "The height is: %d\nThe velocity is: %d\nThe acceleration is: %d\nThe pressure is: %d\nThe time is: %d:%d:%d\nThe date is: %d/%d/%d\n\n\n", (int)AvgHeight, (int)AvgVelocity, (int)VerticalAccelBNO, (int)HeightPress, rtc_time[0], rtc_time[1], rtc_time[2], rtc_time[3], rtc_time[4], rtc_time[5]);
+      //Serial.println(SD_data);
       write_to_SD(SD_data);
     }
 
@@ -103,7 +122,10 @@ void loop() {
       current_status = get_current_status();
       while_launching();
       get_Time();
-      sprintf(SD_data, "The height is: %lf\nThe velocity is: %lf\nThe acceleration is: %lf\nThe pressure is: %lf\nThe time is: %d:%d:%d\nThe date is: %d/%d/%d\n\n\n", AvgHeight, AvgVelocity, VerticalAccelBNO, pressure, rtc_time[0], rtc_time[1], rtc_time[2], rtc_time[3], rtc_time[4], rtc_time[5]);
+      get_Alt_BNO();
+      get_Alt_Pressure();
+      get_Avg_Alt();
+      sprintf(SD_data, "The height is: %d\nThe velocity is: %d\nThe acceleration is: %d\nThe pressure is: %d\nThe time is: %d:%d:%d\nThe date is: %d/%d/%d\n\n\n", (int)AvgHeight, (int)AvgVelocity, (int)VerticalAccelBNO, (int)HeightPress, rtc_time[0], rtc_time[1], rtc_time[2], rtc_time[3], rtc_time[4], rtc_time[5]);
       write_to_SD(SD_data);
     }
 
@@ -112,7 +134,11 @@ void loop() {
       current_status = get_current_status();
       while_still_rising();
       get_Time();
-      sprintf(SD_data, "The height is: %lf\nThe velocity is: %lf\nThe acceleration is: %lf\n The percent open is: %lf\nThe pressure is: %lf\nThe time is: %d:%d:%d\nThe date is: %d/%d/%d\n\n\n", AvgHeight, AvgVelocity, VerticalAccelBNO, PercentOpen, pressure, rtc_time[0], rtc_time[1], rtc_time[2], rtc_time[3], rtc_time[4], rtc_time[5]);
+      get_Alt_BNO();
+      get_Alt_Pressure();
+      get_Avg_Alt();
+      check_airbrakes();
+      sprintf(SD_data, "The height is: %d\nThe velocity is: %d\nThe acceleration is: %d\n The percent open is: %d\nThe pressure is: %d\nThe time is: %d:%d:%d\nThe date is: %d/%d/%d\n\n\n", (int)AvgHeight, (int)AvgVelocity, (int)VerticalAccelBNO, (int)PercentOpen, (int)HeightPress, rtc_time[0], rtc_time[1], rtc_time[2], rtc_time[3], rtc_time[4], rtc_time[5]);
       write_to_SD(SD_data);
     }
 

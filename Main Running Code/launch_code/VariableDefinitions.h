@@ -23,7 +23,7 @@
 #define ACTUATION_TIME  2.2             // Time to fully Extend the Airbrakes (seconds)
 #define AIRBRAKE_PIN 4
 
-int START_ALT = 0;
+int START_ALT = 32002;  //Set equal to altitude of current location
 int current_status = 0;
 
 double VelocityPlot = 0.0;
@@ -79,8 +79,7 @@ bool LaunchValue = false;
 #define LA_PWM 11
 
 //SD Card
-File rocket_data;
-#define SDCS_pin 5
+#define SDCS_pin 4
 char SD_data[400];
 
 //RTC

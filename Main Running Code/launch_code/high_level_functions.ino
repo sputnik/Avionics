@@ -10,13 +10,13 @@ int get_current_status(void) {
   }
   if (current_status == 1) {
     TimeSinceLaunch = millis() - TimeAtLaunch;
-    if (((TimeSinceLaunch > 4.8) && (VerticalAccelBNO < 0)) || (TimeSinceLaunch > 8)) {
+    if ((((TimeSinceLaunch > 4.8) && (VerticalAccelBNO < 0))) || (TimeSinceLaunch > 8)) {
       return_val = 2;
     }
   }
   if (current_status == 2) {
 	  //TODO: "Also, will velocity be negative? In a physics problem, yes. In our specific application, I can't guarantee that. After apogee, we still have a very large positive velocity, just not vertical. Just double check to be sure everything will be fine"
-    if ((AvgVelocity < 0) && (AvgHeight < AvgHeightPrevious)) {
+    if ((AvgVelocity < 0) || (AvgHeight < AvgHeightPrevious)) {
       return_val = 3;
     }
   }
