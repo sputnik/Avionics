@@ -3,7 +3,8 @@
 void check_airbrakes() {  
     //#error "Need AvgHeight and AvgVelocity passed in. It shouldnt need them as inputs because they are global variables"
   double x = AvgHeight;
-  VelocityPlot = (-.00000000000001899*x*x*x*x*x) + (.00000000015956*x*x*x*x) - (.00000051519*x*x*x) + (.00079063*x*x) - (.65635 * x) + (480.28);
+  //VelocityPlot = (-.00000000000001899*x*x*x*x*x) + (.00000000015956*x*x*x*x) - (.00000051519*x*x*x) + (.00079063*x*x) - (.65635 * x) + (480.28);
+  VelocityPlot = 40 - 8*x; // Modified plot for testing in elevator
   if (AvgVelocity >= VelocityPlot) {
     AirbrakeStatus = true;
     digitalWrite(LA_DIR, HIGH);

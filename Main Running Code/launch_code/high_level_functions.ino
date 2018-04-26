@@ -3,7 +3,7 @@ int get_current_status(void) {
   int return_val = 0;
   //Get current rocket status & update if necessary
   if (current_status == 0) {
-    if (abs(VerticalAccelBNO) > .5) {
+    if (abs(VerticalAccelBNO) > .1) {
       TimeAtLaunch = millis();
       return_val = 1;
     }

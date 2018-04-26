@@ -1,16 +1,18 @@
 //Comment description here
 void get_Alt_BNO() 
 {
-
+  imu::Vector<3> euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
   imu::Vector<3> acc = bno.getVector(Adafruit_BNO055::VECTOR_ACCELEROMETER);
   imu::Vector<3> linear = bno.getVector(Adafruit_BNO055::VECTOR_LINEARACCEL);
   imu::Vector<3> gravity = bno.getVector(Adafruit_BNO055::VECTOR_GRAVITY);
 
   VerticalAccelBNO = ((linear.x() * gravity.x()) + (linear.y() * gravity.y()) + (linear.z() * gravity.z())) / 9.81;
-  if (VerticalAccelBNO >= .5) {
+  Serial.print("VerticalAccel:, ");
+  Serial.println(VerticalAccelBNO);
+  if (VerticalAccelBNO >= .1) {
     LaunchValue = true ;
   }
-  if (VerticalAccelBNO <= -.5) {
+  if (VerticalAccelBNO <= -.1) {
     LaunchValue = true ;
   }
   if (LaunchValue == false) {
