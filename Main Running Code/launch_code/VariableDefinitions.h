@@ -77,8 +77,8 @@ bool LaunchValue = false;
 //Linear Actuator
 //TODO: "Make sure we are using these pins"
 #define LA_FDBK A3
-//#define LA_FDBK_1 A4
-#define LA_dir 12
+#define LA_FDBK_1 A4
+#define LA_DIR 12
 #define LA_PWM 11
 
 //SD Card
