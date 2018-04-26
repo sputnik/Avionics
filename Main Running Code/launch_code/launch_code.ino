@@ -61,6 +61,7 @@ void setup(void)
     Serial.println("initialization failed!");
     return;
   }
+<<<<<<< HEAD
   Serial.println("initialization done.");
 
   // open the file. note that only one file can be open at a time,
@@ -77,6 +78,27 @@ void setup(void)
   } else {
     // if the file didn't open, print an error:
     Serial.println("error opening rocket.txt");
+=======
+  else {
+    
+    Serial.println("SD Card initialization successful.");
+    if (! SD.exists("rocket_data.txt")) {
+      
+    }
+    else {
+      rocket_data = SD.open("rocket_data.txt", FILE_WRITE);
+      if( ! rocket_data ) {
+        Serial.print("Couldnt create "); 
+        Serial.println("rocket_data.txt");
+      }
+      Serial.print("Writing to "); 
+      Serial.println("rocket_data.txt"); 
+    }
+    pinMode(LA_FDBK, INPUT);
+    pinMode(LA_DIR, OUTPUT);
+    pinMode(LA_PWM, OUTPUT);
+    
+>>>>>>> deb783f011bb0c45eda9a28c9b1e2348071c0ddd
   }
 
   // re-open the file for reading:
