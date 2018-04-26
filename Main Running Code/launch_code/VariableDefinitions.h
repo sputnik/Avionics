@@ -63,6 +63,9 @@ float tempC                   = 0;
 float altitude_from_pressure  = 0;
 float pressure_avg_counter;
 
+unsigned long curr_time = 0;
+unsigned long old_time = 0;
+
 bool LaunchValue = false;
 
 //Status Lights

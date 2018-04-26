@@ -1,13 +1,34 @@
-void write_to_SD(char SD_info[]) {
+void write_to_SD() {
+  myFile = SD.open("rocket.txt", FILE_WRITE);
 
-  rocket_data.println("test");
-  Serial.println("test");
+  // if the file opened okay, write to it:
+  if (myFile) {
+    
+    Serial.print("Writing to rocket.txt...");
+    myFile.println(SD_data);
+       
+    // close the file:
+    myFile.close();
+    Serial.println("done.");
+  } 
+  else {
+    // if the file didn't open, print an error:
+    Serial.println("error opening rocket.txt");
+  }
 
-//  Serial.print("Writing data to SD...");
-//  Serial.println(SD_info);
-//  rocket_data = SD.open("rocket_data.txt", FILE_WRITE);
-//  rocket_data.println(SD_info);
-//  rocket_data.close();
-//  Serial.println("DONE!");
-
+  // re-open the file for reading:
+//  myFile = SD.open("rocket.txt");
+//  if (myFile) {
+//    Serial.println("rocket.txt:");
+//
+//    // read from the file until there's nothing else in it:
+//    while (myFile.available()) {
+//      Serial.write(myFile.read());
+//    }
+//    // close the file:
+//    myFile.close();
+//  } else {
+//    // if the file didn't open, print an error:
+//    Serial.println("error opening rocket.txt");
+//  }
 }

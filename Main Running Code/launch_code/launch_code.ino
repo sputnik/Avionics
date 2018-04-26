@@ -1,4 +1,5 @@
 #include <Wire.h>
+#include <SPI.h>
 #include <math.h>
 #include <Adafruit_Sensor.h>
 #include <Adafruit_BNO055.h>      //AMU 9-Axis orientation sensor & accelerometer
@@ -13,7 +14,7 @@
 void check_airbrakes();
 void get_Alt_BNO();
 void get_Avg_Alt();
-void write_to_SD(char SD_info[]);
+void write_to_SD();
 void while_on_pad();
 void while_launching(); 
 void while_still_rising();
@@ -31,7 +32,8 @@ Adafruit_MPL115A2 mpl115a2;
 // The RTC DS3231 Object
 RTC_DS3231 rtc;
 
-File rocket_data;
+File myFile;
+int i = 0;
 
 /****************************************************
    All variable are global and are in the
@@ -46,39 +48,54 @@ Adafruit_BNO055 bno = Adafruit_BNO055();
 
 void setup(void)
 {
+  
+//Start Setup 
   SetupRun = true;
   Serial.begin(9600);
   Serial.println("Starting Setup");
   
-  //SD Card
+//SD Card
+  Serial.print("Initializing SD card...");
+
   if (!SD.begin(SDCS_pin)) {
-    Serial.println("SD card initialization failed! Check connections and/or insert a valid microSD card");
+    Serial.println("initialization failed!");
+    return;
   }
-  else {
-    
-    Serial.println("SD Card initialization successful.");
-    if (! SD.exists("rocket_data.txt")) {
-      
-    }
-    else {
-      rocket_data = SD.open("rocket_data.txt", FILE_WRITE);
-      if( ! rocket_data ) {
-        Serial.print("Couldnt create "); 
-        Serial.println("rocket_data.txt");
-      }
-      Serial.print("Writing to "); 
-      Serial.println("rocket_data.txt"); 
-    }
+  Serial.println("initialization done.");
+
+  // open the file. note that only one file can be open at a time,
+  // so you have to close this one before opening another.
+  myFile = SD.open("rocket.txt", FILE_WRITE);
+
+  // if the file opened okay, write to it:
+  if (myFile) {
+    Serial.print("Writing to rocket.txt...");
+    myFile.println("System Booting Up");
+    // close the file:
+    myFile.close();
+    Serial.println("done.");
+  } else {
+    // if the file didn't open, print an error:
+    Serial.println("error opening rocket.txt");
   }
-  
-  sprintf(SD_data, "Launching Board...\n");
-  write_to_SD(SD_data);
-  //Serial.print("Launching Board...");
 
-  //ss.begin(GPSBaud);
-  //Serial.print("GPS Software Serial Started...");
+  // re-open the file for reading:
+  myFile = SD.open("rocket.txt");
+  if (myFile) {
+    Serial.println("rocket.txt:");
 
-  // Initialize RTC
+    // read from the file until there's nothing else in it:
+    while (myFile.available()) {
+      Serial.write(myFile.read());
+    }
+    // close the file:
+    myFile.close();
+  } else {
+    // if the file didn't open, print an error:
+    Serial.println("error opening rocket.txt");
+  }
+
+// Initialize RTC
   if (! rtc.begin()) {
     Serial.println("Couldn't find RTC");
     while (1);
@@ -87,18 +104,16 @@ void setup(void)
     Serial.println("RTC initialization successful.");
   }
   // This line sets the RTC with an explicit date & time, for example to set
-  // April 24, 2018 at 10:37am you would call:
+  // April 24, 2018 at 10:37:00 A.M. you would call:
   //rtc.adjust(DateTime(2018, 4, 24, 10, 37, 0));
 
-  mpl115a2.begin();
-    sprintf(SD_data, "MPL115A2 Initialized...\n");
-  write_to_SD(SD_data);
-  //Serial.print("MP1115A2 Initialized...");
+//MP1115A2
+  mpl115a2.begin();  
 
-  //Setup More Stuff here
-  sprintf(SD_data, "Setup Finished!\n");
-  write_to_SD(SD_data);
-  //Serial.println("Setup Finished");
+//Setup More Stuff here
+
+  Serial.println("Setup Finished, Starting Main Program Now...");
+
 }
 
 void loop() {
@@ -112,9 +127,13 @@ void loop() {
       get_Alt_BNO();
       get_Alt_Pressure();
       get_Avg_Alt();
-      sprintf(SD_data, "The height is: %d\nThe velocity is: %d\nThe acceleration is: %d\nThe pressure is: %d\nThe time is: %d:%d:%d\nThe date is: %d/%d/%d\n\n\n", (int)AvgHeight, (int)AvgVelocity, (int)VerticalAccelBNO, (int)HeightPress, rtc_time[0], rtc_time[1], rtc_time[2], rtc_time[3], rtc_time[4], rtc_time[5]);
-      //Serial.println(SD_data);
-      write_to_SD(SD_data);
+      
+      curr_time = millis();
+      if (curr_time > (old_time + 200)) {
+        sprintf(SD_data, "The Current Data Values  (On Pad) are:\tHeight: %06d\tVelocity: %06d\tAcceleration: %06d\tPressure: %06d\tThe time is: %02d:%02d:%02d\tThe date is: %02d/%02d/%04d",(int)AvgHeight, (int)AvgVelocity, (int)(VerticalAccelBNO*1000), (int)HeightPress, rtc_time[0], rtc_time[1], rtc_time[2], rtc_time[3], rtc_time[4], rtc_time[5]);
+        write_to_SD();
+        old_time = millis();
+      }
     }
 
     //During Engine Burn
@@ -125,8 +144,13 @@ void loop() {
       get_Alt_BNO();
       get_Alt_Pressure();
       get_Avg_Alt();
-      sprintf(SD_data, "The height is: %d\nThe velocity is: %d\nThe acceleration is: %d\nThe pressure is: %d\nThe time is: %d:%d:%d\nThe date is: %d/%d/%d\n\n\n", (int)AvgHeight, (int)AvgVelocity, (int)VerticalAccelBNO, (int)HeightPress, rtc_time[0], rtc_time[1], rtc_time[2], rtc_time[3], rtc_time[4], rtc_time[5]);
-      write_to_SD(SD_data);
+      
+      curr_time = millis();
+      if (curr_time > (old_time + 200)) {
+        sprintf(SD_data, "The Current Data Values  (Launching) are:\tHeight: %06d\tVelocity: %06d\tAcceleration: %06d\tPressure: %06d\tThe time is: %02d:%02d:%02d\tThe date is: %02d/%02d/%04d",(int)AvgHeight, (int)AvgVelocity, (int)(VerticalAccelBNO*1000), (int)HeightPress, rtc_time[0], rtc_time[1], rtc_time[2], rtc_time[3], rtc_time[4], rtc_time[5]);
+        write_to_SD();
+        old_time = millis();
+      }
     }
 
     //During Upward Travel Engine Burned Out
@@ -138,14 +162,26 @@ void loop() {
       get_Alt_Pressure();
       get_Avg_Alt();
       check_airbrakes();
-      sprintf(SD_data, "The height is: %d\nThe velocity is: %d\nThe acceleration is: %d\n The percent open is: %d\nThe pressure is: %d\nThe time is: %d:%d:%d\nThe date is: %d/%d/%d\n\n\n", (int)AvgHeight, (int)AvgVelocity, (int)VerticalAccelBNO, (int)PercentOpen, (int)HeightPress, rtc_time[0], rtc_time[1], rtc_time[2], rtc_time[3], rtc_time[4], rtc_time[5]);
-      write_to_SD(SD_data);
+      
+      curr_time = millis();
+      if (curr_time > (old_time + 200)) {
+        sprintf(SD_data, "The Current Data Values  (On Pad) are:\tHeight: %06d\tVelocity: %06d\tAcceleration: %06d\tPressure: %06d\tThe time is: %02d:%02d:%02d\tThe date is: %02d/%02d/%04d",(int)AvgHeight, (int)AvgVelocity, (int)(VerticalAccelBNO*1000), (int)HeightPress, rtc_time[0], rtc_time[1], rtc_time[2], rtc_time[3], rtc_time[4], rtc_time[5]);
+        write_to_SD();
+        old_time = millis();
+      }
     }
 
     //During Descent
     while (current_status == 3) {
       while_descending();
       get_Time();
+
+      curr_time = millis();
+      if (curr_time > (old_time + 200)) {      
+        sprintf(SD_data, "The Rocket is Descending. Currently the time is: %02d:%02d:%02d\tThe date is: %02d/%02d/%04d", rtc_time[0], rtc_time[1], rtc_time[2], rtc_time[3], rtc_time[4], rtc_time[5]);
+        write_to_SD();
+        old_time = millis();
+      }
     }
   }
   else {
