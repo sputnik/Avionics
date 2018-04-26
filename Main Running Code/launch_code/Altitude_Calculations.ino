@@ -9,14 +9,15 @@ void get_Alt_BNO()
   VerticalAccelBNO = ((linear.x() * gravity.x()) + (linear.y() * gravity.y()) + (linear.z() * gravity.z())) / 9.81;
   Serial.print("VerticalAccel:, ");
   Serial.println(VerticalAccelBNO);
-  if (VerticalAccelBNO >= .1) {
+  if (VerticalAccelBNO >= .5) {
     LaunchValue = true ;
   }
-  if (VerticalAccelBNO <= -.1) {
+  if (VerticalAccelBNO <= -.5) {
     LaunchValue = true ;
   }
   if (LaunchValue == false) {
     VerticalAccelBNO = 0;
+    
   }
   HeightBNO = AvgHeight + (AvgVelocity * TIME_DELTA) + (.5 * VerticalAccelBNO * TIME_DELTA * TIME_DELTA);
   VelocityBNO = AvgVelocity + (VerticalAccelBNO * TIME_DELTA);
@@ -77,6 +78,9 @@ void get_Alt_Pressure()
   //Calculating Altitude from Pressure and Temperature Equation
   altitude_from_pressure = ((pow(SEA_LEVEL_PRESSURE / pressure, 1 / 5.257) - 1) * (tempC + 273.15)) / (0.0065); 
   HeightPress = altitude_from_pressure - START_ALT;
+  if (current_status == 0) {
+    START_ALT = HeightPress;
+  }
 }
 void get_Avg_Alt()
 /*

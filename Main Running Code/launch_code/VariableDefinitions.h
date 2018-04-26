@@ -13,7 +13,7 @@
 //Defines for the Air Brake Calculations
 #define G               9.81          // Gravity...Duh (meters per second squared)
 #define SEA_DENSITY     1.225         // Air Density at Sea Level (kg per cubic meter)
-#define TIME_DELTA      0.1            // Time Between measurements (seconds)
+#define TIME_DELTA      0.01            // Time Between measurements (seconds)
 #define AREA_ROCKET     0.0182414692  // Area of the rocket (meters squared)
 #define AREA_BRAKE      0.00692       // Area of the brakes (meters squared)
 #define WEIGHT_I        422.581       // Initial Weight (newtons)
@@ -23,7 +23,7 @@
 #define ACTUATION_TIME  2.2             // Time to fully Extend the Airbrakes (seconds)
 #define AIRBRAKE_PIN 4
 
-int START_ALT = 32002;  //Set equal to altitude of current location
+int START_ALT = 0;  //Set equal to altitude of current location
 int current_status = 0;
 
 double VelocityPlot = 0.0;

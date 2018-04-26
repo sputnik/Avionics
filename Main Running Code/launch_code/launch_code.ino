@@ -20,7 +20,7 @@ void while_launching();
 void while_still_rising();
 void while_descending();
 void get_Time(void);
-int get_current_status(void);
+void get_current_status();
 void get_Alt_Pressure();
 
 // The TinyGPS++ Object
@@ -100,6 +100,11 @@ void setup(void)
 
 //Setup More Stuff here
 
+  if (!bno.begin())
+  {
+    /* There was a problem detecting the BNO055 ... check your connections */
+    Serial.print("Ooops, no BNO055 detected ... Check your wiring or I2C ADDR!");
+  }
   Serial.println("Setup Finished, Starting Main Program Now...");
 
 }
@@ -109,7 +114,7 @@ void loop() {
 
     //While on the Launch Pad
     while (current_status == 0) {
-      current_status = get_current_status();
+      get_current_status();
       while_on_pad();
       get_Time();
       get_Alt_BNO();
@@ -126,7 +131,7 @@ void loop() {
 
     //During Engine Burn
     while (current_status == 1) {
-      current_status = get_current_status();
+      get_current_status();
       while_launching();
       get_Time();
       get_Alt_BNO();
@@ -143,7 +148,7 @@ void loop() {
 
     //During Upward Travel Engine Burned Out
     while (current_status == 2) {
-      current_status = get_current_status();
+      get_current_status();
       while_still_rising();
       get_Time();
       get_Alt_BNO();
@@ -153,7 +158,7 @@ void loop() {
       
       curr_time = millis();
       if (curr_time > (old_time + 200)) {
-        sprintf(SD_data, "The Current Data Values  (On Pad) are:\tHeight: %06d\tVelocity: %06d\tAcceleration: %06d\tPressure: %06d\tThe time is: %02d:%02d:%02d\tThe date is: %02d/%02d/%04d",(int)AvgHeight, (int)AvgVelocity, (int)(VerticalAccelBNO*1000), (int)HeightPress, rtc_time[0], rtc_time[1], rtc_time[2], rtc_time[3], rtc_time[4], rtc_time[5]);
+        sprintf(SD_data, "The Current Data Values  (Braking) are:\tHeight: %06d\tVelocity: %06d\tAcceleration: %06d\tPressure: %06d\tThe time is: %02d:%02d:%02d\tThe date is: %02d/%02d/%04d",(int)AvgHeight, (int)AvgVelocity, (int)(VerticalAccelBNO*1000), (int)HeightPress, rtc_time[0], rtc_time[1], rtc_time[2], rtc_time[3], rtc_time[4], rtc_time[5]);
         write_to_SD();
         old_time = millis();
       }
