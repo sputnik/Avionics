@@ -5,7 +5,7 @@
    It requires the use of SoftwareSerial, and assumes that you have a
    4800-baud serial GPS device hooked up on pins 4(rx) and 3(tx).
 */
-static const int RXPin = 9, TXPin = 8;
+static const int RXPin = 8, TXPin = 9;
 static const uint32_t GPSBaud = 9600;
 
 // The TinyGPS++ object
@@ -42,7 +42,7 @@ void displayInfo()
   if (gps.location.isValid())
   {
     Serial.print(gps.location.lat(), 6);
-    Serial.print(F(","));
+    Serial.print(F(", "));
     Serial.print(gps.location.lng(), 6);
   }
   else
@@ -92,5 +92,5 @@ void displayInfo()
     Serial.print(F("INVALID"));
   }
 
-  Serial.println("INVICTUS I.");
+  Serial.println(" INVICTUS I.");
 }
