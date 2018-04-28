@@ -81,6 +81,12 @@ bool LaunchValue = false;
 //#define LA_FDBK_1 A4
 #define LA_DIR 12
 #define LA_PWM 11
+short LAdir = 0;
+short LApwm = 0;
+short LAfdbk = 0;
+//direction, 1 is acctuate, 0 is retract
+//on pwm 1 is full speed, 0 is no speed
+
 
 //SD Card
 #define SDCS_pin 4

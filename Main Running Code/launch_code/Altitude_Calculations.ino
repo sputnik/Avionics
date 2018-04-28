@@ -103,7 +103,8 @@ void get_Avg_Alt()
 {
   AvgHeight = (HeightBNO + HeightPress + HeightADXL) / 3;
   AvgHeightWithoutPressure = (HeightBNO + HeightADXL) / 2;
-  AvgVelocity = (AvgHeightWithoutPressure - AvgHeightPrevious) / TIME_DELTA;
+  //AvgVelocity = (AvgHeightWithoutPressure - AvgHeightPrevious) / TIME_DELTA;
+  AvgVelocity = (VelocityBNO + VelocityADXL) / 2;
   //#error "Do we want to calculate velocity this way or by using the velocity from Accelerometers?"
   // Because the AvgHeight is calculated from both accelerometers, and the barometer, this method of calculation should work well
   AvgHeightPrevious = AvgHeightWithoutPressure;
