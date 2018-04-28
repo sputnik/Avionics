@@ -122,7 +122,7 @@ void loop() {
       get_Avg_Alt();
       
       curr_time = millis();
-      if (curr_time > (old_time + 200)) {
+      if (curr_time > (old_time + 40)) {
         sprintf(SD_data, "The Current Data Values  (On Pad) are:\tHeight: %06d\tVelocity: %06d\tAcceleration: %06d\tPressure: %06d\tThe time is: %02d:%02d:%02d\tThe date is: %02d/%02d/%04d",(int)AvgHeight, (int)AvgVelocity, (int)(VerticalAccelBNO*1000), (int)HeightPress, rtc_time[0], rtc_time[1], rtc_time[2], rtc_time[3], rtc_time[4], rtc_time[5]);
         write_to_SD();
         old_time = millis();
@@ -139,7 +139,7 @@ void loop() {
       get_Avg_Alt();
       
       curr_time = millis();
-      if (curr_time > (old_time + 200)) {
+      if (curr_time > (old_time + 40)) {
         sprintf(SD_data, "The Current Data Values  (Launching) are:\tHeight: %06d\tVelocity: %06d\tAcceleration: %06d\tPressure: %06d\tThe time is: %02d:%02d:%02d\tThe date is: %02d/%02d/%04d",(int)AvgHeight, (int)AvgVelocity, (int)(VerticalAccelBNO*1000), (int)HeightPress, rtc_time[0], rtc_time[1], rtc_time[2], rtc_time[3], rtc_time[4], rtc_time[5]);
         write_to_SD();
         old_time = millis();
@@ -157,7 +157,7 @@ void loop() {
       check_airbrakes();
       
       curr_time = millis();
-      if (curr_time > (old_time + 200)) {
+      if (curr_time > (old_time + 40)) {
         sprintf(SD_data, "The Current Data Values  (Braking) are:\tHeight: %06d\tVelocity: %06d\tAcceleration: %06d\tPressure: %06d\tThe time is: %02d:%02d:%02d\tThe date is: %02d/%02d/%04d",(int)AvgHeight, (int)AvgVelocity, (int)(VerticalAccelBNO*1000), (int)HeightPress, rtc_time[0], rtc_time[1], rtc_time[2], rtc_time[3], rtc_time[4], rtc_time[5]);
         write_to_SD();
         old_time = millis();
@@ -170,7 +170,7 @@ void loop() {
       get_Time();
 
       curr_time = millis();
-      if (curr_time > (old_time + 200)) {      
+      if (curr_time > (old_time + 40)) {      
         sprintf(SD_data, "The Rocket is Descending. Currently the time is: %02d:%02d:%02d\tThe date is: %02d/%02d/%04d", rtc_time[0], rtc_time[1], rtc_time[2], rtc_time[3], rtc_time[4], rtc_time[5]);
         write_to_SD();
         old_time = millis();

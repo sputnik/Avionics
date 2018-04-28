@@ -79,7 +79,7 @@ void get_Alt_Pressure()
   altitude_from_pressure = ((pow(SEA_LEVEL_PRESSURE / pressure, 1 / 5.257) - 1) * (tempC + 273.15)) / (0.0065); 
   HeightPress = altitude_from_pressure - START_ALT;
   if (current_status == 0) {
-    START_ALT = HeightPress;
+    START_ALT = altitude_from_pressure;
   }
 }
 void get_Avg_Alt()
