@@ -21,6 +21,11 @@ void get_Alt_BNO()
   }
   HeightBNO = AvgHeight + (AvgVelocity * TIME_DELTA) + (.5 * VerticalAccelBNO * TIME_DELTA * TIME_DELTA);
   VelocityBNO = AvgVelocity + (VerticalAccelBNO * TIME_DELTA);
+
+  if (LaunchValue == false) {
+    HeightBNO = 0;
+    VelocityBNO = 0;
+  }
   
   int ADXL377_X_axis = analogRead(A2);
   int ADXL377_Y_axis = analogRead(A1);
@@ -45,6 +50,11 @@ void get_Alt_BNO()
     //#error "assuming you did use it, you're calculating using an average velocity and a raw acceleration. I see why, but do we want that?"
     // yeah we do want it calculated this way, but it hasnt been used yet because Ive thought of two ways to calculate AvgVelocity and I think it will still work if we calculate AvgVelocity from the change in AvgHeight
     VelocityADXL = AvgVelocity + (VerticalAccelADXL * TIME_DELTA);
+  }
+  if (LaunchValue == false) {
+    VerticalAccelADXL = 0;
+    HeightADXL = 0;
+    VelocityADXL = 0;
   }
 }
 
@@ -92,9 +102,10 @@ void get_Avg_Alt()
  */
 {
   AvgHeight = (HeightBNO + HeightPress + HeightADXL) / 3;
-  AvgVelocity = (AvgHeight - AvgHeightPrevious) / TIME_DELTA;
+  AvgHeightWithoutPressure = (HeightBNO + HeightADXL) / 2;
+  AvgVelocity = (AvgHeightWithoutPressure - AvgHeightPrevious) / TIME_DELTA;
   //#error "Do we want to calculate velocity this way or by using the velocity from Accelerometers?"
   // Because the AvgHeight is calculated from both accelerometers, and the barometer, this method of calculation should work well
-  AvgHeightPrevious = AvgHeight;
+  AvgHeightPrevious = AvgHeightWithoutPressure;
 }
 

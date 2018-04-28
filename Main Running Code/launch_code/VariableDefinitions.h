@@ -13,7 +13,7 @@
 //Defines for the Air Brake Calculations
 #define G               9.81          // Gravity...Duh (meters per second squared)
 #define SEA_DENSITY     1.225         // Air Density at Sea Level (kg per cubic meter)
-#define TIME_DELTA      0.01            // Time Between measurements (seconds)
+#define TIME_DELTA      0.04            // Time Between measurements (seconds)
 #define AREA_ROCKET     0.0182414692  // Area of the rocket (meters squared)
 #define AREA_BRAKE      0.00692       // Area of the brakes (meters squared)
 #define WEIGHT_I        422.581       // Initial Weight (newtons)
@@ -40,6 +40,7 @@ bool AirbrakeStatus = false;
 //#define GPSBaud 9600  // Baud Rate
 
 double AvgHeight          = 0;
+double AvgHeightWithoutPressure = 0;
 double AvgVelocity        = 0;
 double VerticalAccelBNO   = 0;
 double HeightBNO          = 0;
