@@ -38,7 +38,7 @@ bool AirbrakeStatus = false;
 //#define RXPin   6     // Software Serial RX pin
 //#define TXPin   5     // Software Serial TX pin
 //#define GPSBaud 9600  // Baud Rate
-
+int AirbrakeValue = 0;
 double AvgHeight          = 0;
 double AvgHeightWithoutPressure = 0;
 double AvgVelocity        = 0;

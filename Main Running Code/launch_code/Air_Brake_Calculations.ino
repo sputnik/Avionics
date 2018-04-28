@@ -16,6 +16,9 @@ void check_airbrakes() {
     digitalWrite(LA_DIR, LOW);
     digitalWrite(LA_PWM, HIGH);
   }
+  Serial.print("Airbrakes opening:, ");
+  Serial.println(AirbrakeStatus);
+  AirbrakeValue = analogRead(LA_FDBK);
   if (AirbrakeStatus == true) {
     if (CurrentActuationPeriod >= ActuationTime) {
       //Open Airbrakes;
