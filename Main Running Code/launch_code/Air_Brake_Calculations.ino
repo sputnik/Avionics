@@ -20,14 +20,14 @@ void check_airbrakes() {
   Serial.println(AirbrakeStatus);
   AirbrakeValue = analogRead(LA_FDBK);
   if (AirbrakeStatus == true) {
-    if (CurrentActuationPeriod >= ActuationTime) {
+    if (CurrentActuationPeriod >= ACTUATION_TIME) {
       digitalWrite(LA_DIR, HIGH);
       LAdir = 1;
       digitalWrite(LA_PWM, LOW);
       LApwm = 0;
       PercentOpen = 100;
     }
-    else if (CurrentActuationPeriod < ActuationTime) {
+    else if (CurrentActuationPeriod < ACTUATION_TIME) {
       digitalWrite(LA_DIR, HIGH);
       LAdir = 1;
       digitalWrite(LA_PWM, HIGH);
