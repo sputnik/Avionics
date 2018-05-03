@@ -2,7 +2,7 @@
 void get_current_status() {
   //Get current rocket status & update if necessary
   if (current_status == 0) {
-    if (abs(VerticalAccelBNO) > .5) {
+    if (abs(VerticalAccelBNO) > 1) {
       TimeAtLaunch = millis();
       current_status = 1;
       Serial.println("Just Launched");
