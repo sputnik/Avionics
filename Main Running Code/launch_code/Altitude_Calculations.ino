@@ -9,10 +9,10 @@ void get_Alt_BNO()
   VerticalAccelBNO = ((linear.x() * gravity.x()) + (linear.y() * gravity.y()) + (linear.z() * gravity.z())) / 9.81;
   Serial.print("VerticalAccel:, ");
   Serial.println(VerticalAccelBNO);
-  if (VerticalAccelBNO >= 2) {
+  if (VerticalAccelBNO >= .5) {
     LaunchValue = true ;
   }
-  if (VerticalAccelBNO <= -2) {
+  if (VerticalAccelBNO <= -.5) {
     LaunchValue = true ;
   }
   if (LaunchValue == false) {

@@ -23,15 +23,19 @@ void check_airbrakes() {
   if (AirbrakeStatus == true) {
     if (LAfdbk >= 500) {
       digitalWrite(LA_DIR, HIGH);
+      digitalWrite(Status1, HIGH);
       LAdir = 1;
       digitalWrite(LA_PWM, LOW);
+      digitalWrite(Status2, LOW);
       LApwm = 0;
       //PercentOpen = 100;
     }
     else if (LAfdbk < 500) {
       digitalWrite(LA_DIR, HIGH);
+      digitalWrite(Status1, HIGH);
       LAdir = 1;
       digitalWrite(LA_PWM, HIGH);
+      digitalWrite(Status2, HIGH);
       LApwm = 1;
       //PercentOpen = CurrentActuationPeriod * 45.4545454545;
       //CurrentActuationPeriod = CurrentActuationPeriod + TIME_DELTA;
@@ -40,15 +44,19 @@ void check_airbrakes() {
   else if (AirbrakeStatus == false) {
     if (LAfdbk <= 208) {
       digitalWrite(LA_DIR, LOW);
+      digitalWrite(Status1, LOW);
       LAdir = 0;
       digitalWrite(LA_PWM, LOW);
+      digitalWrite(Status2, LOW);
       LApwm = 0;
       PercentOpen = 0;
     }
     else if (LAfdbk > 208) {
       digitalWrite(LA_DIR, LOW);
+      digitalWrite(Status1, LOW);
       LAdir = 0;
       digitalWrite(LA_PWM, HIGH);
+      digitalWrite(Status2, HIGH);
       LApwm = 1;
       //TODO: Switch percent open statements and make sure function is correct
       //PercentOpen = (analogRead(LA_FDBK) * FUNCTION) + B;
