@@ -19,7 +19,7 @@ void check_airbrakes() {
   }
   Serial.print("Airbrakes opening:, ");
   Serial.println(AirbrakeStatus);
-  AirbrakeValue = analogRead(LA_FDBK);
+  LAfdbk = analogRead(LA_FDBK);
   if (AirbrakeStatus == true) {
     if (LAfdbk >= 500) {
       digitalWrite(LA_DIR, HIGH);
@@ -80,6 +80,5 @@ void check_airbrakes() {
       }
       CurrentActuationPeriod = CurrentActuationPeriod - TIME_DELTA;
     }
-    LAfdbk = analogRead(LA_FDBK);
   }
 }
