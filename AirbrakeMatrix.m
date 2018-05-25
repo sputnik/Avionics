@@ -79,7 +79,7 @@ figure % makes a new figure
 plot(HeightGood,VelocityGood) % plots the "good" pairs of deployment height and velocity
 xlabel('Brake Height m'); % labels the x axis
 ylabel('Brake Velocity m/s'); % labels the y axis
-title('Height & Velocity Pairs That Get Us Close'); % titles the graph
+title('Height & Velocity Flight profile'); % titles the graph
 figure % makes a new figure
 plot(HeightGood1,VelocityGood1) % plots the "good" pairs of deployment height and velocity
 xlabel('Brake Height m'); % labels the x axis
