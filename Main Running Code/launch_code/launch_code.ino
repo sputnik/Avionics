@@ -174,7 +174,7 @@ void loop() {
 
       curr_time = millis();
       if (curr_time > (old_time + 40)) {      
-        sprintf(SD_data, "%02d:%02d:%02d,\t%02d/%02d/%04d", rtc_time[0], rtc_time[1], rtc_time[2], rtc_time[3], rtc_time[4], rtc_time[5]);
+        sprintf(SD_data, "%06d,\t%06d,\t%06d,\t%06d,\t%06d,\t%02d:%02d:%02d,\t%02d/%02d/%04d", (int)(1000 * AvgHeight), (int)(1000 * AvgVelocity), (int)(1000 * VerticalAccelBNO), (int)(HeightPress * 1000), (int)(1000* HeightBNO), rtc_time[0], rtc_time[1], rtc_time[2], rtc_time[3], rtc_time[4], rtc_time[5]);
         write_to_SD();
         old_time = millis();
       }
