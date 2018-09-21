@@ -1,7 +1,0 @@
-RFD900 - standoff mounts
-datalogger - standoff mounts
-MCP9808 - not necessary
-GPS - probably different
-RFD900 - is pinout correct?
-BATTERY connections - are they right
-
