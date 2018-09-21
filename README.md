@@ -1,7 +1,5 @@
-# Airbreak
-Overall airbreak system for the rocket
+# Avionics
+Github page for CyRoc's (Rocket Shop's) Avionics team
 
-# Test Launch Code Functionality
-- BNO055 (Acceleration)
-- SD Card
-- GPS
+# Airbrakes
+- The main system that is being worked on currently
