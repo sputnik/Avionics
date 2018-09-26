@@ -1,0 +1,5 @@
+Barometer / Pressure Sensor - https://www.adafruit.com/product/992
+9DOF IMU https://www.adafruit.com/product/2472
+Temperature - https://www.adafruit.com/product/1782
+High G accel - https://www.adafruit.com/product/1413
+Accel - https://www.adafruit.com/product/1231
