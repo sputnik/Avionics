@@ -50,7 +50,7 @@ void loop() {
   Serial.print(euler.y());
   Serial.print(" Z: ");
   Serial.print(euler.z());
-  Serial.print("\t\t");
+  Serial.println("\t\t");
   
   /* Display calibration status for each sensor. */
   uint8_t system, gyro, accel, mag = 0;
