@@ -27,11 +27,22 @@ void setup() {
 void loop() {
   // put your main code here, to run repeatedly:
 
-    /* Get a new sensor event */ 
-   sensors_event_t event; 
-   bno.getEvent(&event);
-  
+  /* Get a new sensor event */ 
+  sensors_event_t event; 
+  bno.getEvent(&event);
+
+  // Initializing the the euler angle, acceleration, linear acceleration, and gravity vectors
+  imu::Vector<3> euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
+  imu::Vector<3> acc = bno.getVector(Adafruit_BNO055::VECTOR_ACCELEROMETER);
+  imu::Vector<3> linear = bno.getVector(Adafruit_BNO055::VECTOR_LINEARACCEL);
+  imu::Vector<3> gravity = bno.getVector(Adafruit_BNO055::VECTOR_GRAVITY);
+
+  // Calculate the vertical acceleration
+  VerticalAccel = ((linear.x() * gravity.x()) + (linear.y() * gravity.y()) + (linear.z() * gravity.z())) / 9.81;
+
+   
   /* Display the floating point data */
+  // X, Y, Z Orientation
   Serial.print("X: ");
   Serial.print(event.orientation.x, 4);
   Serial.print("\tY: ");
@@ -40,9 +51,8 @@ void loop() {
   Serial.print(event.orientation.z, 4);
   Serial.println("");
 
-  imu::Vector<3> euler = bno.getVector(Adafruit_BNO055::VECTOR_EULER);
-    imu::Vector<3> acc = bno.getVector(Adafruit_BNO055::VECTOR_ACCELEROMETER);
-  Serial.print("BNO055: \t");
+  // Euler Angles
+  Serial.print("BNO055:\t");
   Serial.print("Euler angles: ");
   Serial.print("X: "); 
   Serial.print(euler.x());
@@ -50,20 +60,9 @@ void loop() {
   Serial.print(euler.y());
   Serial.print(" Z: ");
   Serial.print(euler.z());
-  Serial.println("\t\t");
-  
-  /* Display calibration status for each sensor. */
-  uint8_t system, gyro, accel, mag = 0;
-  bno.getCalibration(&system, &gyro, &accel, &mag);
-  Serial.print("CALIBRATION: Sys=");
-  Serial.print(system, DEC);
-  Serial.print(" Gyro=");
-  Serial.print(gyro, DEC);
-  Serial.print(" Accel=");
-  Serial.print(accel, DEC);
-  Serial.print(" Mag=");
-  Serial.println(mag, DEC);
-  
+  Serial.println("");
+
+  // Accelerometer Output in m/s^2
   Serial.print("\t\tAcceleration: ");
   Serial.print("X: "); 
   Serial.print(acc.x());
@@ -71,7 +70,24 @@ void loop() {
   Serial.print(acc.y());
   Serial.print(" Z: ");
   Serial.print(acc.z());
-  Serial.println("\t\t");
+  Serial.println("");
+
+  // Vertical Acceleration in m/s^2
+  Serial.print("Vertical Acceleration = ")
+  Serial.print(VerticalAccel);
+  Serial.println("");
+  
+  /* Display calibration status for each sensor. 0 is bad, 3 is good */
+  uint8_t system, gyro, accel, mag = 0;
+  bno.getCalibration(&system, &gyro, &accel, &mag);
+  Serial.print("CALIBRATION: Sys = ");
+  Serial.print(system, DEC);
+  Serial.print("Gyro = ");
+  Serial.print(gyro, DEC);
+  Serial.print("Accel = ");
+  Serial.print(accel, DEC);
+  Serial.print("Mag = ");
+  Serial.println(mag, DEC);
   
   delay(100);
 }
