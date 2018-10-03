@@ -1,0 +1,7 @@
+switchToAscending ideas
+
+Counter system
+	Would add and subtract different amounts to the running counter depending on which checks passed and which did not.
+	Should we have a reset to zero switch?
+	Should we subtract or just add and reset to zero?
+	
