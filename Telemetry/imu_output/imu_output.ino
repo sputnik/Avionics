@@ -3,11 +3,12 @@
 #include <Adafruit_BNO055.h>
 #include <utility/imumaths.h>
 
-Adafruit_BNO055 bno = Adafruit_BNO055(55);
+Adafruit_BNO055 bno = Adafruit_BNO055(55, 0x28);
 
 void setup() {
   // put your setup code here, to run once:
   Serial.begin(9600);
+  while( !Serial);
   Serial.println("Orientation Sensor Test"); Serial.println("");
   
   /* Initialise the sensor */
