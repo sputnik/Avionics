@@ -38,7 +38,7 @@ void loop() {
   imu::Vector<3> gravity = bno.getVector(Adafruit_BNO055::VECTOR_GRAVITY);
 
   // Calculate the vertical acceleration
-  VerticalAccel = ((linear.x() * gravity.x()) + (linear.y() * gravity.y()) + (linear.z() * gravity.z())) / 9.81;
+  double VerticalAccel = ((linear.x() * gravity.x()) + (linear.y() * gravity.y()) + (linear.z() * gravity.z())) / 9.81;
 
    
   /* Display the floating point data */
@@ -73,7 +73,7 @@ void loop() {
   Serial.println("");
 
   // Vertical Acceleration in m/s^2
-  Serial.print("Vertical Acceleration = ")
+  Serial.print("Vertical Acceleration = ");
   Serial.print(VerticalAccel);
   Serial.println("");
   
