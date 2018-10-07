@@ -8,14 +8,9 @@ Adafruit_BNO055 bno = Adafruit_BNO055(55, 0x28);
 void setup() {
   // put your setup code here, to run once:
   Serial.begin(9600);
-<<<<<<< HEAD
-
   while(!Serial);
-=======
-  while( !Serial);
->>>>>>> 25fc708b85758f23f448be4a8d54093613e419de
   Serial.println("Orientation Sensor Test"); Serial.println("");
-  
+
   /* Initialise the sensor */
   if(!bno.begin())
   {
@@ -23,9 +18,9 @@ void setup() {
     Serial.print("Ooops, no BNO055 detected ... Check your wiring or I2C ADDR!");
     while(1);
   }
-  
+
   delay(1000);
-    
+
   bno.setExtCrystalUse(true);
   Serial.println("Calibration status values: 0=uncalibrated, 3=fully calibrated");
 }
@@ -33,8 +28,8 @@ void setup() {
 void loop() {
   // put your main code here, to run repeatedly:
 
-  /* Get a new sensor event */ 
-  sensors_event_t event; 
+  /* Get a new sensor event */
+  sensors_event_t event;
   bno.getEvent(&event);
 
   // Initializing the the euler angle, acceleration, linear acceleration, and gravity vectors
@@ -46,11 +41,11 @@ void loop() {
   // Calculate the vertical acceleration
   double VerticalAccel = ((linear.x() * gravity.x()) + (linear.y() * gravity.y()) + (linear.z() * gravity.z())) / 9.81;
 
-   
+
   /* Display the floating point data */
 
   Serial.print("BNO055:\t");
-  
+
   // Vertical Acceleration in m/s^2
   Serial.print("Vertical Acceleration = ");
   Serial.print(VerticalAccel);
@@ -58,7 +53,7 @@ void loop() {
 
   // Euler Angles
   Serial.print("\tEuler angles: ");
-  Serial.print("X: "); 
+  Serial.print("X: ");
   Serial.print(euler.x());
   Serial.print(" Y: ");
   Serial.print(euler.y());
@@ -75,17 +70,17 @@ void loop() {
   Serial.print("\tZ: ");
   Serial.print(event.orientation.z, 4);
   Serial.println("");
- 
+
   // Accelerometer Output in m/s^2
   Serial.print("\tAcceleration: ");
-  Serial.print("X: "); 
+  Serial.print("X: ");
   Serial.print(acc.x());
   Serial.print(" Y: ");
   Serial.print(acc.y());
   Serial.print(" Z: ");
   Serial.print(acc.z());
   Serial.println("");
-  
+
   /* Display calibration status for each sensor. 0 is bad, 3 is good */
   uint8_t system, gyro, accel, mag = 0;
   bno.getCalibration(&system, &gyro, &accel, &mag);
@@ -97,6 +92,6 @@ void loop() {
   Serial.print(accel, DEC);
   Serial.print(" Mag = ");
   Serial.println(mag, DEC);
-  
+
   delay(100);
 }
