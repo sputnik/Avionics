@@ -1,7 +1,11 @@
-void setup() {
-  if (checkSetUp()){
-    enum State {coasting, ascending, launchpad, descending} state; 
-    state = coasting;
+
+	//TODO define prototypes
+	
+	
+	enum State {coasting, ascending, launchpad, descending} state; 
+
+    state = launchpad;
+	
     struct Data {
       double accX = 0.0;
       double accY = 0.0;
@@ -14,12 +18,17 @@ void setup() {
       double airbreaks = 0.0;
     } data;  //initialize stucture - data
 
+void setup() {
+  if (checkSetUp()){
+    
+
   /**
    * TODO: Insert sensor interfaces here ? 
    */
     
   }
 }
+
 
 void loop() {
  updateData();
@@ -84,3 +93,8 @@ bool switchingToCoasting(Data data){
 bool checkAirbreaks(Data data){
   //TODO
 }
+
+
+//TODO javadoc 
+bool checkSetUp(){
+	//TODO 
