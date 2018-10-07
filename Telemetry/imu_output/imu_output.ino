@@ -3,11 +3,13 @@
 #include <Adafruit_BNO055.h>
 #include <utility/imumaths.h>
 
-Adafruit_BNO055 bno = Adafruit_BNO055(55);
+Adafruit_BNO055 bno = Adafruit_BNO055(55, 0x28);
 
 void setup() {
   // put your setup code here, to run once:
   Serial.begin(9600);
+
+  while(!Serial);
   Serial.println("Orientation Sensor Test"); Serial.println("");
   
   /* Initialise the sensor */
@@ -42,18 +44,16 @@ void loop() {
 
    
   /* Display the floating point data */
-  // X, Y, Z Orientation
-  Serial.print("X: ");
-  Serial.print(event.orientation.x, 4);
-  Serial.print("\tY: ");
-  Serial.print(event.orientation.y, 4);
-  Serial.print("\tZ: ");
-  Serial.print(event.orientation.z, 4);
+
+  Serial.print("BNO055:\t");
+  
+  // Vertical Acceleration in m/s^2
+  Serial.print("Vertical Acceleration = ");
+  Serial.print(VerticalAccel);
   Serial.println("");
 
   // Euler Angles
-  Serial.print("BNO055:\t");
-  Serial.print("Euler angles: ");
+  Serial.print("\tEuler angles: ");
   Serial.print("X: "); 
   Serial.print(euler.x());
   Serial.print(" Y: ");
@@ -62,8 +62,18 @@ void loop() {
   Serial.print(euler.z());
   Serial.println("");
 
+  // X, Y, Z Orientation
+  Serial.print("\tOrientation: ");
+  Serial.print("X: ");
+  Serial.print(event.orientation.x, 4);
+  Serial.print("\tY: ");
+  Serial.print(event.orientation.y, 4);
+  Serial.print("\tZ: ");
+  Serial.print(event.orientation.z, 4);
+  Serial.println("");
+ 
   // Accelerometer Output in m/s^2
-  Serial.print("\t\tAcceleration: ");
+  Serial.print("\tAcceleration: ");
   Serial.print("X: "); 
   Serial.print(acc.x());
   Serial.print(" Y: ");
@@ -71,22 +81,17 @@ void loop() {
   Serial.print(" Z: ");
   Serial.print(acc.z());
   Serial.println("");
-
-  // Vertical Acceleration in m/s^2
-  Serial.print("Vertical Acceleration = ");
-  Serial.print(VerticalAccel);
-  Serial.println("");
   
   /* Display calibration status for each sensor. 0 is bad, 3 is good */
   uint8_t system, gyro, accel, mag = 0;
   bno.getCalibration(&system, &gyro, &accel, &mag);
-  Serial.print("CALIBRATION: Sys = ");
+  Serial.print("\tCalibration: Sys = ");
   Serial.print(system, DEC);
-  Serial.print("Gyro = ");
+  Serial.print(" Gyro = ");
   Serial.print(gyro, DEC);
-  Serial.print("Accel = ");
+  Serial.print(" Accel = ");
   Serial.print(accel, DEC);
-  Serial.print("Mag = ");
+  Serial.print(" Mag = ");
   Serial.println(mag, DEC);
   
   delay(100);
