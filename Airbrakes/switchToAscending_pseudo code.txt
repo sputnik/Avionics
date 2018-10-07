@@ -1,29 +1,26 @@
-switchToAscending(alt, vel, acc);
+bool switchToAscending(data);
 //For this code we are going to check if the rocket is actually starting to launch
 
+if(checkAcceleration())//Base movement value is changing in the correct ways
+{
+  acceleration = true;
+}
 
-      if(checkAcceleration())//Base movement value is changing in the correct ways
-      {
-        acceleration = true;
-      }
-      
-      if(checkAltitude())//Let us know if we are gaining altitude significantly.
-      {
-        altitude = true;
-      }
-      
-      if(checkVelocity())//Let us know if we are gaining altitude significantly.
-      {
-        velocity = true;
-      }
-      
-      if(acceleration = true && altitude = true && velocity = true)
-      {
-        count = count+1;
-      }
-      else
-      {
-        count = 0;
-      }
+if(checkAltitude())//Let us know if we are gaining altitude significantly.
+{
+  altitude = true;
+}
 
-  
+if(checkVelocity())//Let us know if we are gaining altitude significantly.
+{
+  velocity = true;
+}
+
+if(acceleration = true && altitude = true && velocity = true)
+{
+  count = count+1;
+}
+else
+{
+  count = 0;
+}

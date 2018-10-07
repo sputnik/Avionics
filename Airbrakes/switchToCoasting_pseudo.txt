@@ -1,4 +1,32 @@
-switchToCoasting(data)
+bool switchToCoasting(data)
 {
-
+  //Need to look into the feasibility / accuracy of this
+  if (timeSinceLaunch >= t_threshold)
+  {switch = true;}
+  else
+  {
+    // put more weight into acceleration than velocity?
+    if(acc <= a_threshold)
+    {
+      a_counter++;
+    }
+    else
+    {
+      a_counter = 0;
+    }
+    if(vel <= v_threshold)
+    {
+      v_counter++;
+    }
+    else
+    {
+      v_counter = 0;
+    }
+  }
+  if (switch ||
+      a_counter > ac_threshold &&
+      v_counter > vc_threshold)
+      {
+        return true;
+      }
 }

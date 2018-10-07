@@ -1,4 +1,4 @@
-checkAirbrakes(data)
+bool checkAirbrakes(data)
 {
 
 }
