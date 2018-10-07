@@ -9,21 +9,21 @@ if(setup)
     //Check coasting first for efficiency while coasting
     if(state == coasting)
     {
-      if(checkAirbrakes())
+      if(checkAirbrakes(data))
       {
         state = descending;
       }
     }
     else if (state == ascending)
     {
-      if(switchToCoastting())
+      if(switchToCoastting(data))
       {
         state = coasting;
       }
     }
     else if(state = launchpad)
     {
-      if (switchToAscending())
+      if (switchToAscending(data))
       {
         state = ascending;
       }
