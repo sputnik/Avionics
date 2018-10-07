@@ -1,11 +1,11 @@
 
 	//TODO define prototypes
-	
-	
-	enum State {coasting, ascending, launchpad, descending} state; 
+
+
+	enum State {coasting, ascending, launchpad, descending} state;
 
     state = launchpad;
-	
+
     struct Data {
       double accX = 0.0;
       double accY = 0.0;
@@ -18,21 +18,23 @@
       double airbreaks = 0.0;
     } data;  //initialize stucture - data
 
-void setup() {
+void setup()
+{
   if (checkSetUp()){
-    
+
 
   /**
-   * TODO: Insert sensor interfaces here ? 
+   * TODO: Insert sensor interfaces here ?
    */
-    
+
   }
 }
 
 
-void loop() {
+void loop()
+{
  updateData();
- if (state == coasting){ 
+ if (state == coasting){
     if (checkAirbreaks(data)){ //calculate and deploy airbreaks
       state = descending; //change the state to descending
     }
@@ -46,55 +48,65 @@ void loop() {
  }
  else if (state == launchPad){
     if(switchToAscending(data){ //check id the rocket is Ascending
-      state = ascending;  // change the state to ascending 
+      state = ascending;  // change the state to ascending
     }
     saveData(data); //save data to SD card
  }
  else {
-  //TODO: add desending stae 
+  //TODO: add desending stae
  }
-  
+
 }
 
 /**
- * Check the data of the rocket and determine if the rocket is ascending 
+ * Check the data of the rocket and determine if the rocket is ascending
  * @return bool true if the rocket is ascending
- *              false if the rocket is in any other states 
- *              
+ *              false if the rocket is in any other states
+ *
  * @param  State  data from the rocket's sensors
  */
-bool switchToAscending(Data data) {
+bool switchToAscending(Data data)
+{
   //TODO
 }
 
 /**
  * Check the data of the rocket and determine if the rocket is coasting
- * 
+ *
  * @return bool true if the rocket is ascending
  *              false if the tocket is in any other states
- *              
+ *
  * @param State data from the rocket's sensors
  */
-bool switchingToCoasting(Data data){
+bool switchingToCoasting(Data data)
+{
   //TODO
 }
 
 /**
  * Calculate and deploy airbreaks
- * 
- * Check if the rocket is desending 
- * 
+ *
+ * Check if the rocket is desending
+ *
  * @return bool true if the rocket is ascending
  *              false if the rocket is in any other states
- *  
+ *
  * @param State data from the rocket's sensors
  *
  */
-bool checkAirbreaks(Data data){
+bool checkAirbreaks(Data data)
+{
   //TODO
 }
 
 
-//TODO javadoc 
-bool checkSetUp(){
-	//TODO 
+/**
+ * Setup sensors used in airbrakes bay
+ *
+ * @return bool true if setup completed successfully
+ *              false if setup failed in some way
+ *
+ */
+bool checkSetUp()
+{
+	//TODO
