@@ -1,4 +1,24 @@
+//One option for airbrake actuation logic. Unsure if feasible or not
 bool checkAirbrakes(data)
 {
-
+  apogee = predictApogee(data);
+  if (apogee > targetApogee)
+  {
+    percentage = airbrakePercentage(data,
+    apogee);
+    actuateAirbrakes(percentage);
+  }
+  else
+  {
+    //Unsure if this is needed. Need to look into it though
+    if (airbrakesActuated)
+    {
+      retractAirbrakes();
+    }
+    if(descending(data))
+    {
+      return true;
+    }
+  }
+  return false;
 }
