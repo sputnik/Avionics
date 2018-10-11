@@ -38,7 +38,8 @@ void setup()
 void loop()
 {
  updateData();
- if (state == coasting){
+ if (state == coasting)
+ {
     if (checkAirbreaks(data))
     { //calculate and deploy airbreaks
       state = descending; //change the state to descending
