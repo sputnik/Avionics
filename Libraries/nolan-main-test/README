@@ -1,0 +1,7 @@
+This code uploads a main() method to an arduino instead of the usual setup()
+and loop().
+
+After configuring the makefile and main.cpp according to your system and
+arduino model, run
+make
+make upload
