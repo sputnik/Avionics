@@ -23,7 +23,7 @@ struct Data {
 
 // Predefining functions used
 bool switchToAscending(Data *data);
-bool switchToCoasting(Data *data);
+bool switchToCoasting(Data *data[], int *a_counter, int *v_counter, int *coast_safety);
 bool checkSetUp();
 void updateData(Data *data);
 bool checkAirbreaks(Data *data);
@@ -71,6 +71,9 @@ int main() {
   // used to keep track of how many loops take place in one period of time.
   // for debugging purposes
   unsigned long iterationCount = 0;
+  int a_counter = 0;
+  int v_counter = 0;
+  int coast_safety = 0;
 
   while (true) {
     iterationCount++;
@@ -80,7 +83,7 @@ int main() {
         state = descending;
       } // if the state is coasting
     } else if (state == ascending) {
-      if (switchToCoasting(&data)) {
+      if (switchToCoasting(&data, &a_counter, &v_counter, &coast_safety)) {
         state = coasting;
       } // if the state is ascending
     } else if (state == launchPad) {
@@ -129,8 +132,28 @@ bool switchToAscending(Data *data) {
  *
  * @param State data from the rocket's sensors
  */
-bool switchToCoasting(Data *data) {
+ /*
+ *Currently a rough sketch of the function,
+ *
+ */
+bool switchToCoasting(Data *data, int *a_counter, int *v_counter, int *coast_safety) {
   // TODO
+  if(&data[1] != NULL && data[1].accZ <= 9){
+    (*a_counter)++;
+  } else {
+    (*a_counter)-=2;
+  }
+  if(&data[1] != NULL && &data[2] != NULL && data[1].velZ <= data[2].velZ){
+    (*v_counter)++;
+  } else {
+    (*v_counter)--;
+  }
+  if(*a_counter >= 4 || *v_counter >= 4){
+    (*coast_safety)++;
+    if(*coast_safety >= 5){
+      return true;
+    }
+  }
   return false;
 }
 
