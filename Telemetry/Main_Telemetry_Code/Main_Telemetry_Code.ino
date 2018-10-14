@@ -38,8 +38,6 @@ void setup() {
 
     }
 
-    accelerometerSetup(16, 3200);//setup sensor, range and frequency
-    calibrateAccel(1);//1 runs calibration, 0 skips, do not have to run
 }
 
 
@@ -97,21 +95,19 @@ void get_BNO(){
   String varNames[2] = {"Euler", "Acceleration"};
   String xyz[3] = {"X", "Y", "X"};
 
-  Serial.print("BNO055:\n");
-  Serial.print("    Vertical Acceleration:  ");
+  Serial.println("BNO055:");
+  Serial.println("    Vertical Acceleration:  ");
   Serial.print(vertAccel);
-  Serial.print("\n");
   for (int i = 0; i < 2; i++)
   {
-    Serial.print("\t" + varNames[i]);
+    Serial.println("\t" + varNames[i]);
     for (int j = 0; j < 3; j++)
     {
       Serial.print("   " + xyz[j] + "  ");
       Serial.print(bnoData[i][j]);
     } // end for
-    Serial.print("\n");
   } // end for
-} // end
+} // end get_BNO
 
 
 //void write_to_SD() {
