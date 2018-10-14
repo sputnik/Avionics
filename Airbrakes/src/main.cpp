@@ -143,23 +143,46 @@ bool switchToAscending(Data *data, int *safetyCounter) {
  *values obtained from the data history.
  */
 bool switchToCoasting(Data *data, int *a_counter, int *v_counter, int *coast_safety) {
-  // TODO
-  if(&data[1] != NULL && data[1].accZ <= 9){
-    (*a_counter)++;
-  } else {
-    (*a_counter)-=2;
+
+  //check if the acceleration is less than a certain threshold, maybe -9 for gravity
+  if(&data[DATA_ARRAY_LENGTH - 1] != NULL){
+    if(data[DATA_ARRAY_LENGTH - 1].accZ <= -9){
+      (*a_counter)++;
+    } else {
+      if(*a_counter - 2 > 0){
+        (*a_counter)-=2;
+      } else {
+        *a_counter = 0;
+      }
+    }
   }
-  if(&data[1] != NULL && &data[2] != NULL && data[1].velZ <= data[2].velZ){
-    (*v_counter)++;
-  } else {
-    (*v_counter)--;
+
+  //check if the last few velocity measurements are steadily decreasing
+  if(&data[DATA_ARRAY_LENGTH - 1] != NULL && &data[DATA_ARRAY_LENGTH - 2] != NULL){
+    if(data[DATA_ARRAY_LENGTH - 1].velZ <= data[DATA_ARRAY_LENGTH - 2].velZ){
+      (*v_counter)++;
+    } else {
+      if(*v_counter - 1 > 0){
+        (*v_counter)--;
+      } else {
+        *v_counter = 0;
+      }
+    }
   }
+
   if(*a_counter >= 4 || *v_counter >= 4){
     (*coast_safety)++;
     if(*coast_safety >= 5){
       return true;
     }
+  } else {
+    if(*coast_safety - 1 > 0){
+      (*coast_safety)--;
+    } else {
+      *coast_safety = 0;
+    }
   }
+
   return false;
 }
 
