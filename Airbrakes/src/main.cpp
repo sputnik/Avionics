@@ -98,7 +98,6 @@ int main() {
     } // if the state is launchPad
     // save data to SD card no matter what
     saveData(data);
-    double a = iterationCount * iterationCount * iterationCount;
 
     if (millis() >= (prevTime + 1000)) {
       prevTime = millis();
