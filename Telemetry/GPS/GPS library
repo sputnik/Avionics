@@ -1,0 +1,23 @@
+Amazon Link
+ <https://www.amazon.com/MakerFocus-Microcontroller-Compatible-Navigation-Positioning/dp/B075DD5746/ref=sr_1_1?ie=UTF8&qid=1538524302&sr=8-1&keywords=tinygpsplus>
+ 
+
+Libraries info-  <http://arduiniana.org/libraries/tinygps/> 
+
+
+Instance creation- 
+
+#include "TinyGPS.h"
+TinyGPS gps;
+
+
+
+Getting latitude and longitude 
+gps.get_position(&lat, &lon); // lat and lon should be doubles
+ 
+Getting the speed 
+Speed = gps.speed(); // returns speed within 100th of a knot.
+
+
+
+

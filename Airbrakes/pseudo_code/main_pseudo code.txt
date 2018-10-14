@@ -1,0 +1,41 @@
+Website for flow chart - https://code2flow.com/app
+Code:
+
+if(setup)
+{
+  while(loop)
+  {
+    Update_Data;
+    //Check coasting first for efficiency while coasting
+    if(state == coasting)
+    {
+      if(checkAirbrakes(data))
+      {
+        state = descending;
+      }
+    }
+    else if (state == ascending)
+    {
+      if(switchToCoastting(data))
+      {
+        state = coasting;
+      }
+    }
+    else if(state = launchpad)
+    {
+      if (switchToAscending(data))
+      {
+        state = ascending;
+      }
+    }
+    else
+    {
+      Check_State();
+    }
+    save_data;
+  }
+}
+else
+{
+  print_error;
+}
