@@ -52,6 +52,7 @@ int main() {
   USBDevice.attach();
 #endif
 
+  unsigned long prevTime = millis();
   // Setting up LED_BUILTIN for debugging output
   pinMode(LED_BUILTIN, OUTPUT);
   delay(100);
@@ -66,10 +67,13 @@ int main() {
     digitalWrite(LED_BUILTIN, LOW);
   }
 
-  unsigned long prevTime = millis();
   int i = 0;
+  // used to keep track of how many loops take place in one period of time.
+  // for debugging purposes
+  unsigned long iterationCount = 0;
 
   while (true) {
+    iterationCount++;
     updateData(&data);
     if (state == coasting) {
       if (checkAirbreaks(&data)) {
@@ -86,16 +90,20 @@ int main() {
     } // if the state is launchPad
     // save data to SD card no matter what
     saveData(&data);
+    double a = iterationCount * iterationCount * iterationCount;
 
     if (millis() >= (prevTime + 1000)) {
       prevTime = millis();
       Serial.print("Time: ");
-      Serial.println(data.time);
+      Serial.print(data.time);
+      Serial.print(" , iterations since last second= ");
+      Serial.println(iterationCount);
       if (i == 4) {
         Serial.print("State: ");
         Serial.println(state);
       } // if we want to print state
       i = (i + 1) % 5;
+      iterationCount = 0;
     } // if we want to output information
   }   // while(true)
   return 0;
