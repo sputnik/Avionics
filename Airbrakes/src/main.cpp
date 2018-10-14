@@ -1,6 +1,12 @@
-#include <Arduino.h>
+#define ARDUINO_MAIN
+#include "Arduino.h"
 
-enum State {coasting, ascending, launchPad, descending} state = launchPad;
+// Declarations required for Feather m0 setup
+void initVariant() __attribute__((weak));
+void initVariant() {}
+extern "C" void __libc_init_array(void);
+
+typedef enum State { launchPad, ascending, coasting, descending } State;
 
 struct Data {
   double accX = 0.0;
@@ -9,64 +15,91 @@ struct Data {
   double velX = 0.0;
   double velY = 0.0;
   double velZ = 0.0;
-  double alt  = 0.0;
+  double alt = 0.0;
   double pressure = 0.0;
   double airbreaks = 0.0;
-} data;  //initialize stucture - data
+  unsigned long time = 0;
+}; // main data structure
 
 // Predefining functions used
-bool switchToAscending(Data data);
-bool switchToCoasting(Data data);
+bool switchToAscending(Data *data);
+bool switchToCoasting(Data *data);
 bool checkSetUp();
-void updateData();
-bool checkAirbreaks(Data data);
-void saveData(Data data);
+void updateData(Data *data);
+bool checkAirbreaks(Data *data);
+void saveData(Data *data);
 
-void setup()
-{
-  if (checkSetUp())
-  {
+extern "C" char *sbrk(int i);
 
-  /**
-   * TODO: Insert sensor interfaces here ?
-   */
+// Function to get the amount of ram available
+int FreeRam() {
+  char stack_dummy = 0;
+  return &stack_dummy - sbrk(0);
+}
 
- }
-} //void setup
+int main() {
+  // Inits required for feather m0 setup. Don't modify anything until after
+  // #endif statement
+  init();
 
+  __libc_init_array();
 
-void loop()
-{
- updateData();
- if (state == coasting)
- {
-    if (checkAirbreaks(data))
-    { //calculate and deploy airbreaks
-      state = descending; //change the state to descending
-    }
-    saveData(data); //save data to SD card
- }
- else if (state == ascending)
- {
-    if(switchToCoasting(data))
-    { //check if the rocket is coasting
-      state = coasting; //change the state to coasting
-    }
-    saveData(data); //save data to SD card
- }
- else if (state == launchPad)
- {
-    if(switchToAscending(data))
-    { //check id the rocket is Ascending
-      state = ascending;  // change the state to ascending
-    }
-    saveData(data); //save data to SD card
- }
- else
- {
-  //TODO: add desending stae
- }
-} //void loop
+  initVariant();
+
+  delay(1);
+#if defined(USBCON)
+  USBDevice.init();
+  USBDevice.attach();
+#endif
+
+  // Setting up LED_BUILTIN for debugging output
+  pinMode(LED_BUILTIN, OUTPUT);
+  delay(100);
+
+  Data data;
+  State state = launchPad;
+
+  if (!checkSetUp()) {
+    Serial.println("Setup not completed correctly");
+    digitalWrite(LED_BUILTIN, HIGH);
+  } else {
+    digitalWrite(LED_BUILTIN, LOW);
+  }
+
+  unsigned long prevTime = millis();
+  int i = 0;
+
+  while (true) {
+    updateData(&data);
+    if (state == coasting) {
+      if (checkAirbreaks(&data)) {
+        state = descending;
+      } // if the state is coasting
+    } else if (state == ascending) {
+      if (switchToCoasting(&data)) {
+        state = coasting;
+      } // if the state is ascending
+    } else if (state == launchPad) {
+      if (switchToAscending(&data)) {
+        state = ascending;
+      }
+    } // if the state is launchPad
+    // save data to SD card no matter what
+    saveData(&data);
+
+    if (millis() >= (prevTime + 1000)) {
+      prevTime = millis();
+      Serial.print("Time: ");
+      Serial.println(data.time);
+      if (i == 4) {
+        Serial.print("State: ");
+        Serial.println(state);
+      } // if we want to print state
+      i = (i + 1) % 5;
+    } // if we want to output information
+  }   // while(true)
+  return 0;
+} // main
 
 /**
  * Check the data of the rocket and determine if the rocket is ascending
@@ -75,9 +108,8 @@ void loop()
  *
  * @param  State  data from the rocket's sensors
  */
-bool switchToAscending(Data data)
-{
-  //TODO
+bool switchToAscending(Data *data) {
+  // TODO
   return false;
 }
 
@@ -89,9 +121,8 @@ bool switchToAscending(Data data)
  *
  * @param State data from the rocket's sensors
  */
-bool switchToCoasting(Data data)
-{
-  //TODO
+bool switchToCoasting(Data *data) {
+  // TODO
   return false;
 }
 
@@ -106,12 +137,10 @@ bool switchToCoasting(Data data)
  * @param State data from the rocket's sensors
  *
  */
-bool checkAirbreaks(Data data)
-{
-  //TODO
+bool checkAirbreaks(Data *data) {
+  // TODO
   return false;
 }
-
 
 /**
  * Setup sensors used in airbrakes bay
@@ -120,19 +149,18 @@ bool checkAirbreaks(Data data)
  *              false if setup failed in some way
  *
  */
-bool checkSetUp()
-{
-	//TODO
+bool checkSetUp() {
+  // TODO
   return false;
 }
 
 /**
- * Update global data object with new sensor information
+ * Update data object with new sensor information
  *
  */
-void updateData()
-{
-  //TODO
+void updateData(Data *data) {
+  data->time = millis();
+  // TODO
 }
 
 /**
@@ -141,7 +169,6 @@ void updateData()
  * @param data : The data to save to the SD card
  *
  */
-void saveData(Data data)
-{
-  //TODO
+void saveData(Data *data) {
+  // TODO
 }
