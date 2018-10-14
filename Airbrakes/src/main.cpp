@@ -22,12 +22,15 @@ struct Data {
 }; // main data structure
 
 // Predefining functions used
-bool switchToAscending(Data *data);
-bool switchToCoasting(Data *data[], int *a_counter, int *v_counter, int *coast_safety);
+
+bool switchToAscending(Data *data, int *safetyCounter);
+bool switchToCoasting(Data *data, int *a_counter, int *v_counter, int *coast_safety);
 bool checkSetUp();
 void updateData(Data *data);
 bool checkAirbreaks(Data *data);
 void saveData(Data *data);
+
+#define DATA_ARRAY_LENGTH 5
 
 extern "C" char *sbrk(int i);
 
@@ -56,8 +59,7 @@ int main() {
   // Setting up LED_BUILTIN for debugging output
   pinMode(LED_BUILTIN, OUTPUT);
   delay(100);
-
-  Data data;
+  Data data[DATA_ARRAY_LENGTH];
   State state = launchPad;
 
   if (!checkSetUp()) {
@@ -74,31 +76,34 @@ int main() {
   int a_counter = 0;
   int v_counter = 0;
   int coast_safety = 0;
+  int safetyCounter = 0;
 
   while (true) {
     iterationCount++;
-    updateData(&data);
+    updateData(data);
     if (state == coasting) {
-      if (checkAirbreaks(&data)) {
+      if (checkAirbreaks(data)) {
         state = descending;
+        safetyCounter = 0;
       } // if the state is coasting
     } else if (state == ascending) {
-      if (switchToCoasting(&data, &a_counter, &v_counter, &coast_safety)) {
+      if (switchToCoasting(data, &a_counter, &v_counter, &coast_safety)) {
         state = coasting;
+        safetyCounter = 0;
       } // if the state is ascending
     } else if (state == launchPad) {
-      if (switchToAscending(&data)) {
+      if (switchToAscending(data, &safetyCounter)) {
         state = ascending;
       }
     } // if the state is launchPad
     // save data to SD card no matter what
-    saveData(&data);
+    saveData(data);
     double a = iterationCount * iterationCount * iterationCount;
 
     if (millis() >= (prevTime + 1000)) {
       prevTime = millis();
       Serial.print("Time: ");
-      Serial.print(data.time);
+      Serial.print(data[DATA_ARRAY_LENGTH-1].time);
       Serial.print(" , iterations since last second= ");
       Serial.println(iterationCount);
       if (i == 4) {
@@ -119,7 +124,7 @@ int main() {
  *
  * @param  State  data from the rocket's sensors
  */
-bool switchToAscending(Data *data) {
+bool switchToAscending(Data *data, int *safetyCounter) {
   // TODO
   return false;
 }
@@ -133,8 +138,9 @@ bool switchToAscending(Data *data) {
  * @param State data from the rocket's sensors
  */
  /*
- *Currently a rough sketch of the function,
- *
+ *Rough draft of the conditions of switchToCoasting.
+ *Planning to check current acceleration and velocity values against
+ *values obtained from the data history.
  */
 bool switchToCoasting(Data *data, int *a_counter, int *v_counter, int *coast_safety) {
   // TODO
@@ -190,7 +196,7 @@ bool checkSetUp() {
  *
  */
 void updateData(Data *data) {
-  data->time = millis();
+  data[DATA_ARRAY_LENGTH-1].time = millis();
   // TODO
 }
 
