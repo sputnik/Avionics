@@ -6,7 +6,7 @@
 #include <Adafruit_BNO055.h>
 #include <utility/imumaths.h>
 #include <Adafruit_MPL115A2.h>
-#include <Adafruit_MCP9808.h>
+//#include <Adafruit_MCP9808.h>
 #include <Adafruit_ADXL345_U.h>
 
 //include declarations for the functions that are going to be called
@@ -17,7 +17,7 @@ void get_BNO();
 
 Adafruit_BNO055 bno = Adafruit_BNO055(55, 0x28);
 // Create the MCP9808 temperature sensor object
-Adafruit_MCP9808 tempsensor = Adafruit_MCP9808();
+//Adafruit_MCP9808 tempsensor = Adafruit_MCP9808();
 Adafruit_ADXL345_Unified accel = Adafruit_ADXL345_Unified(1111);
 
 void setup() {
@@ -33,10 +33,10 @@ void setup() {
     while(1);
   }
 
-  if (!tempsensor.begin()) {
-      Serial.println("Couldn't find MCP9808!");
+ // if (!tempsensor.begin()) {
+   //   Serial.println("Couldn't find MCP9808!");
 
-    }
+    //}
 
 }
 
@@ -61,10 +61,10 @@ void loop() {
     //tempsensor.wake();   // wake up, ready to read!
 
     // Read and print out the temperature, then convert to *F
-    float c = tempsensor.readTempC();
-    float f = c * 9.0 / 5.0 + 32;
-    Serial.print("Temp: "); Serial.print(c); Serial.print("*C\t");
-    Serial.print(f); Serial.println("*F");
+//    float c = tempsensor.readTempC();
+//    float f = c * 9.0 / 5.0 + 32;
+//    Serial.print("Temp: "); Serial.print(c); Serial.print("*C\t");
+//    Serial.print(f); Serial.println("*F");
 
     //Serial.println("Shutdown MCP9808.... ");
     //tempsensor.shutdown(); // shutdown MSP9808 - power consumption ~0.1 mikro Ampere
