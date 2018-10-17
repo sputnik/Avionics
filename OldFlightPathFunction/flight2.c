@@ -6,13 +6,13 @@
 #define TIME_DELTA 0.01 //seconds
 #define CD_BRAKE 1.28
 #define CD_DRAG 0.42
-#define AREA_ROCKET .0182414692 //meters squared
-#define AREA_BRAKE .00692 //meters squared
+#define AREA_ROCKET .00872677 //meters squared
+#define AREA_BRAKE .00258064 //meters squared
 #define START_ALT 1219.2 //meters
 #define GOAL_HEIGHT 9144 //meters
-#define WEIGHT_I 550 //newtons
-#define WEIGHT_F 450 //newtons
-#define START_THRUST 8000 //newtons
+#define WEIGHT_I 333.54 //newtons
+#define WEIGHT_F 233.54 //newtons
+#define START_THRUST 4000 //newtons
 #define FUEL_BURN_RATE 20 //newtons per second
 #define ACTUATION_TIME .1 // secs
 // N2850
