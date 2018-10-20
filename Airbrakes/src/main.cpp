@@ -123,10 +123,25 @@ int main() {
  *
  * @param  State  data from the rocket's sensors
  */
-bool switchToAscending(Data *data, int *safetyCounter) {
-  // TODO
-  return false;
+bool switchToAscending(Data *data, int *counter){
+      const double ACCELERATION_TOLERANCE = 0.0;
+      const double VELOSITY_TOLERANCE = 0.0;
+      const int SAFETY_TOLERANCE = 100; //define constants
+
+      //printf("switchToAscending\n");
+      double accMag = sqrt(data->accX * data->accX + data->accY * data->accY + data->accZ * data->accZ); //calculate acceleration vector mag
+      double velMag = sqrt(data->accX * data->accX + data->accY * data->accY + data->accZ * data->accZ); //calculate velosity vector mag
+
+
+
+      *counter = ( fabs((accMag - ACCELERATION_TOLERANCE)) > 0 || fabs((velMag - VELOSITY_TOLERANCE)) > 0)? *counter + 1: 0;  //update the security counter
+
+      if (*counter >= SAFETY_TOLERANCE) return true; //return true if counter is higher than safety tolerance
+
+      return false;
 }
+
+
 
 /**
  * Check the data of the rocket and determine if the rocket is coasting
