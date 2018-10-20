@@ -36,15 +36,20 @@ int main(){
 bool switchToAscending(Data *data, int *counter){
       const double ACCELERATION_TOLERANCE = 0.0;
       const double VELOSITY_TOLERANCE = 0.0;
+	  const double ALTITUDE_TOLERANCE = 0.0;
       const int SAFETY_TOLERANCE = 100; //define constants
+	  int token = 0;
 
       //printf("switchToAscending\n");
       double accMag = sqrt(data->accX * data->accX + data->accY * data->accY + data->accZ * data->accZ); //calculate acceleration vector mag
       double velMag = sqrt(data->accX * data->accX + data->accY * data->accY + data->accZ * data->accZ); //calculate velosity vector mag
+	  if ( fabs(accMag - ACCELERATION_TOLERANCE) > 0) token++;
+	  if ( fabs(velMag - VELOSITY_TOLERANCE) > 0)		token++;
+      if(&data[DATA_ARRAY_LENGTH - 1] != NULL && &data[DATA_ARRAY_LENGTH - 2] != NULL){
+		  if ( fabs(data[DATA_ARRAY_LENGTH - 2] - data[DATA_ARRAY_LENGTH - 1]) <= ALTITUDE_TOLERANCE)
+			  token++;
 
-
-
-      *counter = ( fabs((accMag - ACCELERATION_TOLERANCE)) > 0 || fabs((velMag - VELOSITY_TOLERANCE)) > 0)? *counter + 1: 0;  //update the security counter
+	  (token >= 2)? *counter + 1: 0;  //update the security counter
 
       if (*counter >= SAFETY_TOLERANCE) return true; //return true if counter is higher than safety tolerance
 
