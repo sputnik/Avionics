@@ -14,4 +14,6 @@ struct Data {
   unsigned long time;
 }; // main data structure
 
+#define DATA_ARRAY_LENGTH 5
+
 #endif

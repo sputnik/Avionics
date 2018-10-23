@@ -1,6 +1,7 @@
 #define ARDUINO_MAIN
 #include "Arduino.h"
 #include "Data.h"
+#include "DataHistory.h"
 
 // Declarations required for Feather m0 setup
 void initVariant() __attribute__((weak));
@@ -12,13 +13,11 @@ typedef enum State { launchPad, ascending, coasting, descending } State;
 // Predefining functions used
 
 bool switchToAscending(Data *data, int *safetyCounter);
-bool switchToCoasting(Data *data, int *a_counter, int *v_counter, int *coast_safety);
+bool switchToCoasting(DataHistory *hist, int *a_counter, int *v_counter, int *coast_safety);
 bool checkSetUp();
 void updateData(Data *data);
 bool checkAirbreaks(Data *data);
 void saveData(Data *data);
-
-#define DATA_ARRAY_LENGTH 5
 
 extern "C" char *sbrk(int i);
 
@@ -47,7 +46,8 @@ int main() {
   // Setting up LED_BUILTIN for debugging output
   pinMode(LED_BUILTIN, OUTPUT);
   delay(100);
-  Data data[DATA_ARRAY_LENGTH];
+  Data *data;
+  DataHistory *history = new DataHistory(DATA_ARRAY_LENGTH);
   State state = launchPad;
 
   if (!checkSetUp()) {
@@ -69,13 +69,14 @@ int main() {
   while (true) {
     iterationCount++;
     updateData(data);
+    history->add(data);
     if (state == coasting) {
       if (checkAirbreaks(data)) {
         state = descending;
         safetyCounter = 0;
       } // if the state is coasting
     } else if (state == ascending) {
-      if (switchToCoasting(data, &a_counter, &v_counter, &coast_safety)) {
+      if (switchToCoasting(history, &a_counter, &v_counter, &coast_safety)) {
         state = coasting;
         safetyCounter = 0;
       } // if the state is ascending
@@ -101,6 +102,7 @@ int main() {
       iterationCount = 0;
     } // if we want to output information
   }   // while(true)
+  delete history;
   return 0;
 } // main
 
@@ -134,41 +136,50 @@ bool switchToAscending(Data *data, int *counter){
 /**
  * Check the data of the rocket and determine if the rocket is coasting
  *
- * @return bool true if the rocket is ascending
- *              false if the tocket is in any other states
+ * @return bool true if the rocket is coasting
+ *              false if the rocket is in any other states
  *
  * @param State data from the rocket's sensors
  */
  /*
- *Rough draft of the conditions of switchToCoasting.
- *Planning to check current acceleration and velocity values against
- *values obtained from the data history.
+ Draft of switchToCoasting.
+ Checks the data history to see if speed has been steadily decreasing
+ and if acceleration is below a certain threshold.
  */
-bool switchToCoasting(Data *data, int *a_counter, int *v_counter, int *coast_safety) {
+bool switchToCoasting(DataHistory *hist, int *a_counter, int *v_counter, int *coast_safety) {
 
   //check if the acceleration is less than a certain threshold, maybe -9 for gravity
-  if(&data[DATA_ARRAY_LENGTH - 1] != NULL){
-    if(data[DATA_ARRAY_LENGTH - 1].accZ <= -9){
-      (*a_counter)++;
+  if(hist->getNewest()->accZ <= -9){
+    (*a_counter)++;
+  } else {
+    if(*a_counter - 2 > 0){
+      (*a_counter)-=2;
     } else {
-      if(*a_counter - 2 > 0){
-        (*a_counter)-=2;
-      } else {
-        *a_counter = 0;
-      }
+      *a_counter = 0;
     }
   }
 
   //check if the last few velocity measurements are steadily decreasing
-  if(&data[DATA_ARRAY_LENGTH - 1] != NULL && &data[DATA_ARRAY_LENGTH - 2] != NULL){
-    if(data[DATA_ARRAY_LENGTH - 1].velZ <= data[DATA_ARRAY_LENGTH - 2].velZ){
-      (*v_counter)++;
+  int i;
+  int newer = hist->getNewest()->velZ;
+  int velcheck = 0;
+  for(i = 1; i < hist->getSize()/2; i++){
+    velcheck = 1;
+    int older = hist->get(i)->velZ;
+    if(newer >= older + 1){
+      velcheck = 0;
+      break;
+    }
+    newer = older;
+  }
+
+  if(velcheck){
+    (*v_counter)++;
+  } else {
+    if(*v_counter - 1 > 0){
+      (*v_counter)--;
     } else {
-      if(*v_counter - 1 > 0){
-        (*v_counter)--;
-      } else {
-        *v_counter = 0;
-      }
+      *v_counter = 0;
     }
   }
 

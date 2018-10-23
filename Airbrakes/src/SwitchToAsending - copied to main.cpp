@@ -2,11 +2,12 @@
 //#include "Arduino.h"
 #include <stdio.h>
 #include <math.h>
+#include "Data.h"
 
 //temporary file for switchToAscending for testing and debugging purposes.
 
 typedef enum State { launchPad, ascending, coasting, descending } state;
-
+/*
 struct Data {
   double accX ;
   double accY ;
@@ -19,6 +20,19 @@ struct Data {
   double airbreaks ;
   unsigned long time;
 }; // main data structure
+*/
+void updateData(Data *data){
+  scanf("%f ", data -> accX);
+  scanf("%f ", data -> accY);
+  scanf("%f ", data -> accZ);
+  scanf("%f ", data -> velX);
+  scanf("%f ", data -> velY);
+  scanf("%f ", data -> velZ);
+  /*scanf("%f ", data -> alt);
+  scanf("%f ", data -> pressure);
+  scanf("%f ", data -> airbreaks);
+  data -> time ++;*/
+}
 
 bool switchToAscending(Data *data, int *counter);
 void updateData(Data *data);
@@ -59,15 +73,3 @@ bool switchToAscending(Data *data, int *counter){
 /*
  * mock updateData method used to update Dada for debugging purposes
  */
-void updateData(Data *data){
-  scanf("%f ", data -> accX);
-  scanf("%f ", data -> accY);
-  scanf("%f ", data -> accZ);
-  scanf("%f ", data -> velX);
-  scanf("%f ", data -> velY);
-  scanf("%f ", data -> velZ);
-  /*scanf("%f ", data -> alt);
-  scanf("%f ", data -> pressure);
-  scanf("%f ", data -> airbreaks);
-  data -> time ++;*/
-}

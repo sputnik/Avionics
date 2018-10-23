@@ -6,7 +6,8 @@
 //Constructor
 DataHistory::DataHistory(int s){
   hist = new Data*[s];
-  size = s;
+  maxSize = s;
+  size = 0;
   newest = s - 1;
   int i;
   //Uninitialized data points will be set to a default 0.
@@ -40,7 +41,7 @@ DataHistory::~DataHistory(){
 //Assumes the given data object is statically allocated; does not try to delete old data.
 //This should be changed if data objects become dynamically allocated later in development.
 void DataHistory::add(Data *data){
-  newest = (newest + 1) % size;
+  newest = (newest + 1) % maxSize;
 
   hist[newest]->accX = data->accX;
   hist[newest]->accY = data->accY;
@@ -52,6 +53,10 @@ void DataHistory::add(Data *data){
   hist[newest]->pressure = data->pressure;
   hist[newest]->airbreaks = data->airbreaks;
   hist[newest]->time = data->time;
+
+  if(size < maxSize){
+    size++;
+  }
 }
 
 //Returns the newest data point.
@@ -76,4 +81,8 @@ Data *DataHistory::get(int i){
 //Returns the size of the data array.
 int DataHistory::getSize(){
   return size;
+}
+
+int DataHistory::getMaxSize(){
+  return maxSize;
 }

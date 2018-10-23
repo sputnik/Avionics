@@ -1,11 +1,12 @@
 #ifndef DATAHISTORY_H
 # define DATAHISTORY_H
-# include <iostream>
+//# include <iostream>
 # include "Data.h"
 
 
 class DataHistory {
 private:
+  int maxSize;
   int size;
   int newest;
   Data **hist;
@@ -16,6 +17,7 @@ public:
   Data *getNewest(void);
   Data *get(int i);
   int getSize();
+  int getMaxSize();
 };
 
 #endif
