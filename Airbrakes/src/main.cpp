@@ -1,5 +1,6 @@
 #define ARDUINO_MAIN
 #include "Arduino.h"
+#include "Data.h"
 
 // Declarations required for Feather m0 setup
 void initVariant() __attribute__((weak));
@@ -7,19 +8,6 @@ void initVariant() {}
 extern "C" void __libc_init_array(void);
 
 typedef enum State { launchPad, ascending, coasting, descending } State;
-
-struct Data {
-  double accX = 0.0;
-  double accY = 0.0;
-  double accZ = 0.0;
-  double velX = 0.0;
-  double velY = 0.0;
-  double velZ = 0.0;
-  double alt = 0.0;
-  double pressure = 0.0;
-  double airbreaks = 0.0;
-  unsigned long time = 0;
-}; // main data structure
 
 // Predefining functions used
 
