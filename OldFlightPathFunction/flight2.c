@@ -7,13 +7,14 @@
 #define CD_BRAKE 1.28
 #define CD_DRAG 0.42
 #define AREA_ROCKET .00872677 //meters squared
-#define AREA_BRAKE .00258064 //meters squared
+#define AREA_BRAKE .002419 //meters squared
 #define START_ALT 1219.2 //meters
 #define GOAL_HEIGHT 9144 //meters
-#define WEIGHT_I 333.54 //newtons
-#define WEIGHT_F 233.54 //newtons
-#define START_THRUST 4000 //newtons
-#define FUEL_BURN_RATE 20 //newtons per second
+#define WEIGHT_I 355.858 //newtons
+#define WEIGHT_F 253.549 //newtons
+//#define START_THRUST 1561.4 //newtons
+#define START_THRUST 1800 //newtons
+#define FUEL_BURN_RATE 9.4730555556 //newtons per second
 #define ACTUATION_TIME .1 // secs
 // N2850
 
@@ -62,8 +63,8 @@ int main(void)
 
 	thrust = START_THRUST; //newtons
 	weight = WEIGHT_I; //newtons
-	for (time = 0; time < 5; time += TIME_DELTA) {
-		if (time <= 5.0) {
+	for (time = 0; time < 10.8; time += TIME_DELTA) {
+		if (time <= 10.8) {
 			thrust = START_THRUST;
 		}
 		//else if (time > 4.0) {
