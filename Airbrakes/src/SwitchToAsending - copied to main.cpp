@@ -47,25 +47,27 @@ int main(){
 
 }
 
-bool switchToAscending(Data *data, int *counter){
-      const double ACCELERATION_TOLERANCE = 0.0;
-      const double VELOSITY_TOLERANCE = 0.0;
-	  const double ALTITUDE_TOLERANCE = 0.0;
-      const int SAFETY_TOLERANCE = 100; //define constants
-	  int token = 0;
+bool switchToAscending(DataHistory *hist, int *counter){
+      const double ASC_ACC_TOL = 0.0;
+      const double ASC_VEL_TOL = 0.0;
+	  const double ASC_ALT_TOL = 0.0;
+      const int ASC_SAFE_TOL = 100; //define constants for switch to ascending
+	  int token = 0; //counter to track how many of the checks are passed  if token > 2, then the rocket is accelerating
+	  int arraySize = hist->getSize();
 
       //printf("switchToAscending\n");
-      double accMag = sqrt(data->accX * data->accX + data->accY * data->accY + data->accZ * data->accZ); //calculate acceleration vector mag
-      double velMag = sqrt(data->accX * data->accX + data->accY * data->accY + data->accZ * data->accZ); //calculate velosity vector mag
-	  if ( fabs(accMag - ACCELERATION_TOLERANCE) > 0) token++;
-	  if ( fabs(velMag - VELOSITY_TOLERANCE) > 0)		token++;
-      if(&data[DATA_ARRAY_LENGTH - 1] != NULL && &data[DATA_ARRAY_LENGTH - 2] != NULL){
-		  if ( fabs(data[DATA_ARRAY_LENGTH - 2] - data[DATA_ARRAY_LENGTH - 1]) <= ALTITUDE_TOLERANCE)
-			  token++;
+      double accMag = sqrt(hist->getNewest()->accX * hist->getNewest()->accX + hist->getNewest()->accY * hist->getNewest()->accY + hist->getNewest()->accZ * hist->getNewest()->accZ); //calculate acceleration vector mag
+	  
+      double velMag = sqrt(hist->getNewest()->accX * hist->getNewest()->accX + hist->getNewest()->accY * hist->getNewest()->accY + hist->getNewest()->accZ * hist->getNewest()->accZ); //calculate velosity vector mag
+	  
+	  if ( fabs(accMag - ASC_ACC_TOL) > 0) token++;
+	  if ( fabs(velMag - ASC_VEL_TOL) > 0)	  token++;
+	  if ( hist->get(arraySize-1)->alt - hist->get(arraySize - 2)->alt > ASC_ALT_TOL)						  
+		  token++;      //compare values to tolerance and update token count 
 
 	  (token >= 2)? *counter + 1: 0;  //update the security counter
 
-      if (*counter >= SAFETY_TOLERANCE) return true; //return true if counter is higher than safety tolerance
+      if (*counter >= ASC_SAFE_TOL) return true; //return true if counter is higher than safety tolerance
 
       return false;
 }

@@ -3,6 +3,11 @@
 #include "Data.h"
 #include "DataHistory.h"
 
+#define ASC_ACC_TOL 0.0
+#define ASC_VEL_TOL 0.0
+#define ASC_ALT_TOL 0.0
+#define ASC_SAFE_TOL 100 //define constants for switch to ascending
+
 // Declarations required for Feather m0 setup
 void initVariant() __attribute__((weak));
 void initVariant() {}
@@ -81,7 +86,7 @@ int main() {
         safetyCounter = 0;
       } // if the state is ascending
     } else if (state == launchPad) {
-      if (switchToAscending(data, &safetyCounter)) {
+      if (switchToAscending(history, &safetyCounter)) {
         state = ascending;
       }
     } // if the state is launchPad
@@ -114,19 +119,22 @@ int main() {
  * @param  State  data from the rocket's sensors
  */
 bool switchToAscending(Data *data, int *counter){
-      const double ACCELERATION_TOLERANCE = 0.0;
-      const double VELOSITY_TOLERANCE = 0.0;
-      const int SAFETY_TOLERANCE = 100; //define constants
+	  int token = 0; //counter to track how many of the checks are passed  if token > 2, then the rocket is accelerating
+	  int arraySize = hist->getSize();
 
       //printf("switchToAscending\n");
-      double accMag = sqrt(data->accX * data->accX + data->accY * data->accY + data->accZ * data->accZ); //calculate acceleration vector mag
-      double velMag = sqrt(data->accX * data->accX + data->accY * data->accY + data->accZ * data->accZ); //calculate velosity vector mag
+      double accMag = sqrt(hist->getNewest()->accX * hist->getNewest()->accX + hist->getNewest()->accY * hist->getNewest()->accY + hist->getNewest()->accZ * hist->getNewest()->accZ); //calculate acceleration vector mag
+	  
+      double velMag = sqrt(hist->getNewest()->accX * hist->getNewest()->accX + hist->getNewest()->accY * hist->getNewest()->accY + hist->getNewest()->accZ * hist->getNewest()->accZ); //calculate velosity vector mag
+	  
+	  if ( fabs(accMag - ASC_ACC_TOL) > 0) token++;
+	  if ( fabs(velMag - ASC_VEL_TOL) > 0)	  token++;
+	  if ( hist->get(arraySize-1)->alt - hist->get(arraySize - 2)->alt > ASC_ALT_TOL)						  
+		  token++;      //compare values to tolerance and update token count 
 
+	  (token >= 2)? *counter + 1: 0;  //update the security counter
 
-
-      *counter = ( fabs((accMag - ACCELERATION_TOLERANCE)) > 0 || fabs((velMag - VELOSITY_TOLERANCE)) > 0)? *counter + 1: 0;  //update the security counter
-
-      if (*counter >= SAFETY_TOLERANCE) return true; //return true if counter is higher than safety tolerance
+      if (*counter >= ASC_SAFE_TOL) return true; //return true if counter is higher than safety tolerance
 
       return false;
 }
