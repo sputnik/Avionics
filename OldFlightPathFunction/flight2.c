@@ -8,6 +8,7 @@
 #define CD_DRAG 0.42
 #define AREA_ROCKET .00872677 //meters squared
 #define AREA_BRAKE .002419 //meters squared
+//#define AREA_BRAKE .001978 //meters squared
 #define START_ALT 1219.2 //meters
 #define GOAL_HEIGHT 9144 //meters
 #define WEIGHT_I 355.858 //newtons
