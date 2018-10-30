@@ -1,0 +1,8 @@
+﻿  iWantToSwanDiveOffOf2ndFloorHowe.c
+c:\users\nick\source\repos\wastingmytime\wastingmytime\iwanttoswandiveoffof2ndfloorhowe.c(55): warning C4101: 'z': unreferenced local variable
+c:\users\nick\source\repos\wastingmytime\wastingmytime\iwanttoswandiveoffof2ndfloorhowe.c(52): warning C4101: 'fneed': unreferenced local variable
+c:\users\nick\source\repos\wastingmytime\wastingmytime\iwanttoswandiveoffof2ndfloorhowe.c(53): warning C4101: 'y': unreferenced local variable
+c:\users\nick\source\repos\wastingmytime\wastingmytime\iwanttoswandiveoffof2ndfloorhowe.c(59): warning C4101: 'percentopen': unreferenced local variable
+c:\users\nick\source\repos\wastingmytime\wastingmytime\iwanttoswandiveoffof2ndfloorhowe.c(54): warning C4101: 'x': unreferenced local variable
+c:\users\nick\source\repos\wastingmytime\wastingmytime\iwanttoswandiveoffof2ndfloorhowe.c(51): warning C4101: 'tend': unreferenced local variable
+  wastingmytime.vcxproj -> C:\Users\Nick\source\repos\wastingmytime\Debug\wastingmytime.exe
