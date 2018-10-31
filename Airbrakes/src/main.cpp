@@ -6,7 +6,8 @@
 #define ASC_ACC_TOL 0.0
 #define ASC_VEL_TOL 0.0
 #define ASC_ALT_TOL 0.0
-#define ASC_SAFE_TOL 100 //define constants for switch to ascending
+#define ASC_SAFE_TOL 100 // define constants for switch to ascending
+#define DATA_ARRAY_LENGTH 10
 
 // Declarations required for Feather m0 setup
 void initVariant() __attribute__((weak));
@@ -17,11 +18,12 @@ typedef enum State { launchPad, ascending, coasting, descending } State;
 
 // Predefining functions used
 
-bool switchToAscending(Data *data, int *safetyCounter);
-bool switchToCoasting(DataHistory *hist, int *a_counter, int *v_counter, int *coast_safety);
+bool switchToAscending(DataHistory *hist, int *safetyCounter);
+bool switchToCoasting(DataHistory *hist, int *a_counter, int *v_counter,
+                      int *coast_safety);
 bool checkSetUp();
 void updateData(Data *data);
-bool checkAirbreaks(Data *data);
+bool checkAirbreaks(DataHistory *hist);
 void saveData(Data *data);
 
 extern "C" char *sbrk(int i);
@@ -76,7 +78,7 @@ int main() {
     updateData(data);
     history->add(data);
     if (state == coasting) {
-      if (checkAirbreaks(data)) {
+      if (checkAirbreaks(history)) {
         state = descending;
         safetyCounter = 0;
       } // if the state is coasting
@@ -96,7 +98,7 @@ int main() {
     if (millis() >= (prevTime + 1000)) {
       prevTime = millis();
       Serial.print("Time: ");
-      Serial.print(data[DATA_ARRAY_LENGTH-1].time);
+      Serial.print(data->t);
       Serial.print(" , iterations since last second= ");
       Serial.println(iterationCount);
       if (i == 4) {
@@ -118,28 +120,35 @@ int main() {
  *
  * @param  State  data from the rocket's sensors
  */
-bool switchToAscending(Data *data, int *counter){
-	  int token = 0; //counter to track how many of the checks are passed  if token > 2, then the rocket is accelerating
-	  int arraySize = hist->getSize();
+bool switchToAscending(DataHistory *hist, int *counter) {
+  int token = 0; // counter to track how many of the checks are passed  if token
+                 // > 2, then the rocket is accelerating
+  int arraySize = hist->getSize();
 
-      //printf("switchToAscending\n");
-      double accMag = sqrt(hist->getNewest()->accX * hist->getNewest()->accX + hist->getNewest()->accY * hist->getNewest()->accY + hist->getNewest()->accZ * hist->getNewest()->accZ); //calculate acceleration vector mag
-	  
-      double velMag = sqrt(hist->getNewest()->accX * hist->getNewest()->accX + hist->getNewest()->accY * hist->getNewest()->accY + hist->getNewest()->accZ * hist->getNewest()->accZ); //calculate velosity vector mag
-	  
-	  if ( fabs(accMag - ASC_ACC_TOL) > 0) token++;
-	  if ( fabs(velMag - ASC_VEL_TOL) > 0)	  token++;
-	  if ( hist->get(arraySize-1)->alt - hist->get(arraySize - 2)->alt > ASC_ALT_TOL)						  
-		  token++;      //compare values to tolerance and update token count 
+  Data *d = hist->getNewest();
 
-	  (token >= 2)? *counter + 1: 0;  //update the security counter
+  // printf("switchToAscending\n");
+  double accMag = sqrt(d->accX * d->accX + d->accY * d->accY +
+                       d->accZ * d->accZ); // calculate acceleration vector mag
 
-      if (*counter >= ASC_SAFE_TOL) return true; //return true if counter is higher than safety tolerance
+  double velMag = sqrt(d->accX * d->accX + d->accY * d->accY +
+                       d->accZ * d->accZ); // calculate velosity vector mag
 
-      return false;
+  if (fabs(accMag - ASC_ACC_TOL) > 0)
+    token++;
+  if (fabs(velMag - ASC_VEL_TOL) > 0)
+    token++;
+  if (arraySize > 3 && hist->get(1)->alt - hist->get(2)->alt >
+      ASC_ALT_TOL)
+    token++; // compare values to tolerance and update token count
+
+  (token >= 2) ? *counter++ : 0; // update the security counter
+
+  if (*counter >= ASC_SAFE_TOL)
+    return true; // return true if counter is higher than safety tolerance
+
+  return false;
 }
-
-
 
 /**
  * Check the data of the rocket and determine if the rocket is coasting
@@ -149,55 +158,57 @@ bool switchToAscending(Data *data, int *counter){
  *
  * @param State data from the rocket's sensors
  */
- /*
- Draft of switchToCoasting.
- Checks the data history to see if speed has been steadily decreasing
- and if acceleration is below a certain threshold.
- */
-bool switchToCoasting(DataHistory *hist, int *a_counter, int *v_counter, int *coast_safety) {
+/*
+Draft of switchToCoasting.
+Checks the data history to see if speed has been steadily decreasing
+and if acceleration is below a certain threshold.
+*/
+bool switchToCoasting(DataHistory *hist, int *a_counter, int *v_counter,
+                      int *coast_safety) {
 
-  //check if the acceleration is less than a certain threshold, maybe -9 for gravity
-  if(hist->getNewest()->accZ <= -9){
+  // check if the acceleration is less than a certain threshold, maybe -9 for
+  // gravity
+  if (hist->getNewest()->accZ <= -9) {
     (*a_counter)++;
   } else {
-    if(*a_counter - 2 > 0){
-      (*a_counter)-=2;
+    if (*a_counter - 2 > 0) {
+      (*a_counter) -= 2;
     } else {
       *a_counter = 0;
     }
   }
 
-  //check if the last few velocity measurements are steadily decreasing
+  // check if the last few velocity measurements are steadily decreasing
   int i;
   int newer = hist->getNewest()->velZ;
   int velcheck = 0;
-  for(i = 1; i < hist->getSize()/2; i++){
+  for (i = 1; i < hist->getSize() / 2; i++) {
     velcheck = 1;
     int older = hist->get(i)->velZ;
-    if(newer >= older + 1){
+    if (newer >= older + 1) {
       velcheck = 0;
       break;
     }
     newer = older;
   }
 
-  if(velcheck){
+  if (velcheck) {
     (*v_counter)++;
   } else {
-    if(*v_counter - 1 > 0){
+    if (*v_counter - 1 > 0) {
       (*v_counter)--;
     } else {
       *v_counter = 0;
     }
   }
 
-  if(*a_counter >= 4 || *v_counter >= 4){
+  if (*a_counter >= 4 || *v_counter >= 4) {
     (*coast_safety)++;
-    if(*coast_safety >= 5){
+    if (*coast_safety >= 5) {
       return true;
     }
   } else {
-    if(*coast_safety - 1 > 0){
+    if (*coast_safety - 1 > 0) {
       (*coast_safety)--;
     } else {
       *coast_safety = 0;
@@ -240,7 +251,7 @@ bool checkSetUp() {
  *
  */
 void updateData(Data *data) {
-  data[DATA_ARRAY_LENGTH-1].time = millis();
+  data->t = millis();
   // TODO
 }
 
