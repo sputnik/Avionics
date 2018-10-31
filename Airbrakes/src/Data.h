@@ -10,10 +10,73 @@ struct Data {
   double velZ;
   double alt;
   double pressure;
-  double airbreaks;
-  unsigned long time;
-}; // main data structure
+  double airbrakes;
+  unsigned long t;
 
-#define DATA_ARRAY_LENGTH 5
+  /*
+   * Constructor.
+   *  Initializes data to default values
+   */
+  Data()
+  {
+    accX = 0.0;
+    accY = 0.0;
+    accZ = 0.0;
+    velX = 0.0;
+    velY = 0.0;
+    velZ = 0.0;
+    alt = 0.0;
+    pressure = 0.0;
+    airbrakes = 0.0;
+    t = 0;
+  }
+
+  /*
+   * Copy Constructor.
+   * @param other
+   *    The other Data object to copy into this
+   */
+  Data(Data& other)
+  {
+    accX = other.accX;
+    accY = other.accY;
+    accZ = other.accZ;
+    velX = other.velX;
+    velY = other.velY;
+    velZ = other.velZ;
+    alt = other.alt;
+    pressure = other.pressure;
+    airbrakes = other.airbrakes;
+    t = other.t;
+  }
+
+  void clone(Data& other)
+  {
+    accX = other.accX;
+    accY = other.accY;
+    accZ = other.accZ;
+    velX = other.velX;
+    velY = other.velY;
+    velZ = other.velZ;
+    alt = other.alt;
+    pressure = other.pressure;
+    airbrakes = other.airbrakes;
+    t = other.t;
+  }
+
+  void clone(Data* other)
+  {
+    accX = other->accX;
+    accY = other->accY;
+    accZ = other->accZ;
+    velX = other->velX;
+    velY = other->velY;
+    velZ = other->velZ;
+    alt = other->alt;
+    pressure = other->pressure;
+    airbrakes = other->airbrakes;
+    t = other->t;
+  }
+}; // main data structure
 
 #endif
