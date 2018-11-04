@@ -7,15 +7,17 @@
 
 SensorSkeleton :: SensorSkeleton(int pinUsed)
 {
-  _theSensor = new theSensor(pinUsed);
+  theSensor = new theSensor(pinUsed);
 }
 
-void addValue(int a)
+void SensorSkeleton::addValue()
 {
-  _value += a;
+  // Since the .h creates a pointer to the object, you need "->" to access
+  // its methods
+  value += theSensor->getSensorValue();
 }
 
-int getValue()
+int SensorSkeleton::getValue()
 {
   return value;
 }

@@ -9,28 +9,29 @@
 
 class SensorSkeleton
 {
-  // Declare any public methods and variables here
+  // Declare any public methods
   // Methods have () at the end
   // Make sure to declare the type, e.g. int, char, void, String,...
   // Implement the methods in the .cpp file
   // The actual functions included here will be dependent on sensor
   public:
-    // Instances of the sensor
-    // This is necessary to do because the sensor library may not have a
-    // default constructor so you need a null pointer to avoid any errors
-    theSensor sens;
-    theSensor *pointer = sens;
-    pointer = NULL;
-
-    // Any other needed data fields
-    int value;
-
     // Constructor of the sensor object
     SensorSkeleton(int pinUsed);
 
     // Methods implemented within the .cpp file
-    void addSomething(int a);
+    void addSomething();
     int getValue();
+
+  // Declare any private data fields here
+  // Make sure to declare the type
+  private:
+    // Pointer to the sensor
+    // This is necessary to do because the sensor library may not have a
+    // default constructor so you need a null pointer to avoid any errors
+    theSensor *sens;
+
+    // Any other needed data fields
+    int value;
 };
 
 #endif
