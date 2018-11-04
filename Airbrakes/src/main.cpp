@@ -23,7 +23,7 @@ bool switchToCoasting(DataHistory *hist, int *a_counter, int *v_counter,
                       int *coast_safety);
 bool checkSetUp();
 void updateData(Data *data);
-bool checkAirbreaks(DataHistory *hist);
+bool checkAirbrakes(DataHistory *hist);
 void saveData(Data *data);
 
 extern "C" char *sbrk(int i);
@@ -78,7 +78,7 @@ int main() {
     updateData(data);
     history->add(data);
     if (state == coasting) {
-      if (checkAirbreaks(history)) {
+      if (checkAirbrakes(history)) {
         state = descending;
         safetyCounter = 0;
       } // if the state is coasting
@@ -229,7 +229,7 @@ bool switchToCoasting(DataHistory *hist, int *a_counter, int *v_counter,
  * @param State data from the rocket's sensors
  *
  */
-bool checkAirbreaks(Data *data) {
+bool checkAirbrakes(Data *data) {
   // TODO
   return false;
 }
