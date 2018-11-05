@@ -3,11 +3,19 @@
 #include "Data.h"
 #include "DataHistory.h"
 
+// define constants for switch to ascending
 #define ASC_ACC_TOL 0.0
 #define ASC_VEL_TOL 0.0
 #define ASC_ALT_TOL 0.0
-#define ASC_SAFE_TOL 100 // define constants for switch to ascending
-#define DATA_ARRAY_LENGTH 10
+#define ASC_SAFE_TOL 100
+// define constants for switch to coasting
+#define COAST_ACC_TOL -10.0 // m/s^2
+#define COAST_VEL_TOL 5.0
+#define COAST_VEL_COUNT 5
+#define COAST_ACC_COUNT 5
+#define COAST_TOT_COUNT 5
+// constant for length of data history array
+#define DATA_ARRAY_LENGTH 20
 
 // Declarations required for Feather m0 setup
 void initVariant() __attribute__((weak));
@@ -20,7 +28,7 @@ typedef enum State { launchPad, ascending, coasting, descending } State;
 
 bool switchToAscending(DataHistory *hist, int *safetyCounter);
 bool switchToCoasting(DataHistory *hist, int *a_counter, int *v_counter,
-                      int *coast_safety);
+                      int *safetyCounter);
 bool checkSetUp();
 void updateData(Data *data);
 bool checkAirbrakes(DataHistory *hist);
@@ -53,24 +61,30 @@ int main() {
   // Setting up LED_BUILTIN for debugging output
   pinMode(LED_BUILTIN, OUTPUT);
   delay(100);
-  Data *data;
+  Data *data = new Data;
   DataHistory *history = new DataHistory(DATA_ARRAY_LENGTH);
   State state = launchPad;
 
   if (!checkSetUp()) {
     Serial.println("Setup not completed correctly");
-    digitalWrite(LED_BUILTIN, HIGH);
+    // If stetup not completed blink LED for debugging purposes
+    while (true) {
+      digitalWrite(LED_BUILTIN, HIGH);
+      delay(500);
+      digitalWrite(LED_BUILTIN, LOW);
+      delay(500);
+    }
   } else {
     digitalWrite(LED_BUILTIN, LOW);
   }
 
-  int i = 0;
   // used to keep track of how many loops take place in one period of time.
   // for debugging purposes
   unsigned long iterationCount = 0;
+
+  // Counters used for state changes
   int a_counter = 0;
   int v_counter = 0;
-  int coast_safety = 0;
   int safetyCounter = 0;
 
   while (true) {
@@ -83,7 +97,7 @@ int main() {
         safetyCounter = 0;
       } // if the state is coasting
     } else if (state == ascending) {
-      if (switchToCoasting(history, &a_counter, &v_counter, &coast_safety)) {
+      if (switchToCoasting(history, &a_counter, &v_counter, &safetyCounter)) {
         state = coasting;
         safetyCounter = 0;
       } // if the state is ascending
@@ -101,14 +115,10 @@ int main() {
       Serial.print(data->t);
       Serial.print(" , iterations since last second= ");
       Serial.println(iterationCount);
-      if (i == 4) {
-        Serial.print("State: ");
-        Serial.println(state);
-      } // if we want to print state
-      i = (i + 1) % 5;
       iterationCount = 0;
     } // if we want to output information
   }   // while(true)
+  delete data;
   delete history;
   return 0;
 } // main
@@ -138,11 +148,10 @@ bool switchToAscending(DataHistory *hist, int *counter) {
     token++;
   if (fabs(velMag - ASC_VEL_TOL) > 0)
     token++;
-  if (arraySize > 3 && hist->get(1)->alt - hist->get(2)->alt >
-      ASC_ALT_TOL)
+  if (arraySize > 3 && hist->get(1)->alt - hist->get(2)->alt > ASC_ALT_TOL)
     token++; // compare values to tolerance and update token count
 
-  (token >= 2) ? *counter++ : 0; // update the security counter
+  (token >= 2) ? (*counter)++ : 0; // update the security counter
 
   if (*counter >= ASC_SAFE_TOL)
     return true; // return true if counter is higher than safety tolerance
@@ -164,11 +173,11 @@ Checks the data history to see if speed has been steadily decreasing
 and if acceleration is below a certain threshold.
 */
 bool switchToCoasting(DataHistory *hist, int *a_counter, int *v_counter,
-                      int *coast_safety) {
+                      int *safetyCounter) {
 
   // check if the acceleration is less than a certain threshold, maybe -9 for
   // gravity
-  if (hist->getNewest()->accZ <= -9) {
+  if (hist->getNewest()->accZ <= COAST_ACC_TOL) {
     (*a_counter)++;
   } else {
     if (*a_counter - 2 > 0) {
@@ -180,13 +189,13 @@ bool switchToCoasting(DataHistory *hist, int *a_counter, int *v_counter,
 
   // check if the last few velocity measurements are steadily decreasing
   int i;
-  int newer = hist->getNewest()->velZ;
-  int velcheck = 0;
+  double newer = hist->getNewest()->velZ;
+  bool velcheck = false;
   for (i = 1; i < hist->getSize() / 2; i++) {
-    velcheck = 1;
-    int older = hist->get(i)->velZ;
-    if (newer >= older + 1) {
-      velcheck = 0;
+    velcheck = true;
+    double older = hist->get(i)->velZ;
+    if (newer > older + COAST_VEL_TOL) {
+      velcheck = false;
       break;
     }
     newer = older;
@@ -202,16 +211,16 @@ bool switchToCoasting(DataHistory *hist, int *a_counter, int *v_counter,
     }
   }
 
-  if (*a_counter >= 4 || *v_counter >= 4) {
-    (*coast_safety)++;
-    if (*coast_safety >= 5) {
+  if (*a_counter >= COAST_ACC_COUNT || *v_counter >= COAST_VEL_COUNT) {
+    (*safetyCounter)++;
+    if (*safetyCounter >= COAST_TOT_COUNT) {
       return true;
     }
   } else {
-    if (*coast_safety - 1 > 0) {
-      (*coast_safety)--;
+    if (*safetyCounter - 1 > 0) {
+      (*safetyCounter)--;
     } else {
-      *coast_safety = 0;
+      *safetyCounter = 0;
     }
   }
 
@@ -229,7 +238,7 @@ bool switchToCoasting(DataHistory *hist, int *a_counter, int *v_counter,
  * @param State data from the rocket's sensors
  *
  */
-bool checkAirbrakes(Data *data) {
+bool checkAirbrakes(DataHistory *hist) {
   // TODO
   return false;
 }
@@ -248,6 +257,8 @@ bool checkSetUp() {
 
 /**
  * Update data object with new sensor information
+ *
+ * @param data : The data object to store new data in
  *
  */
 void updateData(Data *data) {
