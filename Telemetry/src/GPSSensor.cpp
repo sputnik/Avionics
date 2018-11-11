@@ -2,5 +2,5 @@
 
 GPSSensor::GPSSensor()
 {
-  gps = new TinyGPSPlus();
+  gps = new  TinyGPSPlus();
 }

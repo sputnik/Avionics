@@ -3,13 +3,19 @@
 #include "IMUSensor.h"
 #include "PTSensor.h"
 #include "GPSSensor.h"
+#include "RTCSensor.h"
 
-IMUSensor bno = IMUSensor(55, 0x28);
-PTSensor pt = PTSensor();
-GPSSensor gps = GPSSensor();
+IMUSensor bno;
+PTSensor pt;
+GPSSensor gps;
+RTCSensor rtc;
 
 void setup() {
     // put your setup code here, to run once:
+    bno = IMUSensor(55, 0x28);
+    pt = PTSensor();
+    gps = GPSSensor();
+    rtc = RTCSensor();
 }
 
 void loop() {
@@ -23,4 +29,7 @@ void loop() {
     gps.getLong();
     gps.getLat();
     gps.connected();
+    gps.speed();
+    gps.alt();
+    rtc.seconds();
 }

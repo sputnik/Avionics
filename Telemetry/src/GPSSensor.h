@@ -10,19 +10,28 @@ class GPSSensor
 
     inline double getLat()
     {
-      return gps->lat();
+      return gps->location.lat();
     }
 
     inline double getLong()
     {
-      return gps->lng();
+      return gps->location.lng();
     }
 
     inline boolean connected()
     {
-      return gps->isValid();
+      return gps->satellites.isValid();
     }
 
+    inline double speed()
+    {
+      return gps->speed.mph();
+    }
+
+    inline double alt()
+    {
+      return gps->altitude.feet();
+    }
   private:
     TinyGPSPlus * gps;
 };
