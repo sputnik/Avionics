@@ -2,9 +2,10 @@
 #include "Arduino.h"
 #include "Data.h"
 #include "DataHistory.h"
+#include "math.h"
 
 // define constants for switch to ascending
-#define ASC_ACC_TOL 0.0
+#define ASC_ACC_TOL 0.5 // g's
 #define ASC_VEL_TOL 0.0
 #define ASC_ALT_TOL 0.0
 #define ASC_SAFE_TOL 100
@@ -16,6 +17,16 @@
 #define COAST_TOT_COUNT 5
 // constant for length of data history array
 #define DATA_ARRAY_LENGTH 20
+// constants for switch for switch to descending
+#define DESCEND_VEL_TOL 0
+#define DESCEND_VEL_COUNT 10
+// constants of the physical rocket
+#define START_HEIGHT 1401 //must be changed per launch location, currently SpacePort America
+#define MASS_F 25.845973 // kg
+#define MASS_I 36.275025 // kg
+#define AREA_ROCKET .00872677 // meters squared
+#define CD_ROCKET 0.42
+#define GOAL_HEIGHT 9144 // meters
 
 // Declarations required for Feather m0 setup
 void initVariant() __attribute__((weak));
@@ -92,7 +103,7 @@ int main() {
     updateData(data);
     history->add(data);
     if (state == coasting) {
-      if (checkAirbrakes(history)) {
+      if (checkAirbrakes(history), safetyCounter) {
         state = descending;
         safetyCounter = 0;
       } // if the state is coasting
@@ -238,9 +249,33 @@ bool switchToCoasting(DataHistory *hist, int *a_counter, int *v_counter,
  * @param State data from the rocket's sensors
  *
  */
-bool checkAirbrakes(DataHistory *hist) {
+bool checkAirbrakes(DataHistory *hist, int *safetyCounter) {
   // TODO
-  return false;
+	Data *data = hist->getNewest();
+	double k = .5 * data->density * CD_ROCKET * AREA_ROCKET;
+	double qsquared = -1 * MASS_F * 9.81 / k;
+	double hc = ((MASS_F / (2 * k)) * log((qsquared - (data->velV * data->velV)) / qsquared)) + (data->alt - START_HEIGHT);
+	if (hc > GOAL_HEIGHT) 
+	{
+		//actuate them bois
+	}
+	if (data->velV < DESCEND_VEL_TOL)
+	{
+		(*safetyCounter)++;
+		if (*safetyCounter > DESCEND_VEL_COUNT)
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+	else
+	{
+		*safetyCounter = 0;
+		return false;
+	}
 }
 
 /**
