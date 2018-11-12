@@ -1,7 +1,15 @@
+// Class file for RTC sensor
 #include "RTCSensor.h"
 
+// Construct the sensor object
 RTCSensor::RTCSensor()
 {
-  mill = new RTC_Millis();
-  diff = mill->now();
-}
+  rtc = new RTC_DS3231();
+  start = rtc->now(); // Sets the initial time
+} // end constructor
+
+// Destruction
+RTCSensor::~RTCSensor()
+{
+  delete rtc;
+} // end Destruction

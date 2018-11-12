@@ -1,3 +1,5 @@
+// Header file for rtc sensor
+
 #ifndef RTCSENSOR_H_
 #define RTCSENSOR_H_
 
@@ -6,21 +8,24 @@
 class RTCSensor
 {
   public:
+    // Constructor
     RTCSensor();
 
-    inline void update()
-    {
-      diff =  + diff;
-    }
-
+    // Returns how many seconds have elapsed since start-up
     inline uint8_t seconds()
     {
-      return diff.second();
+      return rtc->now().second() - start.second();
     }
 
+    // Destructor
+    ~RTCSensor();
+
   private:
-    RTC_Millis * mill;
-    DateTime diff;
+    // Pointer to the rtc sensor
+    RTC_DS3231 * rtc;
+
+    // The date and time at startup
+    DateTime start;
 
 };
 #endif

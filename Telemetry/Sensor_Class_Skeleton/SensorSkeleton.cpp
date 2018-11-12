@@ -5,19 +5,24 @@
 #include "SensorLibrary.h"
 // Include any libraries needed for the sensor
 
+// Constructor
 SensorSkeleton :: SensorSkeleton(int pinUsed)
 {
-  theSensor = new theSensor(pinUsed);
-}
+  // initialize the data fields
+  sens = new theSensor(pinUsed);
+  value = sens->getSensorValue();
+} // End constructor
 
 void SensorSkeleton::addValue()
 {
   // Since the .h creates a pointer to the object, you need "->" to access
   // its methods
-  value += theSensor->getSensorValue();
+  value += sens->getSensorValue();
 }
 
-int SensorSkeleton::getValue()
+// Destructor
+SensorSkeleton::~SensorSkeleton()
 {
-  return value;
-}
+  // Delete any pointers
+  delete sens;
+} // End destructor
