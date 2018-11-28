@@ -25,6 +25,8 @@
 #define MASS_F 25.845973 // kg
 #define MASS_I 36.275025 // kg
 #define AREA_ROCKET .00872677 // meters squared
+#define LENGTH 3.6576//length of rocket (meters)
+#define VISCOSITY 1.85*10^-5 //viscosity coefficient of air (Pa*s)
 #define CD_ROCKET 0.42
 #define GOAL_HEIGHT 9144 // meters
 
@@ -252,10 +254,11 @@ bool switchToCoasting(DataHistory *hist, int *a_counter, int *v_counter,
 bool checkAirbrakes(DataHistory *hist, int *safetyCounter) {
   // TODO
 	Data *data = hist->getNewest();
-	double k = .5 * data->density * CD_ROCKET * AREA_ROCKET;
+  double reynolds = (data->density)*(data->velV)*LENGTH/VISCOSITY;
+  double k = .5 * data->density * CD_ROCKET * AREA_ROCKET;
 	double qsquared = -1 * MASS_F * 9.81 / k;
 	double hc = ((MASS_F / (2 * k)) * log((qsquared - (data->velV * data->velV)) / qsquared)) + (data->alt - START_HEIGHT);
-	if (hc > GOAL_HEIGHT) 
+	if (hc > GOAL_HEIGHT)
 	{
 		//actuate them bois
 	}
