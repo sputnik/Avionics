@@ -31,6 +31,8 @@
 #define GOAL_HEIGHT 9144 // meters
 //constants for kalman filter
 #define KALMAN_GAIN 0.5
+//Sea level pressure used for getAltitude function
+#define SEA_LEVEL_PRES 101.325
 
 // Declarations required for Feather m0 setup
 void initVariant() __attribute__((weak));
@@ -331,4 +333,15 @@ double kalman(double measurement, double prevMeasurement){
   ret = KALMAN_GAIN * measurement + (1-KALMAN_GAIN) * prevMeasurement;
 
   return ret;
+}
+
+double getAltitude(double pressureKPA, double temperatureC){
+  //Gets altitude from pressure and temperature
+  double x = SEA_LEVEL_PRES / pressureKPA;
+  double y = 1 / 5.257;
+  double power = pow(x, y);
+
+  double h = ((power-1) * (temperatureC + 273.15)) / 0.0065;
+  //equation is h=(((P0/P)^(1/5.257)-1)*(T+273.15))/0.0065
+  return h;
 }
