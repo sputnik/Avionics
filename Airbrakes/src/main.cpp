@@ -29,6 +29,8 @@
 #define VISCOSITY 1.85*10^-5 //viscosity coefficient of air (Pa*s)
 #define CD_ROCKET 0.42
 #define GOAL_HEIGHT 9144 // meters
+//constants for kalman filter
+#define KALMAN_GAIN 0.5
 
 // Declarations required for Feather m0 setup
 void initVariant() __attribute__((weak));
@@ -46,6 +48,8 @@ bool checkSetUp();
 void updateData(Data *data);
 bool checkAirbrakes(DataHistory *hist);
 void saveData(Data *data);
+
+double kalman(double measurement, double prevMeasurement);
 
 extern "C" char *sbrk(int i);
 
@@ -312,4 +316,19 @@ void updateData(Data *data) {
  */
 void saveData(Data *data) {
   // TODO
+}
+
+/**
+ * 1D kalman filter used to reduce signal noise 
+ * 
+ * @param double measurement - current raw measurement 
+ * @param double prevMeasurement - result of the previous kalman estimate
+ * @param double kalmanGain - constant kalman gain coefficient 
+ */
+double kalman(double measurement, double prevMeasurement){
+  double ret;
+
+  ret = KALMAN_GAIN * measurement + (1-KALMAN_GAIN) * prevMeasurement;
+
+  return ret;
 }
