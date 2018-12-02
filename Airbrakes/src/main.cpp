@@ -26,7 +26,7 @@
 #define MASS_I 36.275025 // kg
 #define AREA_ROCKET .00872677 // meters squared
 #define LENGTH 3.6576//length of rocket (meters)
-#define VISCOSITY 1.85*10^-5 //viscosity coefficient of air (Pa*s)
+#define VISCOSITY 1.85e-5 //viscosity coefficient of air (Pa*s)
 #define CD_ROCKET 0.42
 #define GOAL_HEIGHT 9144 // meters
 //constants for kalman filter
@@ -319,11 +319,11 @@ void saveData(Data *data) {
 }
 
 /**
- * 1D kalman filter used to reduce signal noise 
- * 
- * @param double measurement - current raw measurement 
+ * 1D kalman filter used to reduce signal noise
+ *
+ * @param double measurement - current raw measurement
  * @param double prevMeasurement - result of the previous kalman estimate
- * @param double kalmanGain - constant kalman gain coefficient 
+ * @param double kalmanGain - constant kalman gain coefficient
  */
 double kalman(double measurement, double prevMeasurement){
   double ret;
