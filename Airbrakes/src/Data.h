@@ -18,9 +18,9 @@ struct Data {
   unsigned long t;
 
   /*
-   * Constructor.
-   *  Initializes data to default values
-   */
+  * Constructor.
+  *  Initializes data to default values
+  */
   Data() {
     accX = 0.0;
     accY = 0.0;
@@ -32,17 +32,17 @@ struct Data {
     velV = 0.0;
     alt = 0.0;
     pressure = 0.0;
-	temperature = 0.0;
-	density = 0.0;
+    temperature = 0.0;
+    density = 0.0;
     airbrakes = 0.0;
     t = 0;
   }
 
   /*
-   * Copy Constructor.
-   * @param other
-   *    The other Data object to copy into this
-   */
+  * Copy Constructor.
+  * @param other
+  *    The other Data object to copy into this
+  */
   Data(Data &other) {
     accX = other.accX;
     accY = other.accY;
@@ -54,8 +54,8 @@ struct Data {
     velV = other.velV;
     alt = other.alt;
     pressure = other.pressure;
-	temperature = other.temperature;
-	density = other.density;
+    temperature = other.temperature;
+    density = other.density;
     airbrakes = other.airbrakes;
     t = other.t;
   }
@@ -71,8 +71,8 @@ struct Data {
     velV = other.velV;
     alt = other.alt;
     pressure = other.pressure;
-	temperature = other.temperature;
-	density = other.density;
+    temperature = other.temperature;
+    density = other.density;
     airbrakes = other.airbrakes;
     t = other.t;
   }
@@ -88,8 +88,8 @@ struct Data {
     velV = other->velV;
     alt = other->alt;
     pressure = other->pressure;
-	temperature = other->temperature;
-	density = other->density;
+    temperature = other->temperature;
+    density = other->density;
     airbrakes = other->airbrakes;
     t = other->t;
   }

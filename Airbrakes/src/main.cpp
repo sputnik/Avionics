@@ -1,7 +1,12 @@
 #define ARDUINO_MAIN
 #include "Arduino.h"
+#include "IMUSensor.h"
+#include "PTSensor.h"
+
 #include "Data.h"
 #include "DataHistory.h"
+#include "Sensors.h"
+
 #include "math.h"
 
 // define constants for switch to ascending
@@ -26,13 +31,14 @@
 #define MASS_I 36.275025 // kg
 #define AREA_ROCKET .00872677 // meters squared
 #define LENGTH 3.6576//length of rocket (meters)
-#define VISCOSITY 1.85e-5 //viscosity coefficient of air (Pa*s)
 #define CD_ROCKET 0.42
 #define GOAL_HEIGHT 9144 // meters
 //constants for kalman filter
 #define KALMAN_GAIN 0.5
-//Sea level pressure used for getAltitude function
-#define SEA_LEVEL_PRES 101.325
+// constants of air
+#define SEA_LEVEL_PRES 101.325 // sea level pressure (KPa)
+#define VISCOSITY 1.85e-5 // viscosity coefficient of air (Pa*s)
+#define GAS_CONSTANT_AIR 287.058 // specific gas constant (R) for dry air (J/(kg*K))
 
 // Declarations required for Feather m0 setup
 void initVariant() __attribute__((weak));
@@ -80,6 +86,7 @@ int main() {
   // Setting up LED_BUILTIN for debugging output
   pinMode(LED_BUILTIN, OUTPUT);
   delay(100);
+  Sensors *sensors = new Sensors;
   Data *data = new Data;
   DataHistory *history = new DataHistory(DATA_ARRAY_LENGTH);
   State state = launchPad;
@@ -137,6 +144,7 @@ int main() {
       iterationCount = 0;
     } // if we want to output information
   }   // while(true)
+  delete sensors;
   delete data;
   delete history;
   return 0;
@@ -300,14 +308,67 @@ bool checkSetUp() {
 }
 
 /**
+ * Get altitude of rocket from pressure and temperature
+ *
+ * @return h - altitude in km
+ *
+ * @param pressureKPA - pressure in KPa
+ * @param temperatureC - temperature in C
+ */
+double getAltitude(double pressureKPA, double temperatureC){
+  //Gets altitude from pressure and temperature
+  double x = SEA_LEVEL_PRES / pressureKPA;
+  double y = 1 / 5.257;
+  double power = pow(x, y);
+
+  double h = ((power-1) * (temperatureC + 273.15)) / 0.0065;
+  //equation is h=(((P0/P)^(1/5.257)-1)*(T+273.15))/0.0065
+  return h;
+}
+
+/**
+ * Get dry air density in kg/m^3 from pressure and temperature
+ *
+ * @return rho - air density in kg/m^3
+ *
+ * @param double pressureKPA - current pressure in KPa
+ * @param double temperatureC - current pressure in degrees C
+ */
+double getDensity(double pressureKPA, double temperatureC){
+  // WARNING: potentially inaccurate. Doesn't account for air moisture
+  double press = pressureKPA * 10e-3; // pressure in Pa
+  double temp = temperatureC + 273.15; // temp in K
+  double rho = press/(GAS_CONSTANT_AIR*temp); // air density in kg/m^3
+  return rho;
+}
+
+/**
  * Update data object with new sensor information
  *
+ * @param sensors : The sensors object to pull data from
  * @param data : The data object to store new data in
- *
  */
-void updateData(Data *data) {
+void updateData(Sensors *sensors, Data *data) {
+  //TODO
+  // Note: does not update data->airbrakes
+
+  // sensor updates
   data->t = millis();
-  // TODO
+
+  data->accX = sensors->getAccX();
+  data->accY = sensors->getAccY();
+  data->accZ = sensors->getAccZ();
+  data->accV = sensors->getAccV();
+  data->velX = 0; //TODO
+  data->velY = 0; //TODO
+  data->velZ = 0; //TODO
+  data->velV = 0; //TODO
+  data->pressure = sensors->getPressure();
+  data->temperature = sensors->getTemperature();
+
+  //calculated values
+  data->alt = getAltitude(data->pressure, data->temperature);
+  data->density = getDensity(data->pressure, data->temperature);
 }
 
 /**
@@ -333,15 +394,4 @@ double kalman(double measurement, double prevMeasurement){
   ret = KALMAN_GAIN * measurement + (1-KALMAN_GAIN) * prevMeasurement;
 
   return ret;
-}
-
-double getAltitude(double pressureKPA, double temperatureC){
-  //Gets altitude from pressure and temperature
-  double x = SEA_LEVEL_PRES / pressureKPA;
-  double y = 1 / 5.257;
-  double power = pow(x, y);
-
-  double h = ((power-1) * (temperatureC + 273.15)) / 0.0065;
-  //equation is h=(((P0/P)^(1/5.257)-1)*(T+273.15))/0.0065
-  return h;
 }
