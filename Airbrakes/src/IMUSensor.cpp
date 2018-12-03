@@ -5,14 +5,12 @@
 #include <utility/imumaths.h>
 
 // Constructor, initializes the pointer
-IMUSensor::IMUSensor()
-{
+IMUSensor::IMUSensor() {
   bno = new Adafruit_BNO055(55, 0x28);
 } // end constructor
 
 // Updates the data from the imu
-void IMUSensor::updateData()
-{
+void IMUSensor::updateData() {
   // Getting new vectors for euler angles, gravity, accelerometer, and linear
   // acceleration
   euler = bno->getVector(Adafruit_BNO055::VECTOR_EULER); // Unit: degrees
@@ -33,8 +31,7 @@ void IMUSensor::updateData()
 } // end updateData
 
 // Self-Destruction
-IMUSensor::~IMUSensor()
-{
+IMUSensor::~IMUSensor() {
   delete bno;
   // delete euler;
   // delete gravity; // oops

@@ -354,10 +354,10 @@ void updateData(Sensors *sensors, Data *data) {
 
   // sensor updates
   data->t = millis();
-
-  data->accX = sensors->getAccX();
-  data->accY = sensors->getAccY();
-  data->accZ = sensors->getAccZ();
+  sensors->refreshIMU();
+  data->accX = sensors->getAccX(); //TODO
+  data->accY = sensors->getAccY(); //TODO
+  data->accZ = sensors->getAccZ(); //TODO
   data->accV = sensors->getAccV();
   data->velX = 0; //TODO
   data->velY = 0; //TODO
@@ -366,7 +366,7 @@ void updateData(Sensors *sensors, Data *data) {
   data->pressure = sensors->getPressure();
   data->temperature = sensors->getTemperature();
 
-  //calculated values
+  // calculated values
   data->alt = getAltitude(data->pressure, data->temperature);
   data->density = getDensity(data->pressure, data->temperature);
 }

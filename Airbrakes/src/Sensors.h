@@ -12,14 +12,14 @@ public:
   // Constructor
   Sensors();
 
+  // IMU sensor data
+  void refreshIMU();
   double getAccX();
   double getAccY();
   double getAccZ();
   double getAccV();
-  double getVelX();
-  double getVelY();
-  double getVelZ();
-  double getVelV();
+
+  // PT sensor data
   double getPressure();
   double getTemperature();
 
