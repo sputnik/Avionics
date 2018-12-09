@@ -42,7 +42,7 @@ void setup() {
   }
   Serial.print("Set Freq to: ");
   Serial.println(RF95_FREQ);
-  rf95.setTxPower(5, false);
+  rf95.setTxPower(23, false);
   // put your setup code here, to run once:
 }
 
@@ -59,14 +59,16 @@ void loop() {
   if (millis() - startTime > 2000) {
     startTime = millis();
     digitalWrite(LED_BUILTIN, HIGH);
-    char radiopacket[20];
+    char radiopacket[30];
     Serial.print("Sending...\n");
     if (gps.location.isValid()) {
       char lat[10];
       char lon[10];
+      char alt[10];
       ftoa(gps.location.lat(), lat, 6);
       ftoa(gps.location.lng(), lon, 6);
-      sprintf(radiopacket, "%s %s", lat, lon);
+      ftoa(gps.altitude.meters(), alt, 6);
+      sprintf(radiopacket, "%s %s %s", lat, lon, alt);
       Serial.print("Lat=");
       Serial.print(gps.location.lat());
       Serial.print("Lon = ");
@@ -76,8 +78,8 @@ void loop() {
     }
     Serial.println(radiopacket);
     delay(10);
-    radiopacket[19] = 0;
-    rf95.send((uint8_t *)radiopacket, 20);
+    radiopacket[29] = 0;
+    rf95.send((uint8_t *)radiopacket, 30);
     delay(10);
     rf95.waitPacketSent();
     digitalWrite(LED_BUILTIN, LOW);

@@ -4,9 +4,9 @@
 #include <SPI.h>
 #include <TinyGPS++.h>
 
-#define REC_LAT 45.0560
-#define REC_LON -92.8088
-#define REC_ALT 915 // (m);
+#define REC_LAT 42.1096
+#define REC_LON -93.5552
+#define REC_ALT 307.85 // (m);
 
 #define RFM95_CS 9
 #define RFM95_RST 10
@@ -54,7 +54,7 @@ void setup() {
     Serial.println("Card init. failed!");
   }
   char filename[15];
-  strcpy(filename, "ANALOG00.TXT");
+  strcpy(filename, "TEST__00.TXT");
   for (uint8_t i = 0; i < 100; i++) {
     filename[6] = '0' + i / 10;
     filename[7] = '0' + i % 10;
@@ -68,6 +68,12 @@ void setup() {
     Serial.print("Couldnt create ");
     Serial.println(filename);
   }
+  else
+  {
+    logfile.println("Test started");
+    logfile.flush();
+    Serial.println("File created");
+  }
 }
 
 void loop() {
@@ -79,29 +85,44 @@ void loop() {
     // Should be a reply message for us now
     if (rf95.recv(buf, &len)) {
       Serial.println((char *)buf);
+      char *recc = (char *)buf;
+      logfile.print("Rec: ");
+      logfile.print(recc);
       char *ch = (char *)buf;
       char *str = (char *)buf;
       ch = strtok(str, " ");
       double lat = atof(ch);
       ch = strtok(NULL, " ");
       double lon = atof(ch);
+      ch = strtok(NULL, " ");
+      double alt = atof(ch);
       Serial.print("Lat = ");
       Serial.print(lat);
       Serial.print(" Lon = ");
       Serial.println(lon);
+      Serial.print(" Alt = ");
+      Serial.println(alt);
       unsigned long distanceToGps = (unsigned long)TinyGPSPlus::distanceBetween(
           lat, lon, REC_LAT, REC_LON);
       // TODO : Do the math for alt of GPS? Need to send alt as well
       Serial.print("dist = ");
       Serial.print(distanceToGps);
+      Serial.print("(m)");
+
+      double altDiff = alt - REC_ALT;
+      double totalD = sqrt(distanceToGps*distanceToGps + altDiff*altDiff );
+      Serial.print("totalDist = ");
+      Serial.println(totalD);
       Serial.println("(m)");
-      logfile.print("Rec: lat");
+      logfile.print(", lat ");
       logfile.print(lat);
       logfile.print(", lon = ");
       logfile.print(lon);
+      logfile.print(", alt = ");
+      logfile.print(alt);
       logfile.print(", dist = ");
-      logfile.print(distanceToGps);
-      logfile.print(" (m)");
+      logfile.print(totalD);
+      logfile.println(" (m)");
       logfile.flush();
     } else {
       Serial.println("recv failed");
