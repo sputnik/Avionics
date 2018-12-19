@@ -18,11 +18,34 @@ void Sensors::refreshIMU(){
   bno.updateData();
 }
 
+// gets x acceleration data
+double Sensors::getAccX(){
+  double accX;
+  imu::Vector<3> linear = bno.getLinear();
+  accX = linear[0];
+  return accX;
+}
+
+// gets y acceleration data
+double Sensors::getAccY(){
+  double accY;
+  imu::Vector<3> linear = bno.getLinear();
+  accY = linear[1];
+  return accY;
+}
+// gets z acceleration data
+double Sensors::getAccZ(){
+  double accZ;
+  imu::Vector<3> linear = bno.getLinear();
+  accZ = linear[2];
+  return accZ;
+}
+
 // gets vertical acceleration in m/s^2 data from bno
 double Sensors::getAccV() {
-  double AccV;
-  AccV = bno.getVertAccel();
-  return AccV;
+  double accV;
+  accV = bno.getVertAccel();
+  return accV;
 }
 
 // gets pressure in kPa from pt

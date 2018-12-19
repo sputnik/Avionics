@@ -27,6 +27,14 @@ public:
     return euler;
   } // End getEuler
 
+  inline imu::Vector<3> getGravity() {
+    return gravity;
+  }
+
+  inline imu::Vector<3> getLinear() {
+    return linear;
+  }
+
   // Destructs the sensor
   ~IMUSensor();
 
