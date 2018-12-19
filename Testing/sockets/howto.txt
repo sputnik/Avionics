@@ -1,0 +1,12 @@
+File describing how to set up sockets and actually run them.
+
+Needed for python files: I've been using the latest version of python, python37.
+I've tried using it with python 27 but it doesn't work, so changes would need to be made.
+
+Make sure to install python 37 for all users in the C:/Python37 location so the start.bat files know where to look for python files.
+
+Cygwin64 is needed to run the cpp files, since it has the libraries used for the sockets.
+Install this for all users, making sure to install g++ with it so you can compile the cpp files if changes are made.
+
+With these two programs installed, you should be able to just run the start.bat files and it should open a python window and a cmd windows, running the two separate codes.
+I've made the bat files use dynamic paths so it should work on any windows system assuming you have python37 and Cygwin64 in the same location they're installed for me.
