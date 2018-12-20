@@ -1,6 +1,7 @@
 import socket
 import sys
 import os
+import traceback
 from subprocess import Popen
 import time
 from struct import *
@@ -23,17 +24,28 @@ def mysend(conn, msg):
 
 
 def send(conn, i, start):
+   x = i
+   y = i + 1
+   z = y + 1
+
    while True:
-      by = pack("!I", 4)
+      by = pack("!h", 6)
       mysend(conn, bytearray(by))
-      i *= 3
-      # if i > max 32 bit in size, reset to lower value
-      if (i > (2 ** 31 - 1)):
+      x *= -2
+      y *= -2
+      z *= -2
+      # if i > max 16 bit in size, reset to lower value
+      if (z > (2**15 - 1) or z < -(2**15 - 1)):  # 32767
          start = start + 1
-         i = start
+         x = start
+         y = x + 1
+         z = y + 1
       # endif
-      by = pack("!I", i)
-      print("Sending:", i, bytearray(by))
+      by = bytearray(pack("!h", x))
+      by.extend(bytearray(pack("!h", y)))
+      by.extend(bytearray(pack("!h", z)))
+
+      print("Sending:", x, y, z, by)
       mysend(conn, by)
 
       time.sleep(0.5)
@@ -54,9 +66,14 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
       start = 1
       try:
          send(conn, i, start)
-      except:
+      except Exception as e:
+         exc_type, exc_value, exc_traceback = sys.exc_info()
+         print('***Exception while running: ' + str(e))
+         print('type: ' + str(exc_type))
+         print('Traceback: ')
+         traceback.print_tb(exc_traceback)
          print("Connection closed.")
       # end try
 
 # Closes idle window the application is open in. Comment out to not close the window
-#p = Popen("stop.bat", cwd=os.getcwd())
+# p = Popen("stop.bat", cwd=os.getcwd())
