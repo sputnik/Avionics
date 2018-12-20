@@ -9,6 +9,14 @@ int length(char *c, int maxLen);
 uint32_t convert(unsigned char *c);
 int16_t convert2(unsigned char *c);
 
+union U {
+  int16_t s;
+
+  struct Byte {
+    char c[2];
+  } byte;
+};
+
 int main(int argc, char *argv[]) {
   int client;
   int portnum = 8090;
@@ -35,10 +43,23 @@ int main(int argc, char *argv[]) {
     cout << "--> Connection to the server " << inet_ntoa(serv_addr.sin_addr)
          << " with port number: " << portnum << endl;
   }
-  unsigned char *c = (unsigned char *)malloc(sizeof(char) * 2);
-  c[0] = 0x01;
-  c[1] = 0x04;
-  send(client, c, 2, 0);
+  U u;
+  u.s = 5;
+
+  send(client, u.byte.c, 2, 0);
+  while (true) {
+    cout << "Enter a 16 bit int: ";
+    cin >> u.s;
+    if (u.s == 0) {
+      cout << "closing connection";
+      break;
+    }
+    int16_t c1 = (int16_t)u.byte.c[0];
+    int16_t c2 = (int16_t)u.byte.c[1];
+    printf("sending %i %x %x\n", u.s, c1, c2);
+    send(client, u.byte.c, 2, 0);
+  }
+
   close(client);
   cout << "\nDisconnected..." << endl;
   return 0;

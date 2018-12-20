@@ -8,7 +8,18 @@ class Connection:
    def __init__(self, host, port):
       self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
       self.s.bind((host, port))
-      print("Bound")
+   # end def
+
+   def __enter__(self):
+      return self
+   # end def
+
+   def __exit__(self, exc_type, exc_value, traceback):
+      self.s.close()
+      print("Socket closed")
+   # end def
+
+   def connect(self):
       self.s.listen(1)
       self.conn, self.addr = self.s.accept()
       print("Connected")
