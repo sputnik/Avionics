@@ -37,17 +37,22 @@ int main(int argc, char *argv[]) {
   inet_pton(AF_INET, ip, &serv_addr.sin_addr);
 
   cout << "\n--> Socket client created...\n";
-
+  bool connected;
+  U u;
   if (connect(client, (const struct sockaddr *)&serv_addr, sizeof(serv_addr)) ==
       0) {
     cout << "--> Connection to the server " << inet_ntoa(serv_addr.sin_addr)
          << " with port number: " << portnum << endl;
+    cout << "Enter 0 to close program." << endl;
+    connected = true;
+    u.s = 5;
+    send(client, u.byte.c, 2, 0);
+  } else {
+    cout << "Failed to connect to client";
+    connected = false;
   }
-  U u;
-  u.s = 5;
 
-  send(client, u.byte.c, 2, 0);
-  while (true) {
+  while (connected) {
     cout << "Enter a 16 bit int: ";
     cin >> u.s;
     if (u.s == 0) {
@@ -59,9 +64,11 @@ int main(int argc, char *argv[]) {
     printf("sending %i %x %x\n", u.s, c1, c2);
     send(client, u.byte.c, 2, 0);
   }
+  if (connected) {
+    close(client);
+    cout << "\nDisconnected..." << endl;
+  }
 
-  close(client);
-  cout << "\nDisconnected..." << endl;
   return 0;
 }
 
