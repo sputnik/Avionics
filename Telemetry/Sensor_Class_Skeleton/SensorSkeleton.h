@@ -4,8 +4,8 @@
 // if it wasn't to avoid any errors
 #ifndef SENSORSKELETON_H_
 #define SENSORSKELETON_H_
-#include "Arduino.h"
-// Make sure to include the libraries needed for this sensor
+
+// Make sure to include the libraries needed for this sensor if you are saving data fields specific to the sensor
 
 class SensorSkeleton
 {
@@ -20,7 +20,16 @@ class SensorSkeleton
 
     // Methods implemented within the .cpp file
     void addSomething();
-    int getValue();
+
+    // Short methods like this can use the inline keyword to define the method
+    // here as it is more time efficient
+    inline int getValue()
+    {
+      return value;
+    }
+
+    // Destructor for the object, needed to prevent memory leak
+    ~SensorSkeleton();
 
   // Declare any private data fields here
   // Make sure to declare the type

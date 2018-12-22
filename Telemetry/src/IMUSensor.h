@@ -1,21 +1,41 @@
+// Header file for the imu
+
 #ifndef IMUSENSOR_H_
 #define IMUSENSOR_H_
-#include "Arduino.h"
-#include "Wire.h"
-#include "Adafruit_BNO055.h"
-#include "utility/imumaths.h"
+#include <Adafruit_BNO055.h>
 
 class IMUSensor
 {
   public:
-    IMUSensor(int32_t pinUsed, uint8_t address); // Constructs the sensor object
-    void updateData(); // Updates the data
-    double getVertAccel(); // Returns the vertical acceleration
-    int * getCalibration(); // Returns the calibration of the sensor
-    imu::Vector<3> getEuler(); // Returns the current Euler angles
+    // Constructs the sensor object
+    IMUSensor();
+
+    // Updates the data
+    void updateData();
+
+    // Returns the vertical acceleration in g's
+    inline double getVertAccel()
+    {
+      return vertAccel;
+    } // End getVertAccel
+
+    // Returns the calibration of the sensor
+    inline int * getCalibration()
+    {
+      return calib;
+    } // End getCalibration
+
+    // Returns the current Euler angles in degrees
+    inline imu::Vector<3> getEuler()
+    {
+      return euler;
+    } // End getEuler
+
+    // Destructs the sensor
+    ~IMUSensor();
 
   private:
-    Adafruit_BNO055 * bno;
+    Adafruit_BNO055 * bno; // Pointer to the sensor
     imu::Vector<3> euler; // Euler angles in m/s/s
     imu::Vector<3> acc; // Acceleration in m/s/s
     imu::Vector<3> gravity; // Gravity in m/s/s
