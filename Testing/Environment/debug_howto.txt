@@ -1,0 +1,15 @@
+To be able to run the cpp code in the debugger, "visual studio code" (VSC) is required.
+"GDB" is required within cygwin64 to be able to attach the debugger to the running code.
+
+You should use file->open folder on the environment folder to open the code to use.
+The files in the .vscode folder should set up Cygwin as the terminal / shell within VSC.
+There is a build task to build all of the cpp code using g++ to be run in debug.
+  - You may need to rebuild the files before running debugger, which can be done by selecting
+  the Terminal dropdown menu at the top of the screen and selecting run build task.
+There is a launch configuration to run and attach the debugger to the cpp code.
+With VSC open, you can click on the bug in a circle with a cross through it on the left toolbar to open the debug window of VSC.
+With the debug window open, there should be a debug launch option in the top left corner called (gdb) Launch.
+If everything is set up correctly, pressing green play should just start the program and run normally besides any breakpoints that are set.
+
+To run the python half of the environment separately, there is a run_py.bat file.
+Run the python window first then run the debugger version of the code to connect to the socket.
