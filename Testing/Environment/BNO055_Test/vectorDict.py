@@ -1,0 +1,11 @@
+# Dictionary of BNO Vectors to be used for python <--> c++
+vectors = {
+	  "VECTOR_ACCELEROMETER" : "BNO055_ACCEL_DATA_X_LSB_ADDR",
+      "VECTOR_MAGNETOMETER"  : "BNO055_MAG_DATA_X_LSB_ADDR",
+      "VECTOR_GYROSCOPE"     : "BNO055_GYRO_DATA_X_LSB_ADDR",
+      "VECTOR_EULER"         : "BNO055_EULER_H_LSB_ADDR",
+      "VECTOR_LINEARACCEL"   : "BNO055_LINEAR_ACCEL_DATA_X_LSB_ADDR",
+      "VECTOR_GRAVITY"       : "BNO055_GRAVITY_DATA_X_LSB_ADDR"
+	  }
+	  
+print(vectors)
