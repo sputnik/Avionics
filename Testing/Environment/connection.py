@@ -5,9 +5,10 @@ import socket
 class Connection:
    """ A class encapsulating a socket connection"""
 
-   def __init__(self, host, port):
+   def __init__(self, host, port, timeout):
       self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
       self.s.bind((host, port))
+      self.s.settimeout(timeout)
    # end def
 
    def __enter__(self):

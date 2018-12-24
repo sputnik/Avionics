@@ -1,4 +1,3 @@
-
 #include "Connection.h"
 #include <iostream>
 
@@ -20,7 +19,7 @@ int main() {
       std::cout << "Enter a 16 bit int: ";
       std::cin >> u.s;
       if (u.s == 0) {
-        std::cout << "closing connection";
+        std::cout << "closing connection" << std::endl;
         break;
       }
       int16_t c1 = (int16_t)u.c[0];

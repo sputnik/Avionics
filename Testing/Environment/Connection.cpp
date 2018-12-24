@@ -16,6 +16,11 @@ Connection::Connection(int portnum, char *ip)
   m_serv_addr.sin_port = htons(portnum);
   inet_pton(AF_INET, ip, &m_serv_addr.sin_addr);
 }
+Connection::~Connection(void)
+{
+  close(m_client);
+  cout << "Socket closed" << endl;
+}
 
 bool Connection::con(void) {
   if (connect(m_client, (const struct sockaddr *)&m_serv_addr,

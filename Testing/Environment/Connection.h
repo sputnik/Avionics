@@ -9,6 +9,7 @@
 class Connection {
 public:
   Connection(int portnum, char *ip);
+  ~Connection(void);
   bool con(void);
   void sen(char *c, int length);
   void receive(char *c, int length);
