@@ -8,44 +8,61 @@ import os
 import sys
 import traceback
 
-manual = False
-
-if len(sys.argv) > 1:
-   if 'auto' not in sys.argv:
-      manual = True
-   # end if
-else:
-   if(Yes_No_Question("Run exe manually?")):
-      manual = True
-   # end if
-# end if
+auto = False
 ip = '127.0.0.1'
 port = 8090
 
-rerun = True
-while rerun:
-   print('Starting connection.')
-   with Connection(ip, port, 4) as con:
-      try:
-         if not manual:
-            os.startfile(r'cpp.bat')
-         # end if
-         con.connect()
-         while True:
-            data = con.receive(2)
-            if not data:
-               break
+
+def run():
+   rerun = True
+   while rerun:
+      print('Starting test.')
+      sim = Simulation()
+      with Connection(ip, port, 20) as con:
+         try:
+            if auto:
+               os.startfile(r'cpp.bat')
             # end if
-            i = unpack("<h", data)[0]
-            if i == 0:
-               break
-            # end if
-            print(bytearray(data), " ", i)
-         # end while
-      except Exception as e:
-         print("Client connection timed out.")
-      # end try
-   # end with
-   rerun = Yes_No_Question("Rerun test?")
-# end while
-print("Ending testing")
+            con.connect()
+            while True:
+               print(sim.time)
+               print(sim.state)
+               data = con.receive(2)
+               if not data:
+                  break
+               # end if
+               i = unpack("<h", data)[0]
+               if i == 0:
+                  break
+               # end if
+               print(bytearray(data), " ", i)
+               sim.iterate()
+            # end while
+         except Exception as e:
+            exc_type, exc_value, exc_traceback = sys.exc_info()
+            print('***Exception while running: ' + str(e))
+            print('type: ' + str(exc_type))
+            print('Traceback: ')
+            traceback.print_tb(exc_traceback)
+            print(e)
+         # end try
+      # end with
+      rerun = Yes_No_Question("Rerun test?")
+   # end while
+   print("Ending testing")
+# end def
+
+
+if __name__ == '__main__':
+   if len(sys.argv) > 1:
+      if 'auto' in sys.argv:
+         auto = True
+      # end if
+   # end if
+   if not auto:
+      if(Yes_No_Question("Auto run exe?")):
+         auto = True
+      # end if
+   # end if
+   run()
+# end if
