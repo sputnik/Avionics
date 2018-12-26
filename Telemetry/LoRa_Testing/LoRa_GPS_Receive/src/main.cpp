@@ -1,3 +1,4 @@
+#include <Adafruit_ssd1306syp.h>
 #include <Arduino.h>
 #include <RH_RF95.h>
 #include <SD.h>
@@ -11,6 +12,9 @@
 #define RFM95_CS 9
 #define RFM95_RST 10
 #define RFM95_INT 11
+#define SDA_PIN 20
+#define SCL_PIN 21
+Adafruit_ssd1306syp display(SDA_PIN, SCL_PIN);
 
 #define RF95_FREQ 915.0
 RH_RF95 rf95(RFM95_CS, RFM95_INT);
@@ -19,6 +23,7 @@ TinyGPSPlus gps;
 // Set the pins used
 #define cardSelect 4
 File logfile;
+#define VBATPIN A7
 
 void setup() {
   pinMode(LED_BUILTIN, OUTPUT);
@@ -67,13 +72,32 @@ void setup() {
   if (!logfile) {
     Serial.print("Couldnt create ");
     Serial.println(filename);
-  }
-  else
-  {
+  } else {
     logfile.println("Test started");
     logfile.flush();
     Serial.println("File created");
   }
+  display.initialize();
+  display.drawLine(0, 0, 127, 63, BLACK);
+  display.update();
+  delay(1000);
+  display.clear();
+  display.setTextSize(2);
+  display.setTextColor(WHITE);
+  display.setCursor(20, 20);
+  display.println("Setup");
+  display.println(" complete");
+  // display.startscrollright(0x00, 0x0F);
+  delay(2000);
+  // display.stopscroll();
+  display.update();
+
+  float measuredvbat = analogRead(VBATPIN);
+  measuredvbat *= 2;    // we divided by 2, so multiply back
+  measuredvbat *= 3.3;  // Multiply by 3.3V, our reference voltage
+  measuredvbat /= 1024; // convert to voltage
+  Serial.print("VBat: ");
+  Serial.println(measuredvbat);
 }
 
 void loop() {
@@ -88,6 +112,11 @@ void loop() {
       char *recc = (char *)buf;
       logfile.print("Rec: ");
       logfile.print(recc);
+      display.clear();
+      display.setTextSize(1);
+      display.setTextColor(WHITE);
+      display.setCursor(0, 0);
+      display.println(recc);
       char *ch = (char *)buf;
       char *str = (char *)buf;
       ch = strtok(str, " ");
@@ -110,7 +139,7 @@ void loop() {
       Serial.print("(m)");
 
       double altDiff = alt - REC_ALT;
-      double totalD = sqrt(distanceToGps*distanceToGps + altDiff*altDiff );
+      double totalD = sqrt(distanceToGps * distanceToGps + altDiff * altDiff);
       Serial.print("totalDist = ");
       Serial.println(totalD);
       Serial.println("(m)");
@@ -124,6 +153,17 @@ void loop() {
       logfile.print(totalD);
       logfile.println(" (m)");
       logfile.flush();
+
+      display.print("Lat: ");
+      display.println(lat);
+      display.print("lon: ");
+      display.println(lon);
+      display.print("alt: ");
+      display.println(alt);
+      display.print("dist: ");
+      display.println(totalD);
+      delay(20);
+      display.update();
     } else {
       Serial.println("recv failed");
     }
