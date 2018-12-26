@@ -16,8 +16,7 @@ Connection::Connection(int portnum, char *ip)
   m_serv_addr.sin_port = htons(portnum);
   inet_pton(AF_INET, ip, &m_serv_addr.sin_addr);
 }
-Connection::~Connection(void)
-{
+Connection::~Connection(void) {
   close(m_client);
   cout << "Socket closed" << endl;
 }
@@ -34,3 +33,10 @@ bool Connection::con(void) {
 
 void Connection::sen(char *c, int length) { send(m_client, c, length, 0); }
 void Connection::receive(char *c, int length) { recv(m_client, c, length, 0); }
+
+void Connection::sen(unsigned char *c, int length) {
+  send(m_client, c, length, 0);
+}
+void Connection::receive(unsigned char *c, int length) {
+  recv(m_client, c, length, 0);
+}

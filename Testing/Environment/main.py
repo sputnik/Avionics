@@ -1,6 +1,6 @@
 from connection import Connection
 import time
-from struct import unpack
+from struct import unpack, pack
 from util import *
 from simulation import *
 import subprocess
@@ -21,7 +21,7 @@ def run():
       with Connection(ip, port, 20) as con:
          try:
             if auto:
-               os.startfile(r'cpp.bat')
+               os.startfile(r'run_cpp.bat')
             # end if
             con.connect()
             while True:
@@ -35,7 +35,10 @@ def run():
                if i == 0:
                   break
                # end if
-               print(bytearray(data), " ", i)
+               print(bytearray(data), " ", i, end=" ")
+               msg = bytearray(pack(">h", i))
+               print("sending ", msg)
+               con.send(msg)
                sim.iterate()
             # end while
          except Exception as e:

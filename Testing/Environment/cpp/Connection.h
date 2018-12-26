@@ -13,6 +13,8 @@ public:
   bool con(void);
   void sen(char *c, int length);
   void receive(char *c, int length);
+  void sen(unsigned char *c, int length);
+  void receive(unsigned char *c, int length);
 
 private:
   int m_client;
