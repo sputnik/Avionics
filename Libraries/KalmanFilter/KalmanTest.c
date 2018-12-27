@@ -26,7 +26,7 @@ double kalman(double measurement, double prevXHat, double *P){
 	double xHat; //current estimation
 	double K; //current Kalman Gain (i think that's what it is)
 	
-	double prevP = *P; //used for debugginh only
+	double prevP = *P; //used for debugging only
 	K = *P/(*P + R); // calculate the current Kalman Gain 
 	xHat = prevXHat + K * ( measurement - prevXHat); //calculate current XHat
 	*P = (1 - K) * *P; //update P
@@ -45,11 +45,12 @@ void main(int argc, char* argv[]) {
 	double pressure;
 	double temp;
 	double processed = 0;
-	int counter = 2;
+	int counter = 0;
 	while (!feof(fp)){
 		fscanf(fp, "%lf , %lf", &pressure, &temp);
-		printf("%d, ", counter);
 		processed = kalman(pressure, processed, &P);
+		printf("%d: Input: %.3f, Output: %.3f\n", counter, pressure, processed);
+		counter++;
 	}
 	
 	printf("Final Processed is %.3f", processed);
