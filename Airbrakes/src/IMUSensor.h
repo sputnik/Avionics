@@ -17,6 +17,19 @@ public:
     return vertAccel;
   } // End getVertAccel
 
+  // getAccX, getAccY, getAccZ return linear acceleration components (m/s/s)
+  inline double getAccX(){
+    return accX;
+  } // End getAccX
+
+  inline double getAccY(){
+    return accY;
+  } // End getAccY
+
+  inline double getAccZ(){
+    return accZ;
+  } // End getAccZ
+
   // Returns the calibration of the sensor
   inline int * getCalibration() {
     return calib;
@@ -44,7 +57,12 @@ private:
   imu::Vector<3> acc; // Acceleration in m/s/s
   imu::Vector<3> gravity; // Gravity in m/s/s
   imu::Vector<3> linear; // Linear acceleration in m/s/s
+
   int calib[4]; // Calibration values, 0 is bad, 3 is good
+
   double vertAccel; // Vertical Acceleration in g's
+  double accX; // Linear acceleration in x direction
+  double accY; // Linear acceleration in y direction
+  double accZ; // Linear acceleration in z direction
 };
 #endif

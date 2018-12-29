@@ -18,27 +18,18 @@ void Sensors::refreshIMU(){
   bno.updateData();
 }
 
-// gets x acceleration data
+// gets X acceleration data
 double Sensors::getAccX(){
-  double accX;
-  imu::Vector<3> linear = bno.getLinear();
-  accX = linear[0];
-  return accX;
+  return bno.getAccX();
 }
 
-// gets y acceleration data
+// gets Y acceleration data
 double Sensors::getAccY(){
-  double accY;
-  imu::Vector<3> linear = bno.getLinear();
-  accY = linear[1];
-  return accY;
+  return bno.getAccY();
 }
-// gets z acceleration data
+// gets Z acceleration data
 double Sensors::getAccZ(){
-  double accZ;
-  imu::Vector<3> linear = bno.getLinear();
-  accZ = linear[2];
-  return accZ;
+  return bno.getAccZ();
 }
 
 // gets vertical acceleration in m/s^2 data from bno
