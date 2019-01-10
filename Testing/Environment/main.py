@@ -7,11 +7,15 @@ import subprocess
 import os
 import sys
 import traceback
-
+import codecs
+from bno import BNO
+from mpl import MPL
 auto = False
 ip = '127.0.0.1'
 port = 8090
-
+BNO055_ADDRESS_A = b'\x28'
+BNO055_ADDRESS_B = b'\x29'
+MPL115A2_ADDRESS = b'\x60'
 
 def run():
    rerun = True
@@ -24,22 +28,18 @@ def run():
                os.startfile(r'run_cpp.bat')
             # end if
             con.connect()
-            while True:
-               print(sim.time)
-               print(sim.state)
-               data = con.receive(2)
+            BNO_R = BNO()
+            MPL_R = MPL()
+            while sim.iterate():
+               data = con.receive(1)
                if not data:
                   break
                # end if
-               i = unpack("<h", data)[0]
-               if i == 0:
-                  break
+               if data == BNO055_ADDRESS_A or data == BNO055_ADDRESS_B:
+                  print('BNO')
+               elif data == MPL115A2_ADDRESS:
+                  print('MPL')
                # end if
-               print(bytearray(data), " ", i, end=" ")
-               msg = bytearray(pack(">h", i))
-               print("sending ", msg)
-               con.send(msg)
-               sim.iterate()
             # end while
          except Exception as e:
             exc_type, exc_value, exc_traceback = sys.exc_info()

@@ -3,10 +3,13 @@
 #include <iostream>
 
 union U {
-  int16_t s;
-  char c[2];
+  int8_t s;
+  unsigned char c;
 };
 
+#define BNO055_ADDRESS_A 0x28
+#define BNO055_ADDRESS_B 0x29
+#define MPL115A2_ADDRESS 0x60
 int16_t convert(char *c);
 int16_t convert(unsigned char *c);
 
@@ -23,18 +26,24 @@ int main() {
     while (true) {
       sleep(1);
       i++;
-      int random_number = std::experimental::randint(-2225, 2225);
-      u.s += random_number;
-      std::cout << "Sending: " << (int16_t)u.c[0] << " " << (int16_t)u.c[1]
-                << " ," << u.s;
-      c.sen(u.c, 2);
-      unsigned char ch[2];
-      c.receive(ch, 2);
-      int16_t it = convert(ch);
-      std::cout << ", rec: " << (int16_t)ch[0] << " " << (int16_t)ch[1] << " ,"
-                << it << std::endl;
+      uint8_t addr;
+      if (i%3 == 0)
+      {
+         addr = BNO055_ADDRESS_A;
+      }
+      else if (i%3 == 1)
+      {
+         addr = BNO055_ADDRESS_B;
+      }
+      else if (i%3 == 2)
+      {
+         addr = MPL115A2_ADDRESS;
+      }
+      unsigned char cc = addr;
+      std::cout << "Sending: " << cc << " ," << addr << std::endl;
+      c.sen(&cc, 1);
 
-      if (it != u.s || i > 35) {
+      if (i > 10) {
         break;
       }
     }
