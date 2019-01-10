@@ -7,9 +7,8 @@ while (sim.iterate()):
    i += 1
    if (i % 20 == 0):
       print("alt = ", sim.alt, ", vel = ",
-            sim.z_vel, ", acc = ", sim.z_acc)
-   pass
-   #print("t = ", sim.time, ", alt = ", sim.alt)
+            sim.z_vel, ", acc = ", sim.z_acc, end="")
+      print(", pressure = ", sim.pressure, ", temp = ", sim.temperature)
    # end while
 print("max h = ", sim.max_height, ", target height = ", goal_height)
 print("time = ", sim.time, ", flight_time = ", sim.time - sim.launchpad_time)

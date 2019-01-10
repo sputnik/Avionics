@@ -57,6 +57,7 @@ def pressure(temperature):
 class Simulation:
    def __init__(self, alt=start_alt):
       self.alt = alt
+      self.start_alt = alt
       self.weight = weight_i
       self.mass = self.weight / gravity
       self.temperature = temperature(self.alt)
@@ -142,10 +143,10 @@ class Simulation:
       self.pressure = pressure(self.temperature)
       dens = density(self.alt).real
       drag = normal_drag(dens, self.z_vel)
-      force = -self.weight - drag
+      force = -self.weight + drag
       self.z_acc = (force / self.mass)
       self.z_vel += self.z_acc * time_delta
-      if (self.alt < 0):
+      if (self.alt < self.start_alt):
          print("--" * 15)
          print("Finished test")
          print("--" * 15)
