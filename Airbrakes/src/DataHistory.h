@@ -1,6 +1,5 @@
 #ifndef DATAHISTORY_H
 #define DATAHISTORY_H
-//# include <iostream>
 #include "Data.h"
 
 class DataHistory {

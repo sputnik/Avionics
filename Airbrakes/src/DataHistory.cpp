@@ -1,7 +1,5 @@
 #include "Data.h"
 #include "DataHistory.h"
-#include <iostream>
-#include <stdio.h>
 
 // Constructor
 DataHistory::DataHistory(int s) {
@@ -31,8 +29,7 @@ DataHistory::~DataHistory() {
 // development.
 void DataHistory::add(Data *data) {
   newest--;
-  if (newest < 0)
-  {
+  if (newest < 0) {
     newest = maxSize - 1;
   }
   hist[newest]->clone(data);
@@ -47,8 +44,7 @@ Data *DataHistory::get(int i) {
   int pos = (newest + i) % maxSize;
   return hist[pos];
 }
-Data *DataHistory::operator[](int i)
-{
+Data *DataHistory::operator[](int i) {
   int pos = (newest + i) % maxSize;
   return hist[pos];
 }
