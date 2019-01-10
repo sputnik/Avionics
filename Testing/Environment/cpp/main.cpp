@@ -1,5 +1,4 @@
 #include "Connection.cpp"
-#include <experimental/random>
 #include <iostream>
 
 union U {
@@ -18,6 +17,7 @@ int main() {
   char *ip = "127.0.0.1";
   Connection c(portnum, ip);
   std::cout << "Starting socket connection" << std::endl;
+  sleep(2);
   if (c.con()) {
     std::cout << "Connected." << std::endl;
     int i = 1;
@@ -27,17 +27,12 @@ int main() {
       sleep(1);
       i++;
       uint8_t addr;
-      if (i%3 == 0)
-      {
-         addr = BNO055_ADDRESS_A;
-      }
-      else if (i%3 == 1)
-      {
-         addr = BNO055_ADDRESS_B;
-      }
-      else if (i%3 == 2)
-      {
-         addr = MPL115A2_ADDRESS;
+      if (i % 3 == 0) {
+        addr = BNO055_ADDRESS_A;
+      } else if (i % 3 == 1) {
+        addr = BNO055_ADDRESS_B;
+      } else if (i % 3 == 2) {
+        addr = MPL115A2_ADDRESS;
       }
       unsigned char cc = addr;
       std::cout << "Sending: " << cc << " ," << addr << std::endl;

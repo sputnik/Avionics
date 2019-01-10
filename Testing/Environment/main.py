@@ -3,11 +3,11 @@ import time
 from struct import unpack, pack
 from util import *
 from simulation import *
-import subprocess
 import os
 import sys
 import traceback
 import codecs
+import platform
 from bno import BNO
 from mpl import MPL
 auto = False
@@ -16,6 +16,8 @@ port = 8090
 BNO055_ADDRESS_A = b'\x28'
 BNO055_ADDRESS_B = b'\x29'
 MPL115A2_ADDRESS = b'\x60'
+on_windows = True
+
 
 def run():
    rerun = True
@@ -25,7 +27,10 @@ def run():
       with Connection(ip, port, 20) as con:
          try:
             if auto:
-               os.startfile(r'run_cpp.bat')
+               if on_windows:
+                  os.startfile(r'run_cpp.bat')
+               else:
+                  os.system('./run_cpp.sh')
             # end if
             con.connect()
             BNO_R = BNO()
@@ -62,6 +67,8 @@ if __name__ == '__main__':
          auto = True
       # end if
    # end if
+   if platform.system() == 'Linux':
+      on_windows = False
    if not auto:
       if(Yes_No_Question("Auto run exe?")):
          auto = True

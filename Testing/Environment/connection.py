@@ -7,6 +7,7 @@ class Connection:
 
    def __init__(self, host, port, timeout):
       self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+      self.s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
       self.s.bind((host, port))
       self.s.settimeout(timeout)
    # end def
@@ -16,6 +17,7 @@ class Connection:
    # end def
 
    def __exit__(self, exc_type, exc_value, traceback):
+      self.s.shutdown(socket.SHUT_RDWR)
       self.s.close()
       print("Socket closed")
    # end def
