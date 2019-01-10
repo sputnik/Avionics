@@ -17,7 +17,6 @@ class Connection:
    # end def
 
    def __exit__(self, exc_type, exc_value, traceback):
-      self.s.shutdown(socket.SHUT_RDWR)
       self.s.close()
       print("Socket closed")
    # end def
