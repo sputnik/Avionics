@@ -38,13 +38,10 @@ def run():
             mpl = MPL()
             last_time = 0
             while sim.iterate():
-               if (sim.time - last_time >= 0.095):
+               if (sim.time - last_time >= 0.099):
                   last_time = sim.time
-                  mpl.pressure = sim.pressure
-                  mpl.temperature = sim.temperature
-                  bno.x_acc = sim.x_acc
-                  bno.y_acc = sim.y_acc
-                  bno.z_Acc = sim.z_acc
+                  mpl.update_values(sim)
+                  bno.update_values(sim)
                   data = con.receive(1)
                   if not data:
                      print("Client closed connection")

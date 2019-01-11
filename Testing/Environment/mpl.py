@@ -21,6 +21,11 @@ class MPL:
       self.temperature = 0.0
    # end def
 
+   def update_values(self, sim):
+      self.pressure = sim.pressure
+      self.temperature = sim.temperature
+   # end def
+
    def deviate_pressure(self, val):
       #TODO, placeholder
       return val * 1.05

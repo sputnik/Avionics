@@ -159,6 +159,12 @@ class BNO:
       self.z_acc = 0
    # end def
 
+   def update_values(self, sim):
+      self.x_acc = sim.x_acc
+      self.y_acc = sim.y_acc
+      self.z_acc = sim.z_acc
+   # end def
+
    def deviate_acc(self, val):
       #TODO, placeholder
       return val * 1.05
