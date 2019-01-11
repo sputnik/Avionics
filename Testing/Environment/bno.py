@@ -151,12 +151,20 @@ VECTOR_EULER = BNO055_EULER_H_LSB_ADDR
 VECTOR_LINEARACCEL = BNO055_LINEAR_ACCEL_DATA_X_LSB_ADDR
 VECTOR_GRAVITY = BNO055_GRAVITY_DATA_X_LSB_ADDR
 
+
 class BNO:
    def __init__(self):
-      print('Init todo')
-   #end def
+      self.x_acc = 0
+      self.y_acc = 0
+      self.z_acc = 0
+   # end def
 
-   def receive(self, arg):
-      print('receive todo ')
-   #end def
-#end class 
+   def deviate_acc(self, val):
+      #TODO, placeholder
+      return val * 1.05
+   # end def
+
+   def receive(self):
+      print('bno receive todo ')
+   # end def
+# end class

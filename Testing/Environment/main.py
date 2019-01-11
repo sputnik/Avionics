@@ -1,15 +1,16 @@
-from connection import Connection
-import time
-from struct import unpack, pack
-from util import *
-from simulation import *
 import os
 import sys
 import traceback
 import codecs
 import platform
+import time
+from connection import Connection
+from struct import unpack, pack
+from util import *
+from simulation import *
 from bno import BNO
 from mpl import MPL
+
 auto = False
 ip = '127.0.0.1'
 port = 8090
@@ -33,17 +34,27 @@ def run():
                   os.system('./run_cpp.sh')
             # end if
             con.connect()
-            BNO_R = BNO()
-            MPL_R = MPL()
+            bno = BNO()
+            mpl = MPL()
+            last_time = 0
             while sim.iterate():
-               data = con.receive(1)
-               if not data:
-                  break
-               # end if
-               if data == BNO055_ADDRESS_A or data == BNO055_ADDRESS_B:
-                  print('BNO')
-               elif data == MPL115A2_ADDRESS:
-                  print('MPL')
+               if (sim.time - last_time >= 0.095):
+                  last_time = sim.time
+                  mpl.pressure = sim.pressure
+                  mpl.temperature = sim.temperature
+                  bno.x_acc = sim.x_acc
+                  bno.y_acc = sim.y_acc
+                  bno.z_Acc = sim.z_acc
+                  data = con.receive(1)
+                  if not data:
+                     print("Client closed connection")
+                     break
+                  # end if
+                  if data == BNO055_ADDRESS_A or data == BNO055_ADDRESS_B:
+                     bno.receive()
+                  elif data == MPL115A2_ADDRESS:
+                     mpl.receive()
+                  # end if
                # end if
             # end while
          except Exception as e:

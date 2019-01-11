@@ -19,14 +19,19 @@ class MPL:
    def __init__(self):
       self.pressure = 0.0
       self.temperature = 0.0
-      print('Init todo')
-   #end def
+   # end def
 
-   def set_pressure_temp(self,pressure,temperature):
-      self.pressure = pressure
-      self.temperature = temperature 
+   def deviate_pressure(self, val):
+      #TODO, placeholder
+      return val * 1.05
+   # end def
 
-   def receive(self, arg):
-      print('receive todo ')
-   #end def
-#end class
+   def deviate_temperature(self, val):
+      #TODO, placeholder
+      return val * 1.05
+   # end def
+
+   def receive(self):
+      print('mpl receive todo ')
+   # end def
+# end class

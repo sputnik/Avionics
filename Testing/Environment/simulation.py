@@ -24,7 +24,7 @@ mass_i = weight_i / gravity  # kg
 weight_f = 253.549  # newtons
 mass_f = weight_f / gravity  # kg
 start_thrust = 2100  # newtons
-time_delta = 0.01
+time_delta = 0.001
 burn_time = 12.8
 fuel_burn_rate = (weight_f - weight_i) / burn_time  # newtons per second
 
