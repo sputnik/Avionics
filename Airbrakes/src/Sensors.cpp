@@ -1,59 +1,71 @@
-#include "Arduino.h"
-#include "Wire.h"
-
-#include "IMUSensor.h"
-#include "PTSensor.h"
-
 #include "Sensors.h"
+#include "utilities.hpp"
 
 // Constructor
 Sensors::Sensors() {
-  // the setup (not sure if this is right)
-  bno = IMUSensor();
-  pt = PTSensor();
+  bno = new Adafruit_BNO055(55, 0x28);
+  pt = new Adafruit_MPL115A2();
+}
+
+bool Sensors::begin(void) {
+  bool passed = bno->begin();
+  pt->begin();
+  return passed;
+}
+
+void Sensors::updateData(Data *data) {
+  refreshIMU();
+  data->t = millis();
+  float pressure;
+  float temperature;
+  pt->getPT(&pressure, &temperature);
+  data->accX = accX; // TODO
+  data->accY = accY; // TODO
+  data->accZ = accZ; // TODO
+  data->accV = vertAccel;
+  data->velX = 0; // TODO
+  data->velY = 0; // TODO
+  data->velZ = 0; // TODO
+  data->velV = 0; // TODO
+  data->pressure = pressure;
+  data->temperature = temperature;
+  data->alt = util::getAltitude(pressure, temperature);
+  data->density = util::getDensity(pressure, temperature);
 }
 
 // updates the data stored on the IMU
-void Sensors::refreshIMU(){
-  bno.updateData();
-}
+void Sensors::refreshIMU() {
+  // TODO
 
-// gets X acceleration data
-double Sensors::getAccX(){
-  return bno.getAccX();
-}
+  // Getting new vectors for euler angles, gravity, accelerometer, and linear
+  // acceleration
+  euler = bno->getVector(Adafruit_BNO055::VECTOR_EULER);        // Unit: degrees
+  gravity = bno->getVector(Adafruit_BNO055::VECTOR_GRAVITY);    // Unit: m/s/s
+  acc = bno->getVector(Adafruit_BNO055::VECTOR_ACCELEROMETER);  // Unit: m/s/s
+  linear = bno->getVector(Adafruit_BNO055::VECTOR_LINEARACCEL); // Unit: m/s/s
 
-// gets Y acceleration data
-double Sensors::getAccY(){
-  return bno.getAccY();
-}
-// gets Z acceleration data
-double Sensors::getAccZ(){
-  return bno.getAccZ();
-}
+  // Calculates the new vertical acceleration
+  vertAccel = (gravity[0] * linear[0] + gravity[1] * linear[1] +
+               gravity[2] * linear[2]) /
+              9.81;
 
-// gets vertical acceleration in m/s^2 data from bno
-double Sensors::getAccV() {
-  double accV;
-  accV = bno.getVertAccel();
-  return accV;
-}
+  // Linear acceleration components
+  accX = linear[0];
+  accY = linear[1];
+  accZ = linear[2];
 
-// gets pressure in kPa from pt
-double Sensors::getPressure() {
-  double pressure;
-  pressure = pt.getPress();
-  return pressure;
-}
-
-// gets the temperature in C from pt
-double Sensors::getTemperature() {
-  double temperature;
-  temperature = pt.getPress();
-  return temperature;
+  // Gets the calibration for the sensor; 0 = bad, 3 = good
+  uint8_t system, gyro, accel, mag = 0;
+  bno->getCalibration(&system, &gyro, &accel, &mag);
+  calib[0] = system;
+  calib[1] = gyro;
+  calib[2] = accel;
+  calib[3] = mag;
 }
 
 // Deconstructor
 Sensors::~Sensors() {
-  //TODO
+  delete bno;
+  delete pt;
+  // TODO
 }

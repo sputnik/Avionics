@@ -2,8 +2,6 @@
 #include "Arduino.h"
 #include "Data.h"
 #include "DataHistory.h"
-#include "IMUSensor.h"
-#include "PTSensor.h"
 #include "Sensors.h"
 #include "utilities.hpp"
 
@@ -61,7 +59,7 @@ int main() {
   DataHistory *history = new DataHistory(DATA_ARRAY_LENGTH);
   State state = launchPad;
 
-  if (!util::checkSetUp()) {
+  if (!sensors->begin()) {
     Serial.println("Setup not completed correctly");
     // If stetup not completed blink LED for debugging purposes
     while (true) {
@@ -85,7 +83,7 @@ int main() {
 
   while (true) {
     iterationCount++;
-    util::updateData(sensors, data);
+    sensors->updateData(data);
     history->add(data);
     if (state == coasting) {
       if (util::checkAirbrakes(history, &safetyCounter)) {
