@@ -36,7 +36,7 @@ class MPL:
       return val * 1.05
    # end def
 
-   def receive(self):
+   def receive(self,con):
       print('mpl receive todo ')
    # end def
 # end class

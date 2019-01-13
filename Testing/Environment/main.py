@@ -48,9 +48,9 @@ def run():
                      break
                   # end if
                   if data == BNO055_ADDRESS_A or data == BNO055_ADDRESS_B:
-                     bno.receive()
+                     bno.receive(con)
                   elif data == MPL115A2_ADDRESS:
-                     mpl.receive()
+                     mpl.receive(con)
                   # end if
                # end if
             # end while

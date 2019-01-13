@@ -1,3 +1,4 @@
+#include "Adafruit_BNO055.cpp"
 #include "Connection.cpp"
 #include <iostream>
 
@@ -16,10 +17,17 @@ int main() {
   int portnum = 8090;
   char *ip = "127.0.0.1";
   Connection c(portnum, ip);
+
   std::cout << "Starting socket connection" << std::endl;
   sleep(2);
   if (c.con()) {
     std::cout << "Connected." << std::endl;
+    Adafruit_BNO055 bno(&c);
+    if (bno.begin()) {
+      std::cout << "It worked!!!" << std::endl;
+    } else {
+      std::cout << "It didn't work " << std::endl;
+    }
     int i = 1;
     U u;
     u.s = i;
