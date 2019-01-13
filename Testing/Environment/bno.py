@@ -174,6 +174,8 @@ class BNO:
       data = con.receive(1)
       if data == BNO055_CHIP_ID_ADDR:
          con.send(BNO055_ID)
+      else:
+         print("BNO: Unknown command received.")
       print('bno receive todo ')
    # end def
 # end class

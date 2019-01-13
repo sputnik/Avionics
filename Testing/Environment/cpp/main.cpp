@@ -1,62 +1,67 @@
-#include "Adafruit_BNO055.cpp"
-#include "Connection.cpp"
+#include "Connection.h"
+#include "Data.h"
+#include "DataHistory.h"
+#include "Sensors.h"
+#include "utilities.hpp"
 #include <iostream>
 
-union U {
-  int8_t s;
-  unsigned char c;
-};
+// constant for length of data history array
+#define DATA_ARRAY_LENGTH 20
 
-#define BNO055_ADDRESS_A 0x28
-#define BNO055_ADDRESS_B 0x29
-#define MPL115A2_ADDRESS 0x60
-int16_t convert(char *c);
-int16_t convert(unsigned char *c);
+typedef enum State { launchPad, ascending, coasting, descending } State;
 
 int main() {
   int portnum = 8090;
   char *ip = "127.0.0.1";
   Connection c(portnum, ip);
+  Sensors *sensors = new Sensors(&c);
+  Data *data = new Data;
+  DataHistory *history = new DataHistory(DATA_ARRAY_LENGTH);
+  State state = launchPad;
 
-  std::cout << "Starting socket connection" << std::endl;
-  sleep(2);
   if (c.con()) {
-    std::cout << "Connected." << std::endl;
-    Adafruit_BNO055 bno(&c);
-    if (bno.begin()) {
-      std::cout << "It worked!!!" << std::endl;
-    } else {
-      std::cout << "It didn't work " << std::endl;
-    }
-    int i = 1;
-    U u;
-    u.s = i;
-    while (true) {
-      sleep(1);
-      i++;
-      uint8_t addr;
-      if (i % 3 == 0) {
-        addr = BNO055_ADDRESS_A;
-      } else if (i % 3 == 1) {
-        addr = BNO055_ADDRESS_B;
-      } else if (i % 3 == 2) {
-        addr = MPL115A2_ADDRESS;
-      }
-      unsigned char cc = addr;
-      std::cout << "Sending: " << cc << " ," << addr << std::endl;
-      c.sen(&cc, 1);
-
-      if (i > 10) {
-        break;
-      }
+    if (!sensors->begin()) {
+      std::cout << "Setup not completed properly" << std::endl;
+      sleep(3);
+      return -1;
     }
   } else {
-    std::cout << "Could not connect to socket." << std::endl;
+    std::cout << "Could not connect to socket" << std::endl;
+    sleep(3);
+    return -2;
   }
 
-  return 0;
-}
+  // Counters used for state changes
+  int a_counter = 0;
+  int v_counter = 0;
+  int safetyCounter = 0;
 
-int16_t convert(unsigned char *c) {
-  return ((int16_t)c[0]) << 8 | ((int16_t)c[1]);
-}
+  while (true) {
+    sensors->updateData(data);
+    history->add(data);
+    if (state == coasting) {
+      if (util::checkAirbrakes(sensors, history, &safetyCounter)) {
+        state = descending;
+        safetyCounter = 0;
+        break;
+      } // if the state is coasting
+    } else if (state == ascending) {
+      if (util::switchToCoasting(history, &a_counter, &v_counter,
+                                 &safetyCounter)) {
+        state = coasting;
+        safetyCounter = 0;
+      } // if the state is ascending
+    } else if (state == launchPad) {
+      if (util::switchToAscending(history, &safetyCounter)) {
+        state = ascending;
+      }
+    } // if the state is launchPad
+    // save data to SD card no matter what
+    // util::saveData(data);
+
+  } // while(true)
+  delete sensors;
+  delete data;
+  delete history;
+  return 0;
+} // main
