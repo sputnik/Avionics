@@ -36,12 +36,20 @@ int main() {
   int v_counter = 0;
   int safetyCounter = 0;
 
+  while (a_counter < 5) {
+    sensors->updateData(history,data);
+    history->add(data);
+    data->reset();
+    a_counter++;
+  }
+
   while (true) {
-    sensors->updateData(data);
+    sensors->updateData(history, data);
     history->add(data);
     if (state == coasting) {
       if (util::checkAirbrakes(sensors, history, &safetyCounter)) {
         state = descending;
+        std::cout << "Switching to Descending" << std::endl;
         safetyCounter = 0;
         break;
       } // if the state is coasting
@@ -49,11 +57,13 @@ int main() {
       if (util::switchToCoasting(history, &a_counter, &v_counter,
                                  &safetyCounter)) {
         state = coasting;
+        std::cout << "Switching to Coasting" << std::endl;
         safetyCounter = 0;
       } // if the state is ascending
     } else if (state == launchPad) {
       if (util::switchToAscending(history, &safetyCounter)) {
         state = ascending;
+        std::cout << "Switching to Ascending" << std::endl;
       }
     } // if the state is launchPad
     // save data to SD card no matter what

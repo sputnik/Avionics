@@ -216,4 +216,15 @@ double kalman(double measurement, double prevMeasurement) {
 
   return ret;
 }
+
+double velocityFromAlt(DataHistory *hist) {
+  Data *newest = hist->getNewest();
+  Data *second = hist->get(1);
+  Data *third = hist->get(2);
+  double firstTimeDiff = ((double)(newest->t - second->t))/1000.0;
+  double secondTimeDiff = ((double)(second->t - third ->t))/1000.0;
+  double avgTimeDiff = 0.5 * (firstTimeDiff + secondTimeDiff);
+  double vel = (3.0*newest->alt - 4.0*second->alt + third->alt)/ (2.0 * avgTimeDiff);
+  return vel;
+}
 }

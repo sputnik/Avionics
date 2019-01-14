@@ -1,5 +1,6 @@
 from enum import Enum
 import random
+from struct import pack
 
 
 class State(Enum):
@@ -68,6 +69,9 @@ class Simulation:
       self.x_acc = 0.0
       self.y_acc = 0.0
       self.z_acc = 0.0
+      self.x_grav = 0.0
+      self.y_grav = 0.0
+      self.z_grav = 9.81
       self.time = 0.0
       self.state = State.LAUNCHPAD
       self.launchpad_time = 4.2 + random.random() * 10.0

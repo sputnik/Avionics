@@ -1,3 +1,4 @@
+from struct import pack
 BNO055_ID = b'\xA0'
 BNO055_PAGE_ID_ADDR = b'\x07'
 
@@ -157,12 +158,18 @@ class BNO:
       self.x_acc = 0
       self.y_acc = 0
       self.z_acc = 0
+      self.x_grav = 0
+      self.y_grav = 0
+      self.z_grav = 0
    # end def
 
    def update_values(self, sim):
       self.x_acc = sim.x_acc
       self.y_acc = sim.y_acc
       self.z_acc = sim.z_acc
+      self.x_grav = sim.x_grav
+      self.y_grav = sim.y_grav
+      self.z_grav = sim.z_grav
    # end def
 
    def deviate_acc(self, val):
@@ -174,8 +181,17 @@ class BNO:
       data = con.receive(1)
       if data == BNO055_CHIP_ID_ADDR:
          con.send(BNO055_ID)
+      elif data == VECTOR_GRAVITY:
+          packet = bytearray(pack("<h", round(self.x_grav*100.0)))
+          packet.extend(bytearray(pack("<h", round(self.y_grav*100.0))))
+          packet.extend(bytearray(pack("<h", round(self.z_grav*100.0))))
+          con.send(packet)
+      elif data == VECTOR_ACCELEROMETER:
+          packet = bytearray(pack("<h", round(self.x_acc*100)))
+          packet.extend(bytearray(pack("<h", round(self.y_acc*100))))
+          packet.extend(bytearray(pack("<h", round(self.z_acc*100))))
+          con.send(packet)
       else:
-         print("BNO: Unknown command received.")
-      print('bno receive todo ')
+         print("BNO: Unknown command received: ",data)
    # end def
 # end class

@@ -5,6 +5,7 @@
 #include "Adafruit_MPL115A2.h"
 #include "Connection.h"
 #include "Data.h"
+#include "DataHistory.h"
 
 class Sensors {
 private:
@@ -28,7 +29,7 @@ public:
   Sensors(Connection *c);
   bool begin(void);
 
-  void updateData(Data *data);
+  void updateData(DataHistory* hist, Data *data);
   void actuateAirbrakes(void);
   void deActuateAirbrakes(void);
 

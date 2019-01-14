@@ -20,13 +20,6 @@
          - get both P and T with a single call to getPT
 */
 /**************************************************************************/
-// #if ARDUINO >= 100
-//  #include "Arduino.h"
-// #else
-//  #include "WProgram.h"
-// #endif
-
-// #include <Wire.h>
 
 #include "Adafruit_MPL115A2.h"
 
@@ -92,6 +85,7 @@ Adafruit_MPL115A2::Adafruit_MPL115A2(Connection *c) {
   _mpl115a2_b1 = 0.0F;
   _mpl115a2_b2 = 0.0F;
   _mpl115a2_c12 = 0.0F;
+  _con = c;
 }
 
 /**************************************************************************/
@@ -157,14 +151,14 @@ void Adafruit_MPL115A2::getPT(float *P, float *T) {
 
   _con->receive(receiveArray, 4);
   // Wire.requestFrom(MPL115A2_ADDRESS, 4);
-  pressure = (((uint16_t)receiveArray[0] << 8) | receiveArray[1]) >> 6;
-  temp = (((uint16_t)receiveArray[2] << 8) | receiveArray[3]) >> 6;
+  pressure = (((uint16_t)receiveArray[0] << 8) | receiveArray[1]);
+  temp = (((uint16_t)receiveArray[2] << 8) | receiveArray[3]);
 
   // See datasheet p.6 for evaluation sequence
   // pressureComp = _mpl115a2_a0 + (_mpl115a2_b1 + _mpl115a2_c12 * temp ) *
   // pressure + _mpl115a2_b2 * temp;
 
   // Return pressure and temperature as floating point values
-  *P = ((65.0F / 1023.0F) * pressure) + 50.0F;  // kPa
-  *T = ((float)temp - 498.0F) / -5.35F + 25.0F; // C
+  *P = ((float)pressure)/ 200.0;//((65.0F / 1023.0F) * pressure) + 50.0F;  // kPa
+  *T = ((float)temp) / 1000.0;//((float)temp - 498.0F) / -5.35F + 25.0F; // C
 }

@@ -93,6 +93,23 @@ struct Data {
     airbrakes = other->airbrakes;
     t = other->t;
   }
+
+  void reset(void) {
+     accX = 0.0;
+     accY = 0.0;
+     accZ = 0.0;
+     accV = 0.0;
+     velX = 0.0;
+     velY = 0.0;
+     velZ = 0.0;
+     velV = 0.0;
+     alt = 0.0;
+     pressure = 0.0;
+     temperature = 0.0;
+     density = 0.0;
+     airbrakes = 0.0;
+     t = 0;
+ }
 }; // main data structure
 
 #endif
