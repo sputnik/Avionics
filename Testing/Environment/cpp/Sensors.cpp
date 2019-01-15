@@ -43,12 +43,12 @@ void Sensors::updateData(DataHistory* hist,Data *data) {
   {
     verticalVel = util::velocityFromAlt(hist);
   }
-  data->velV = 0; // TODO
+  data->velV = verticalVel; // TODO
   data->pressure = pressure;
   data->temperature = temperature;
   data->alt = util::getAltitude(pressure, temperature);
   data->density = util::getDensity(pressure, temperature);
-  char done = 0x01;
+  unsigned char done = 0x01;
   con->sen(&done, 1);
 }
 
@@ -66,14 +66,14 @@ void Sensors::refreshIMU() {
   // m/s/s
 
   // Calculates the new vertical acceleration
-  vertAccel = (gravity[0] * linear[0] + gravity[1] * linear[1] +
-               gravity[2] * linear[2]) /
+  vertAccel = (gravity[0] * acc[0] + gravity[1] * acc[1] +
+               gravity[2] * acc[2]) /
               9.81;
 
   // Linear acceleration components
-  accX = linear[0];
-  accY = linear[1];
-  accZ = linear[2];
+  accX = acc[0];
+  accY = acc[1];
+  accZ = acc[2];
 
   // Gets the calibration for the sensor; 0 = bad, 3 = good
   // uint8_t system, gyro, accel, mag = 0;

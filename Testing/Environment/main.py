@@ -59,6 +59,7 @@ def run():
                         bno.receive(con)
                      elif data == MPL115A2_ADDRESS:
                         mpl.receive(con)
+                        print("alt = ",sim.alt, ", vel = ",sim.z_vel)
                      elif data == finished_cmd:
                         done = True
                      elif data == time_cmd:
@@ -75,7 +76,6 @@ def run():
                         print("Main: Unknown command received.", bytearray(data))
                      # end if
                   #end while
-                  time.sleep(2)
                # end if
             # end while
          except Exception as e:

@@ -26,12 +26,16 @@ weight_f = 253.549  # newtons
 mass_f = weight_f / gravity  # kg
 start_thrust = 2100  # newtons
 time_delta = 0.001
-burn_time = 12.8
+burn_time = 11.8
 fuel_burn_rate = (weight_f - weight_i) / burn_time  # newtons per second
+GAS_CONSTANT_AIR = 287.058
 
 
-def density(altitude):  # density from altitude equation
-   return sea_density * (1 + (-.0065 * altitude / 287) ** 4.25363734)
+def density(pressure,temperature):  # density from altitude equation
+   #return sea_density * (1 + (-.0065 * altitude / 287) ** 4.25363734)
+   tempK = temperature + 273.15
+   rho = pressure / (GAS_CONSTANT_AIR * tempK);
+   return rho
 # end def
 
 
@@ -96,7 +100,7 @@ class Simulation:
       self.alt += self.z_vel * time_delta
       self.temperature = temperature(self.alt)
       self.pressure = pressure(self.temperature)
-      dens = density(self.alt).real
+      dens = density(self.pressure,self.temperature)
       drag = normal_drag(dens, self.z_vel)
       self.weight -= fuel_burn_rate * time_delta
       self.mass = self.weight / gravity
@@ -128,7 +132,7 @@ class Simulation:
          print("Switching to descending")
          print("--" * 15)
       else:
-         dens = density(self.alt).real
+         dens = density(self.pressure,self.temperature)
          if self.actuated:
             drag = brake_drag(dens, self.z_vel)
          else:
@@ -145,7 +149,7 @@ class Simulation:
       self.alt += self.z_vel * time_delta
       self.temperature = temperature(self.alt)
       self.pressure = pressure(self.temperature)
-      dens = density(self.alt).real
+      dens = density(self.pressure,self.temperature)
       drag = normal_drag(dens, self.z_vel)
       force = -self.weight + drag
       self.z_acc = (force / self.mass)

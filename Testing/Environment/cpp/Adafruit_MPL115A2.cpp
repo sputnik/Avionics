@@ -129,7 +129,7 @@ float Adafruit_MPL115A2::getTemperature() {
 */
 /**************************************************************************/
 void Adafruit_MPL115A2::getPT(float *P, float *T) {
-  uint16_t pressure, temp;
+  int16_t pressure, temp;
   float pressureComp;
   unsigned char MPL_address = MPL115A2_ADDRESS;
   unsigned char Register_MSBP = MPL115A2_REGISTER_PRESSURE_MSB;
@@ -160,5 +160,5 @@ void Adafruit_MPL115A2::getPT(float *P, float *T) {
 
   // Return pressure and temperature as floating point values
   *P = ((float)pressure)/ 200.0;//((65.0F / 1023.0F) * pressure) + 50.0F;  // kPa
-  *T = ((float)temp) / 1000.0;//((float)temp - 498.0F) / -5.35F + 25.0F; // C
+  *T = ((float)temp) / 100.0;//((float)temp - 498.0F) / -5.35F + 25.0F; // C
 }

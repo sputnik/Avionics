@@ -69,11 +69,11 @@ bool switchToCoasting(DataHistory *hist, int *a_counter, int *v_counter,
 
   // check if the last few velocity measurements are steadily decreasing
   int i;
-  double newer = hist->getNewest()->velZ;
+  double newer = hist->getNewest()->velV;
   bool velcheck = false;
   for (i = 1; i < hist->getSize() / 2; i++) {
     velcheck = true;
-    double older = hist->get(i)->velZ;
+    double older = hist->get(i)->velV;
     if (newer > older + COAST_VEL_TOL) {
       velcheck = false;
       break;
@@ -127,7 +127,7 @@ bool checkAirbrakes(Sensors *sensors, DataHistory *hist, int *safetyCounter) {
   double hc = ((MASS_F / (2 * k)) *
                log((qsquared - (data->velV * data->velV)) / qsquared)) +
               (data->alt - START_HEIGHT);
-  if (hc > GOAL_HEIGHT) {
+  if (hc > GOAL_HEIGHT || data->alt > GOAL_HEIGHT) {
     sensors->actuateAirbrakes();
   } else {
     sensors->deActuateAirbrakes();
@@ -138,6 +138,7 @@ bool checkAirbrakes(Sensors *sensors, DataHistory *hist, int *safetyCounter) {
       return true;
     } else {
       return false;
+      sensors->deActuateAirbrakes();
     }
   } else {
     *safetyCounter = 0;
@@ -186,7 +187,7 @@ double getAltitude(double pressureKPA, double temperatureC) {
  */
 double getDensity(double pressureKPA, double temperatureC) {
   // WARNING: potentially inaccurate. Doesn't account for air moisture
-  double press = pressureKPA * 10e-3;             // pressure in Pa
+  double press = pressureKPA * 1e3;             // pressure in Pa
   double temp = temperatureC + 273.15;            // temp in K
   double rho = press / (GAS_CONSTANT_AIR * temp); // air density in kg/m^3
   return rho;

@@ -42,6 +42,7 @@ int main() {
     data->reset();
     a_counter++;
   }
+  a_counter = 0;
 
   while (true) {
     sensors->updateData(history, data);
@@ -51,7 +52,6 @@ int main() {
         state = descending;
         std::cout << "Switching to Descending" << std::endl;
         safetyCounter = 0;
-        break;
       } // if the state is coasting
     } else if (state == ascending) {
       if (util::switchToCoasting(history, &a_counter, &v_counter,

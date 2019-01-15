@@ -8,10 +8,10 @@
 #define ASC_ACC_TOL 0.5 // g's
 #define ASC_VEL_TOL 0.0
 #define ASC_ALT_TOL 0.0
-#define ASC_SAFE_TOL 100
+#define ASC_SAFE_TOL 15
 // define constants for switch to coasting
 #define COAST_ACC_TOL -10.0 // m/s^2
-#define COAST_VEL_TOL 5.0
+#define COAST_VEL_TOL 0.1
 #define COAST_VEL_COUNT 5
 #define COAST_ACC_COUNT 5
 #define COAST_TOT_COUNT 5

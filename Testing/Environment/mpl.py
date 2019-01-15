@@ -39,7 +39,7 @@ class MPL:
    # end def
 
    def encode_temp(self):
-      return round(self.temperature*1000)
+      return round(self.temperature*100)
    # end def
 
    def encode_pres(self):
@@ -49,7 +49,7 @@ class MPL:
    def receive(self,con):
       data = con.receive(1)
       if data == MPL115A2_REGISTER_PRESSURE_MSB:
-         print("MPL: Sending P=",self.pressure,", T=",self.temperature)
+         print("MPL: Sending P=",self.pressure,", T=",self.temperature, end = ", ")
          packet = bytearray(pack(">h",self.encode_pres()))
          packet.extend(bytearray(pack(">h",self.encode_temp())))
          con.send(packet)
