@@ -45,7 +45,8 @@ double getAltitude(double pressureKPA, double temperatureC);
 double getDensity(double pressureKPA, double temperatureC);
 void saveData(Data *data);
 double kalman(double measurement, double prevMeasurement);
-double velocityFromAlt(DataHistory *hist);
+double velocityFromAltSecond(DataHistory *hist);
+double velocityFromAltFirst(DataHistory *hist);
 }
 
 #endif

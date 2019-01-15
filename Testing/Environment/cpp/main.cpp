@@ -52,6 +52,7 @@ int main() {
   }
   bool flying = true;
   while (flying) {
+    data->reset();
     sensors->updateData(history, data);
     if (state == descending && data->alt <= START_HEIGHT) {
       flying = false;
@@ -84,5 +85,6 @@ int main() {
   delete sensors;
   delete data;
   delete history;
+  sleep(2);
   return 0;
 } // main

@@ -39,17 +39,17 @@ void Sensors::updateData(DataHistory* hist,Data *data) {
   data->velY = 0; // TODO
   data->velZ = 0;
   data->velV = 0;
-  double verticalVel = 0;
-  if (hist->getSize() > 3)
-  {
-    verticalVel = util::velocityFromAlt(hist);
-  }
-  data->velV = verticalVel;
-  data->velZ  = verticalVel;
   data->pressure = pressure;
   data->temperature = temperature;
   data->alt = util::getAltitude(pressure, temperature);
   data->density = util::getDensity(pressure, temperature);
+  double verticalVel = 0;
+  if (hist->getSize() > 3)
+  {
+    verticalVel = util::velocityFromAltFirst(hist);
+  }
+  data->velV = verticalVel;
+  data->velZ  = verticalVel;
   unsigned char done = 0x01;
   con->sen(&done, 1);
 }
