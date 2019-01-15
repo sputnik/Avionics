@@ -42,6 +42,8 @@ def run():
             bno = BNO()
             mpl = MPL()
             last_time = 0
+            act = 0
+            closed = 0
             while connected and sim.iterate():
                if (sim.time - last_time >= 0.099):
                   last_time = sim.time
@@ -59,25 +61,28 @@ def run():
                         bno.receive(con)
                      elif data == MPL115A2_ADDRESS:
                         mpl.receive(con)
-                        print("alt = ",sim.alt, ", vel = ",sim.z_vel)
                      elif data == finished_cmd:
                         done = True
                      elif data == time_cmd:
                         millis = round(sim.time * 1000)
-                        packet = bytearray(pack("<L",millis))
+                        packet = bytearray(pack("<L", millis))
                         con.send(packet)
                      elif data == actuate_cmd:
                         sim.actuate()
-                        print("Airbrakes actuated")
+                        print("Height = ", "{:6.1f}".format(sim.height), ", vel = ",
+                              "{:5.1f}".format(sim.z_vel), " Airbrakes actuated")
                      elif data == deactuate_cmd:
                         sim.close_airbrakes()
-                        print("Airbrakes closed")
+                        print("Height = ", "{:6.1f}".format(sim.height), ", vel = ",
+                              "{:5.1f}".format(sim.z_vel), " Airbrakes closed")
                      else:
                         print("Main: Unknown command received.", bytearray(data))
                      # end if
-                  #end while
+                  # end while
                # end if
             # end while
+            print("--" * 5, "Results", "--" * 5)
+            print("Max height reached: ", sim.max_height)
          except Exception as e:
             exc_type, exc_value, exc_traceback = sys.exc_info()
             print('***Exception while running: ' + str(e))

@@ -23,12 +23,22 @@ int main() {
     if (!sensors->begin()) {
       std::cout << "Setup not completed properly" << std::endl;
       sleep(3);
-      return -1;
+      return 1;
     }
   } else {
-    std::cout << "Could not connect to socket" << std::endl;
+    std::cout << "Could not connect to socket. Retrying 5 times." << std::endl;
     sleep(3);
-    return -2;
+    for (int i = 1; i <= 5; i++) {
+      if (c.con()) {
+        break;
+      } else {
+        std::cout << "Attempt = " << i << std::endl;
+        sleep(2);
+      }
+    }
+    if (!c.connected()) {
+      return 2;
+    }
   }
 
   // Counters used for state changes
@@ -36,16 +46,17 @@ int main() {
   int v_counter = 0;
   int safetyCounter = 0;
 
-  while (a_counter < 5) {
-    sensors->updateData(history,data);
-    history->add(data);
-    data->reset();
-    a_counter++;
-  }
-  a_counter = 0;
-
-  while (true) {
+  for (int i = 0; i < 5; i++) {
     sensors->updateData(history, data);
+    history->add(data);
+  }
+  bool flying = true;
+  while (flying) {
+    sensors->updateData(history, data);
+    if (state == descending && data->alt <= START_HEIGHT) {
+      flying = false;
+      std::cout << "On ground" << std::endl;
+    }
     history->add(data);
     if (state == coasting) {
       if (util::checkAirbrakes(sensors, history, &safetyCounter)) {

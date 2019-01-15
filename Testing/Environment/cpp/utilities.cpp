@@ -21,14 +21,14 @@ bool switchToAscending(DataHistory *hist, int *counter) {
   double accMag = sqrt(d->accX * d->accX + d->accY * d->accY +
                        d->accZ * d->accZ); // calculate acceleration vector mag
 
-  double velMag = sqrt(d->accX * d->accX + d->accY * d->accY +
-                       d->accZ * d->accZ); // calculate velosity vector mag
+  double velMag = sqrt(d->velX * d->velX + d->velY * d->velY +
+                       d->velZ * d->velZ); // calculate velosity vector mag
 
   if (fabs(accMag - ASC_ACC_TOL) > 0)
     token++;
   if (fabs(velMag - ASC_VEL_TOL) > 0)
     token++;
-  if (arraySize > 3 && hist->get(1)->alt - hist->get(2)->alt > ASC_ALT_TOL)
+  if (arraySize > 3 && hist->get(0)->alt - hist->get(1)->alt > ASC_ALT_TOL)
     token++; // compare values to tolerance and update token count
 
   (token >= 2) ? (*counter)++ : 0; // update the security counter
@@ -71,7 +71,7 @@ bool switchToCoasting(DataHistory *hist, int *a_counter, int *v_counter,
   int i;
   double newer = hist->getNewest()->velV;
   bool velcheck = false;
-  for (i = 1; i < hist->getSize() / 2; i++) {
+  for (i = 1; i < 3; i++) {
     velcheck = true;
     double older = hist->get(i)->velV;
     if (newer > older + COAST_VEL_TOL) {
@@ -123,11 +123,12 @@ bool checkAirbrakes(Sensors *sensors, DataHistory *hist, int *safetyCounter) {
   Data *data = hist->getNewest();
   double reynolds = (data->density) * (data->velV) * LENGTH / VISCOSITY;
   double k = .5 * data->density * CD_ROCKET * AREA_ROCKET;
-  double qsquared = -1 * MASS_F * 9.81 / k;
-  double hc = ((MASS_F / (2 * k)) *
-               log((qsquared - (data->velV * data->velV)) / qsquared)) +
+  double qsquared = (-1 * MASS_F * 9.81) / k;
+  double hc = (MASS_F / (2 * k)) *
+               log((qsquared - (data->velV * data->velV)) / qsquared) +
               (data->alt - START_HEIGHT);
-  if (hc > GOAL_HEIGHT || data->alt > GOAL_HEIGHT) {
+  double currentHeight = data->alt - START_HEIGHT;
+  if (hc > GOAL_HEIGHT || data->alt > (GOAL_HEIGHT + START_HEIGHT)) {
     sensors->actuateAirbrakes();
   } else {
     sensors->deActuateAirbrakes();
@@ -135,10 +136,10 @@ bool checkAirbrakes(Sensors *sensors, DataHistory *hist, int *safetyCounter) {
   if (data->velV < DESCEND_VEL_TOL) {
     (*safetyCounter)++;
     if (*safetyCounter > DESCEND_VEL_COUNT) {
+      sensors->deActuateAirbrakes();
       return true;
     } else {
       return false;
-      sensors->deActuateAirbrakes();
     }
   } else {
     *safetyCounter = 0;

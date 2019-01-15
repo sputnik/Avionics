@@ -37,13 +37,15 @@ void Sensors::updateData(DataHistory* hist,Data *data) {
   data->accV = vertAccel;
   data->velX = 0; // TODO
   data->velY = 0; // TODO
-  data->velZ = 0; // TODO
+  data->velZ = 0;
+  data->velV = 0;
   double verticalVel = 0;
   if (hist->getSize() > 3)
   {
     verticalVel = util::velocityFromAlt(hist);
   }
-  data->velV = verticalVel; // TODO
+  data->velV = verticalVel;
+  data->velZ  = verticalVel;
   data->pressure = pressure;
   data->temperature = temperature;
   data->alt = util::getAltitude(pressure, temperature);

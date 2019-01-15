@@ -39,21 +39,21 @@ class MPL:
    # end def
 
    def encode_temp(self):
-      return round(self.temperature*100)
+      return round(self.temperature * 100)
    # end def
 
    def encode_pres(self):
-      return round(self.pressure/5)
+      return round(self.pressure / 5)
    # end def
 
-   def receive(self,con):
+   def receive(self, con):
       data = con.receive(1)
       if data == MPL115A2_REGISTER_PRESSURE_MSB:
-         print("MPL: Sending P=",self.pressure,", T=",self.temperature, end = ", ")
-         packet = bytearray(pack(">h",self.encode_pres()))
-         packet.extend(bytearray(pack(">h",self.encode_temp())))
+         # print("MPL: Sending P=",self.pressure,", T=",self.temperature, end = ", ")
+         packet = bytearray(pack(">h", self.encode_pres()))
+         packet.extend(bytearray(pack(">h", self.encode_temp())))
          con.send(packet)
       else:
-         print("MPL: Unknown command received: ",data)
+         print("MPL: Unknown command received: ", data)
    # end def
 # end class

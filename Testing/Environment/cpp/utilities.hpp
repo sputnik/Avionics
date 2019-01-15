@@ -8,7 +8,7 @@
 #define ASC_ACC_TOL 0.5 // g's
 #define ASC_VEL_TOL 0.0
 #define ASC_ALT_TOL 0.0
-#define ASC_SAFE_TOL 15
+#define ASC_SAFE_TOL 5
 // define constants for switch to coasting
 #define COAST_ACC_TOL -10.0 // m/s^2
 #define COAST_VEL_TOL 0.1
@@ -23,7 +23,7 @@
   1401 // must be changed per launch location, currently SpacePort America
 #define MASS_F 25.845973      // kg
 #define MASS_I 36.275025      // kg
-#define AREA_ROCKET .00872677 // meters squared
+#define AREA_ROCKET 0.00872677 // meters squared
 #define LENGTH 3.6576         // length of rocket (meters)
 #define CD_ROCKET 0.42
 #define GOAL_HEIGHT 9144 // meters
