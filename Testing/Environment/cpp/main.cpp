@@ -1,4 +1,5 @@
 #include "Adafruit_BNO055.cpp"
+#include "Adafruit_MPL115A2.cpp"
 #include "Connection.cpp"
 #include <iostream>
 
