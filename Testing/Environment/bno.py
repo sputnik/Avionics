@@ -177,21 +177,21 @@ class BNO:
       return val * 1.05
    # end def
 
-   def receive(self,con):
+   def receive(self, con):
       data = con.receive(1)
       if data == BNO055_CHIP_ID_ADDR:
          con.send(BNO055_ID)
       elif data == VECTOR_GRAVITY:
-          packet = bytearray(pack("<h", round(self.x_grav*100.0)))
-          packet.extend(bytearray(pack("<h", round(self.y_grav*100.0))))
-          packet.extend(bytearray(pack("<h", round(self.z_grav*100.0))))
-          con.send(packet)
+         packet = bytearray(pack("<h", round(self.x_grav * 100.0)))
+         packet.extend(bytearray(pack("<h", round(self.y_grav * 100.0))))
+         packet.extend(bytearray(pack("<h", round(self.z_grav * 100.0))))
+         con.send(packet)
       elif data == VECTOR_ACCELEROMETER:
-          packet = bytearray(pack("<h", round(self.x_acc*100)))
-          packet.extend(bytearray(pack("<h", round(self.y_acc*100))))
-          packet.extend(bytearray(pack("<h", round(self.z_acc*100))))
-          con.send(packet)
+         packet = bytearray(pack("<h", round(self.x_acc * 100)))
+         packet.extend(bytearray(pack("<h", round(self.y_acc * 100))))
+         packet.extend(bytearray(pack("<h", round(self.z_acc * 100))))
+         con.send(packet)
       else:
-         print("BNO: Unknown command received: ",data)
+         print("BNO: Unknown command received: ", data)
    # end def
 # end class

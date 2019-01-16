@@ -11,6 +11,13 @@ class State(Enum):
 # end def
 
 
+class Test_Cases(Enum):
+   NORMAL_FLIGHT = 1
+   WIND_GUSTS = 2
+   EXTRA_NOISE = 3
+# end def
+
+
 sea_pressure = 101.3e3  # Pa
 sea_density = 1.225  # kg/m^3
 gravity = 9.81  # meters per second squared
@@ -78,11 +85,12 @@ class Simulation:
       self.z_grav = 9.81
       self.time = 0.0
       self.state = State.LAUNCHPAD
-      self.launchpad_time = 4.2 + random.random() * 10.0
+      self.launchpad_time = 4.2 + round(random.random() * 10.0)
       self.burn_end_time = self.launchpad_time + burn_time
       self.actuated = False
       self.height = 0
       self.max_height = 0
+      self.test_case = Test_Cases.NORMAL_FLIGHT
       print("Launchpad time = ", self.launchpad_time,
             ", burn end time = ", self.burn_end_time)
    # end def
