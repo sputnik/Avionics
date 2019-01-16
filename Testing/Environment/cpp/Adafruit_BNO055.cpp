@@ -51,7 +51,7 @@ bool Adafruit_BNO055::begin(adafruit_bno055_opmode_t mode) {
   /* Make sure we have the right device */
   uint8_t id = read8(BNO055_CHIP_ID_ADDR);
   if (id != BNO055_ID) {
-    sleep(1); // hold on for boot
+    sleep(0.5); // hold on for boot
     id = read8(BNO055_CHIP_ID_ADDR);
     if (id != BNO055_ID) {
       return false; // still not? ok bail
@@ -470,9 +470,7 @@ uint8_t Adafruit_BNO055::read8(adafruit_bno055_reg_t reg) {
   unsigned char regC = (unsigned char)reg;
   _con->sen(&_address, 1);
   _con->sen(&regC, 1);
-  unsigned char c;
-  _con->receive(&c, 1);
-  value = (uint8_t)c;
+  _con->receive(&value, 1);
 
   return value;
 }
@@ -484,7 +482,6 @@ uint8_t Adafruit_BNO055::read8(adafruit_bno055_reg_t reg) {
 /**************************************************************************/
 bool Adafruit_BNO055::readLen(adafruit_bno055_reg_t reg, uint8_t *buffer,
                               uint8_t len) {
-  // TODO data types  correct?
   unsigned char regC = (unsigned char)reg;
   _con->sen(&_address, 1);
   _con->sen(&regC, 1);

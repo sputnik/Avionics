@@ -17,6 +17,10 @@ port = 8090
 BNO055_ADDRESS_A = b'\x28'
 BNO055_ADDRESS_B = b'\x29'
 MPL115A2_ADDRESS = b'\x60'
+finished_cmd = b'\x01'
+time_cmd = b'\x02'
+actuate_cmd = b'\x05'
+deactuate_cmd = b'\x06'
 on_windows = True
 
 
@@ -34,26 +38,51 @@ def run():
                   os.system('./run_cpp.sh')
             # end if
             con.connect()
+            connected = True
             bno = BNO()
             mpl = MPL()
             last_time = 0
-            while sim.iterate():
+            act = 0
+            closed = 0
+            while connected and sim.iterate():
                if (sim.time - last_time >= 0.099):
                   last_time = sim.time
                   mpl.update_values(sim)
                   bno.update_values(sim)
-                  data = con.receive(1)
-                  if not data:
-                     print("Client closed connection")
-                     break
-                  # end if
-                  if data == BNO055_ADDRESS_A or data == BNO055_ADDRESS_B:
-                     bno.receive(con)
-                  elif data == MPL115A2_ADDRESS:
-                     mpl.receive(con)
-                  # end if
+                  done = False
+                  while not done:
+                     data = con.receive(1)
+                     if not data:
+                        print("Client closed connection")
+                        connected = False
+                        done = True
+                     # end if
+                     if data == BNO055_ADDRESS_A or data == BNO055_ADDRESS_B:
+                        bno.receive(con)
+                     elif data == MPL115A2_ADDRESS:
+                        mpl.receive(con)
+                     elif data == finished_cmd:
+                        done = True
+                     elif data == time_cmd:
+                        millis = round(sim.time * 1000)
+                        packet = bytearray(pack("<L", millis))
+                        con.send(packet)
+                     elif data == actuate_cmd:
+                        sim.actuate()
+                        print("Height = ", "{:6.1f}".format(sim.height), ", vel = ",
+                              "{:5.1f}".format(sim.z_vel), " Airbrakes actuated")
+                     elif data == deactuate_cmd:
+                        sim.close_airbrakes()
+                        print("Height = ", "{:6.1f}".format(sim.height), ", vel = ",
+                              "{:5.1f}".format(sim.z_vel), " Airbrakes closed")
+                     else:
+                        print("Main: Unknown command received.", bytearray(data))
+                     # end if
+                  # end while
                # end if
             # end while
+            print("--" * 5, "Results", "--" * 5)
+            print("Max height reached: ", sim.max_height)
          except Exception as e:
             exc_type, exc_value, exc_traceback = sys.exc_info()
             print('***Exception while running: ' + str(e))

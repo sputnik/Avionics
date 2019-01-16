@@ -15,6 +15,7 @@ public:
   void receive(char *c, int length);
   void sen(unsigned char *c, int length);
   void receive(unsigned char *c, int length);
+  inline bool connected(void) { return m_connected; };
 
 private:
   int m_client;
