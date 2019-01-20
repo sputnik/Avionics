@@ -1,0 +1,24 @@
+1. X = Ax(k-1) + Bu + w(k-1)
+	where X is the signal value, 
+	Ax is the linear combination of its prev. value + control signal,
+	u is process noise (most likey we dont have to worry about it_,
+	
+2. Z(k) = Hx(k) + v(k)
+	where Z is measurement value (one of the kalman input)
+	H is signal value 
+	v is measurement noise 
+
+	Both A, B, H are matrices, but in this case it should be a constant value
+
+3. Kalman Gain = K(k) = P`(k)H^T (HP`(k)H`T + R) ^ -1
+
+4. Estimate X(k) = K(k) * Z(k) + (1-K(k)) * X(k-1)
+	where K is measurement, K is kalman gain
+	
+The votage example, where a constant votage of a is measired:
+	
+	X = x(k-1) + w(k) (kalman gain) 
+	
+	z = xk + vk 
+	
+	K(k) = (P`(k) / (P`(k) + R) (intemediate step) 

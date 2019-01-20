@@ -1,0 +1,4 @@
+Just me messing around with using a threading connection.
+
+I think it is more complicated than we need for the environment, but I'm committing the
+code anyways just in case we end up needing it.
