@@ -19,7 +19,7 @@ int main() {
  * @return - velocity m/s
  *
  * @param samp (int) - number of previous measurements to sample from
- * Gets Velocity from Altitude and Time, assuming data is in an array that adds elements to the front
+ * Gets Velocity from Altitude and Time, assuming data is in an array that adds elements to the end
  */
 double getVelocityAltT(unsigned int samp) {
   double velocity = 0.0;
@@ -46,7 +46,7 @@ double getVelocityAltT(unsigned int samp) {
  * @return - velocity m/s
  *
  * @param samp (int) - number of previous measurements to sample from
- * Gets Velocity from Acceleration and Time, assuming data is in an array that adds elements to the front
+ * Gets Velocity from Acceleration and Time, assuming data is in an array that adds elements to the end
  */
 double getVelocityAccT(unsigned int samp) {
   double velocity = 0.0;
@@ -74,7 +74,7 @@ double getVelocityAccT(unsigned int samp) {
  * @return - Acceleration in m/s/s
  *
  * @param samp (int) - number of previous measurements to sample from
- * Gets Acceleration from Velocity and Time, assuming data is in a vector that adds elements to the front
+ * Gets Acceleration from Velocity and Time, assuming data is in a vector that adds elements to the end
  */
  double getAccelerationVT(unsigned int samp) {
    double acceleration = 0.0;
@@ -100,7 +100,7 @@ double getVelocityAccT(unsigned int samp) {
 
 //test with projectile function
 int testProjectile() {
-  std::cout << "Test projectile motion" << '\n';
+  cout << "Test projectile motion" << '\n';
   for (int i = 0; i < 635; i++) {
     double t = i*0.01;
     double altitude = 4 + 30.48*t - 9.81*pow(t, 2.0)/2;
